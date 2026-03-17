@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixture Liga Tres Lomas</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+font-family:'Inter',sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#111;
+height:100vh;
+}
+
+/* POST SIZE */
+
+.post{
+width:1080px;
+height:1350px;
+background:linear-gradient(180deg,#0b132b 0%,#0a1a3a 55%,#7c5cff 100%);
+color:white;
+padding:70px 80px;
+position:relative;
+overflow:hidden;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+}
+
+.title-small{
+color:#9b8cff;
+font-weight:700;
+font-size:28px;
+letter-spacing:1px;
+}
+
+.title{
+font-size:86px;
+font-weight:900;
+line-height:0.9;
+margin-top:10px;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+font-weight:800;
+font-size:28px;
+}
+
+.brand span{
+color:#9b8cff;
+}
+
+/* FECHA */
+
+.fecha{
+margin-top:20px;
+background:#9b8cff;
+color:#111;
+font-weight:800;
+padding:10px 22px;
+border-radius:6px;
+display:inline-block;
+}
+
+/* LINE */
+
+.line{
+height:4px;
+width:100%;
+background:#9b8cff;
+margin:35px 0 40px 0;
+opacity:.6;
+}
+
+/* MATCH LIST */
+
+.matches{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.match{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:22px 30px;
+background:linear-gradient(90deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));
+border-radius:10px;
+font-weight:700;
+font-size:28px;
+}
+
+.team{
+display:flex;
+align-items:center;
+gap:14px;
+width:40%;
+}
+
+.team img{
+width:34px;
+height:34px;
+object-fit:contain;
+}
+
+.vs{
+font-weight:900;
+color:#9b8cff;
+}
+
+/* SPONSORS */
+
+.sponsors{
+position:absolute;
+bottom:40px;
+left:0;
+width:100%;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:35px;
+opacity:.9;
+}
+
+.sponsors img{
+height:40px;
+object-fit:contain;
+filter:grayscale(100%);
+opacity:.85;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="post">
+
+<div class="header">
+
+<div>
+<div class="title-small">APERTURA 2026 - PRIMERA</div>
+<div class="title">FIXTURE</div>
+</div>
+
+<div style="text-align:right">
+<div class="brand">⚽ JUEGO DE <span>EQUIPO</span></div>
+<div class="fecha">FECHA 2</div>
+</div>
+
+</div>
+
+<div class="line"></div>
+
+<div class="matches">
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/garre.png">
+Deportivo Garré
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+Atlético Argentino
+<img src="equipos/logos/argentinos.png">
+</div>
+</div>
+
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/17.png">
+Deportivo 17
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+Cecil A. Roberts
+<img src="equipos/logos/roberts.png">
+</div>
+</div>
+
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/uniontl.png">
+Unión Deportiva
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+Deportivo Maza
+<img src="equipos/logos/maza.png">
+</div>
+</div>
+
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/quenuma.png">
+Atlético Quenumá
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+Juventud Unida
+<img src="equipos/logos/juventud.png">
+</div>
+</div>
+
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/lagloria.png">
+La Gloria
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+Villa del Parque
+<img src="equipos/logos/villa.png">
+</div>
+</div>
+
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/salazar.png">
+Salazar FC
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+El Ceibo
+<img src="equipos/logos/ceibo.png">
+</div>
+</div>
+
+
+<div class="match">
+<div class="team">
+<img src="equipos/logos/bonifacio.png">
+Unión de Bonifacio
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team" style="justify-content:flex-end">
+Deportivo Argentino
+<img src="equipos/logos/deportivoarg.png">
+</div>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

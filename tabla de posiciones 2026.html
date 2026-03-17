@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tabla Liga Tres Lomas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+theme:{
+extend:{
+colors:{
+leagueDark:"#0f172a",
+leagueAccent:"#8e5cf2",
+leagueGold:"#fbbf24"
+}
+}
+}
+}
+</script>
+
+<style>
+
+body{
+font-family:Inter,system-ui;
+}
+
+.instagram-post-container {
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+main table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#tabla-posiciones tr {
+  height: calc((100% - 40px) / 15); /* 40px puede ajustarse según padding, 15 filas */
+}
+
+.table-row-hover:nth-child(even){
+background-color:rgba(255,255,255,0.04);
+}
+
+</style>
+
+</head>
+
+<body class="bg-gray-200 flex items-center justify-center min-h-screen">
+
+<div class="instagram-post-container text-white shadow-2xl flex flex-col p-10 " style="background: linear-gradient(to bottom, #0f172a 0%, #0f172a 66%, #b090ff 100%);">
+
+<!-- HEADER -->
+
+<header class="mb-6 flex justify-between items-end border-b-4 border-leagueAccent pb-4">
+
+<div>
+<h2 class="text-leagueAccent font-black text-2xl uppercase">Apertura 2026 - Senior</h2>
+<h1 class="text-6xl font-black leading-none uppercase">Tabla de<br>Posiciones</h1>
+</div>
+
+<div class="text-right">
+<div class="bg-leagueAccent text-black px-4 py-1 font-black text-xl skew-x-[-12deg]">
+<span class="inline-block skew-x-[12deg]">Fecha 1</span>
+</div>
+</div>
+
+</header>
+
+
+<!-- TABLA (más chica) -->
+
+<main class="flex-grow max-h-[650px]">
+
+<table class="w-full text-left">
+
+<thead class="text-gray-400 uppercase text-sm font-bold">
+<tr>
+<th class="py-2 px-4 w-16 text-center">Pos</th>
+<th class="py-2 px-4">Equipo</th>
+<th class="py-2 px-4 w-20 text-center">PJ</th>
+<th class="py-2 px-4 w-20 text-center">DG</th>
+<th class="py-2 px-4 w-20 text-center bg-white/10 text-white">PTS</th>
+</tr>
+</thead>
+
+<tbody id="tabla-posiciones" class="text-lg"></tbody>
+
+</table>
+
+</main>
+
+
+<!-- ZONA PUBLICIDAD -->
+
+<section class="mt-auto flex justify-center">
+
+<img
+src="assets\publicidad.png"
+class="w-full h-[300px] object-cover rounded-lg"
+/>
+
+</section>
+
+
+</div>
+
+
+
+<script>
+
+const logosEquipos = {
+
+"Deportivo Argentino":"equipos/logos/deportivoarg.png",
+"Juventud Unida":"equipos/logos/juventud.png",
+"Roberts":"equipos/logos/roberts.png",
+"El Ceibo":"equipos/logos/ceibo.png",
+"Villa del Parque":"equipos/logos/villa.png",
+"Atl. Argentino":"equipos/logos/argentinos.png",
+"Deportivo Maza":"equipos/logos/maza.png",
+"Ferro":"equipos/logos/ferro.png",
+"La Gloria":"equipos/logos/lagloria.png",
+"Salazar FC":"equipos/logos/salazar.png",
+"Unión Deportiva":"equipos/logos/uniontl.png",
+"Unión de Bonifacio":"equipos/logos/bonifacio.png",
+"Deportivo Garré":"equipos/logos/garre.png",
+"Deportivo 17":"equipos/logos/17.png",
+"Jorge Newbery":"equipos/logos/newbery.png"
+
+};
+
+
+const tabla = [
+
+{equipo:"Deportivo Argentino",pj:1,dg:"+5",pts:3},
+{equipo:"Juventud Unida",pj:1,dg:"+4",pts:3},
+{equipo:"Roberts",pj:1,dg:"+4",pts:3},
+{equipo:"El Ceibo",pj:1,dg:"+3",pts:3},
+{equipo:"Villa del Parque",pj:1,dg:"+2",pts:3},
+{equipo:"Atl. Argentino",pj:1,dg:"0",pts:1},
+{equipo:"Deportivo Maza",pj:1,dg:"0",pts:1},
+{equipo:"Ferro",pj:1,dg:"0",pts:1},
+{equipo:"La Gloria",pj:1,dg:"0",pts:1},
+{equipo:"Salazar FC",pj:1,dg:"-2",pts:0},
+{equipo:"Unión Deportiva",pj:1,dg:"-3",pts:0},
+{equipo:"Unión de Bonifacio",pj:1,dg:"-4",pts:0},
+{equipo:"Deportivo Garré",pj:1,dg:"-4",pts:0},
+{equipo:"Deportivo 17",pj:1,dg:"-5",pts:0},
+{equipo:"Jorge Newbery",pj:0,dg:"0",pts:0}
+
+];
+
+
+const tbody = document.getElementById("tabla-posiciones");
+
+
+tabla.forEach((t,i)=>{
+
+const logo = logosEquipos[t.equipo] || "";
+
+const row = document.createElement("tr");
+
+row.className="table-row-hover";
+
+row.innerHTML = `
+
+<td class="py-2 px-4 text-center font-bold italic">
+${String(i+1).padStart(2,"0")}
+</td>
+
+<td class="py-2 px-4 font-bold flex items-center gap-3">
+<img src="${logo}" class="w-6 h-6 object-contain">
+${t.equipo}
+</td>
+
+<td class="py-2 px-4 text-center font-mono">
+${t.pj}
+</td>
+
+<td class="py-2 px-4 text-center font-mono">
+${t.dg}
+</td>
+
+<td class="py-2 px-4 text-center font-bold bg-white/5">
+${t.pts}
+</td>
+
+`;
+
+tbody.appendChild(row);
+
+});
+
+</script>
+
+</body>
+</html>

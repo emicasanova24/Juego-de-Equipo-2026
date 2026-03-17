@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Partidos – Diseño Cuadrado</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mobile-square {
+    width: 90%;
+    max-width: 1000px;
+    aspect-ratio: 1 / 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+
+  .match {
+    background: #1c1c1c;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgb(0 0 0 / 40%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .match-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    color: #ccc;
+  }
+
+  .status.final {
+    background: #009688;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 16px;
+    color: white;
+  }
+
+  .teams {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .team img {
+    width: 70px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 4px;
+  }
+
+  .team .name {
+    font-size: 24px;
+    text-align: center;
+    color: white;
+  }
+
+  .score span {
+    font-size: 40px;
+    font-weight: 700;
+    color: white;
+  }
+
+  /* --- PENALES --- */
+  .penales {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .penal-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  .penal-circle.gol {
+    background: #4caf50; /* verde */
+  }
+
+  .penal-circle.erro {
+    background: #f44336; /* rojo */
+  }
+
+  .penal-circle.vacio {
+    background: transparent;
+    border: 2px solid black;
+  }
+
+  #imagen-final {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="mobile-square" id="partidos">
+  <img id="imagen-final" src="assets/liguilla-mobile.png" alt="Liguilla 2025">
+</div>
+
+<script>
+/* ----------------------------- LOGOS ----------------------------- */
+const logos = {
+  "Deportivo Garré": "equipos/logos/garre.png",
+  "Atlético Argentino": "equipos/logos/argentinos.png",
+  "Deportivo Maza": "equipos/logos/maza.png",
+  "El Ceibo": "equipos/logos/ceibo.png",
+  "Deportivo 17": "equipos/logos/17.png",
+  "Unión Deportiva": "equipos/logos/uniontl.png",
+  "Jorge Newbery": "equipos/logos/newbery.png",
+  "Juventud Unida": "equipos/logos/juventud.png",
+  "Atlético Quenumá": "equipos/logos/quenuma.png",
+  "Villa del Parque": "equipos/logos/villa.png",
+  "Salazar FC": "equipos/logos/salazar.png",
+  "Unión de Bonifacio": "equipos/logos/bonifacio.png",
+  "Deportivo Argentino": "equipos/logos/deportivoarg.png",
+  "Cecil A. Roberts": "equipos/logos/roberts.png",
+  "La Gloria": "equipos/logos/lagloria.png"
+};
+
+/* ----------------------------- PARTIDOS ----------------------------- */
+const partidos = [
+  {
+    estado: "FINAL",
+    estadio: "Roberto Castañeira",
+    local: "Atlético Quenumá",
+    visitante: "Jorge Newbery",
+    resultado: "1 - 1",
+    penales: {
+      local: [true, true, true, true, "vacio"],
+      visitante: [false, true, false, true, "vacio"]
+    }
+  },
+  {
+    estado: "FINAL",
+    estadio: "Unión de Bonifacio",
+    local: "Unión de Bonifacio",
+    visitante: "Atlético Argentino",
+    resultado: "0 - 0",
+    penales: {
+      local: [true, true, true, true, false],
+      visitante: [true, true, true, true, true]
+    }
+  }
+];
+
+/* ----------------------------- RENDER ----------------------------- */
+const contenedor = document.getElementById("partidos");
+
+partidos.forEach(p => {
+  const div = document.createElement("div");
+  div.className = "match";
+
+  div.innerHTML = `
+    <div class="match-header">
+      <span class="status final">${p.estado}</span>
+      <span>Estadio: ${p.estadio}</span>
+    </div>
+
+    <div class="teams">
+      <div class="team">
+        <img src="${logos[p.local] || ""}" alt="${p.local}">
+        <span class="name">${p.local}</span>
+      </div>
+
+      <div class="score">
+        <span>${p.resultado}</span>
+      </div>
+
+      <div class="team">
+        <img src="${logos[p.visitante] || ""}" alt="${p.visitante}">
+        <span class="name">${p.visitante}</span>
+      </div>
+    </div>
+
+    <!-- PENALES PARA LOCAL -->
+    <div class="penales">
+      ${p.penales.local
+        .map(r => `
+          <div class="penal-circle ${
+            r === true ? "gol" :
+            r === false ? "erro" :
+            "vacio"
+          }"></div>
+        `)
+        .join("")}
+    </div>
+
+    <!-- PENALES PARA VISITANTE -->
+    <div class="penales">
+      ${p.penales.visitante
+        .map(r => `
+          <div class="penal-circle ${
+            r === true ? "gol" :
+            r === false ? "erro" :
+            "vacio"
+          }"></div>
+        `)
+        .join("")}
+    </div>
+  `;
+
+  contenedor.prepend(div);
+});
+</script>
+
+</body>
+</html>

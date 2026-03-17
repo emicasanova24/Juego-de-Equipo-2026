@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Overlay Liga Tres Lomas</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 1000px;
+        height: 1000px;
+        background: transparent;
+        font-family: 'Segoe UI', sans-serif;
+        color: white;
+        overflow: hidden;
+    }
+
+    .slider {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        overflow-y: auto;
+        padding: 20px 0;
+        box-sizing: border-box;
+    }
+
+    .slide.active {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    /* FORMACIONES */
+    .formaciones-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .equipo {
+        background: rgba(17,17,17,0.8);
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .equipo h2 {
+        text-align: center;
+        margin: 0 0 8px 0;
+        font-size: 20px;
+        border-bottom: 2px solid #ffeb3b;
+        padding-bottom: 4px;
+    }
+
+    .equipo h3 {
+        margin: 6px 0 4px 0;
+        font-size: 14px;
+    }
+
+    ol {
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    li {
+        margin-bottom: 3px;
+        font-size: 12px;
+    }
+
+    /* TABLAS */
+    .tabla-container {
+        width: 100%;
+        background: rgba(17,17,17,0.8);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .tabla-header, .tabla-subheader {
+        text-align: center;
+        padding: 8px;
+    }
+
+    .tabla-header {
+        font-size: 22px;
+        font-weight: bold;
+        border-bottom: 2px solid #ffeb3b;
+    }
+
+    .tabla-subheader {
+        font-size: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    thead th {
+        padding: 8px;
+        font-weight: bold;
+        color: #ccc;
+    }
+
+    tbody td {
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    tbody td.equipo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    tbody td.equipo img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .pos {
+        font-weight: bold;
+    }
+
+    tbody td.puntos {
+        background: #ffeb3b;
+        color: #111;
+        font-weight: bold;
+    }
+
+    /* RESULTADOS */
+    .resultados-container {
+        width: 100%;
+        background: transparent;
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .fecha-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        padding-bottom: 6px;
+    }
+
+    .partido {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin: 8px 0;
+    }
+
+    .columna-local {
+        text-align: left;
+        margin-left: 8px;
+    }
+
+    .columna-visitante {
+        text-align: right;
+        margin-right: 8px;
+    }
+
+    .equipo-result {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .equipo-result img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+    }
+
+    .marcador {
+        font-size: 20px;
+        min-width: 50px;
+        text-align: center;
+    }
+
+    .libre {
+        margin-top: 12px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        opacity: 0.9;
+    }
+
+    .libre img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+    }
+</style>
+</head>
+<body>
+
+<div class="slider">
+
+    <div class="slide" id="slide-formaciones">
+        <div class="formaciones-container" id="formaciones"></div>
+    </div>
+
+    <div class="slide" id="slide-tabla-clausura">
+        <div class="tabla-container" id="tabla-clausura"></div>
+    </div>
+
+    <div class="slide" id="slide-tabla-acumulado">
+        <div class="tabla-container" id="tabla-acumulado"></div>
+    </div>
+
+    <div class="slide" id="slide-resultados">
+        <div class="resultados-container" id="resultados"></div>
+    </div>
+
+</div>
+
+<script>
+    /* ================= FORMACIONES ================= */
+    const formaciones = {
+        local: {
+            nombre: "Roberts",
+            jugadores: ["Lucas Troya","Sebastian Dominguez","Kevin Hein","Juan Cuevas","Kevin Caicedo","Luciano Ramos","Isaac Suarez","Ignacio Siri","Nico Ibañez","Uriel Tomasello","Tobias Barrios"],
+            suplentes: ["Sebastian Illesca","Francisco Tamargo","Horacio Schap","Justino Gomez","Agustin Toselli","Ciro Martinez","Alejo Palacios"]
+        },
+        visitante: {
+            nombre: "Garré",
+            jugadores: ["Juan Taborda","Lucio Souza","Maximiliano Taborda","Nahuel Silva","Mauricio Pallero","Alexis Santander","Benjamin Guiyelo","Javier Lamas","Kevin Alanis","Sebastian Silva","Elias Romero"],
+            suplentes: ["Agustin Calvo","Sebastian Palomeque","Mariano Castro","Denis Ramirez","Lucas Soto"]
+        }
+    };
+
+    const containerFormaciones = document.getElementById("formaciones");
+    Object.values(formaciones).forEach(eq => {
+        const box = document.createElement("div");
+        box.className = "equipo";
+        box.innerHTML = `
+            <h2>${eq.nombre}</h2>
+            <h3>Titulares</h3>
+            <ol>${eq.jugadores.map(j => `<li>${j}</li>`).join("")}</ol>
+            <h3>Suplentes</h3>
+            <ol>${eq.suplentes.map(j => `<li>${j}</li>`).join("")}</ol>
+        `;
+        containerFormaciones.appendChild(box);
+    });
+
+    /* ================= TABLA CLAUSURA ================= */
+    const clausura = {
+        titulo: "TABLA DE POSICIONES",
+        subtitulo: "PRIMERA - CLAUSURA 2025",
+        equipos: [
+            { pos:1,nombre:"Deportivo Argentino",pts:14,pj:6,dg:"+6",logo:"./equipos/logos/deportivoarg.png" },
+            { pos:2,nombre:"El Ceibo",pts:14,pj:6,dg:"+4",logo:"./equipos/logos/ceibo.png" },
+            { pos:3,nombre:"Roberts",pts:11,pj:5,dg:"+7",logo:"./equipos/logos/roberts.png" },
+            { pos:4,nombre:"Atlético Argentino",pts:10,pj:5,dg:"+7",logo:"./equipos/logos/argentinos.png" },
+            { pos:5,nombre:"Jorge Newbery",pts:10,pj:6,dg:"+2",logo:"./equipos/logos/newbery.png" },
+            { pos:6,nombre:"Deportivo Garré",pts:10,pj:6,dg:"+1",logo:"./equipos/logos/garre.png" },
+            { pos:7,nombre:"Unión Deportiva",pts:9,pj:5,dg:"+2",logo:"./equipos/logos/uniontl.png" },
+            { pos:8,nombre:"Unión Deportiva (B)",pts:8,pj:6,dg:"+1",logo:"./equipos/logos/bonifacio.png" },
+            { pos:9,nombre:"Deportivo Maza",pts:7,pj:5,dg:"+6",logo:"./equipos/logos/maza.png" },
+            { pos:10,nombre:"La Gloria",pts:6,pj:5,dg:"-1",logo:"./equipos/logos/lagloria.png" },
+            { pos:11,nombre:"Villa del Parque",pts:5,pj:6,dg:"-6",logo:"./equipos/logos/villa.png" },
+            { pos:12,nombre:"Salazar FC",pts:3,pj:6,dg:"-7",logo:"./equipos/logos/salazar.png" },
+            { pos:13,nombre:"Juventud Unida",pts:3,pj:6,dg:"-8",logo:"./equipos/logos/juventud.png" },
+            { pos:14,nombre:"Deportivo 17",pts:2,pj:5,dg:"-5",logo:"./equipos/logos/17.png" },
+            { pos:15,nombre:"Atlético Quenumá",pts:1,pj:6,dg:"-7",logo:"./equipos/logos/quenuma.png" }
+        ]
+    };
+
+    const containerClausura = document.getElementById("tabla-clausura");
+    const headerC = document.createElement("div");
+    headerC.className = "tabla-header";
+    headerC.textContent = clausura.titulo;
+    containerClausura.appendChild(headerC);
+
+    const subC = document.createElement("div");
+    subC.className = "tabla-subheader";
+    subC.textContent = clausura.subtitulo;
+    containerClausura.appendChild(subC);
+
+    const tableC = document.createElement("table");
+    tableC.innerHTML = `
+        <thead>
+            <tr>
+                <th>POS</th>
+                <th>EQUIPO</th>
+                <th>PTS</th>
+                <th>PJ</th>
+                <th>DG</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${clausura.equipos.map(eq => `
+                <tr>
+                    <td class="pos">${eq.pos}</td>
+                    <td class="equipo"><img src="${eq.logo}" alt="">${eq.nombre}</td>
+                    <td class="puntos">${eq.pts}</td>
+                    <td>${eq.pj}</td>
+                    <td>${eq.dg}</td>
+                </tr>
+            `).join("")}
+        </tbody>
+    `;
+    containerClausura.appendChild(tableC);
+
+    /* ================= TABLA ACUMULADO ================= */
+    const acumulado = {
+        titulo: "TABLA DE POSICIONES",
+        subtitulo: "ACUMULADO 2025",
+        equipos: [
+            { pos:1,nombre:"Unión Deportiva",pts:38,pj:19,dg:"+23",logo:"./equipos/logos/uniontl.png" },
+            { pos:2,nombre:"Jorge Newbery",pts:37,pj:20,dg:"+10",logo:"./equipos/logos/newbery.png" },
+            { pos:3,nombre:"Deportivo Argentino",pts:33,pj:20,dg:"+4",logo:"./equipos/logos/deportivoarg.png" },
+            { pos:4,nombre:"Roberts",pts:33,pj:19,dg:"0",logo:"./equipos/logos/roberts.png" },
+            { pos:5,nombre:"Deportivo Garré",pts:32,pj:20,dg:"+5",logo:"./equipos/logos/garre.png" },
+            { pos:6,nombre:"Atlético Argentino",pts:30,pj:19,dg:"+10",logo:"./equipos/logos/argentinos.png" },
+            { pos:7,nombre:"Atlético Quenumá",pts:30,pj:20,dg:"+9",logo:"./equipos/logos/quenuma.png" },
+            { pos:8,nombre:"Unión Deportiva (B)",pts:30,pj:20,dg:"+6",logo:"./equipos/logos/bonifacio.png" },
+            { pos:9,nombre:"Deportivo Maza",pts:28,pj:19,dg:"+9",logo:"./equipos/logos/maza.png" },
+            { pos:10,nombre:"El Ceibo",pts:25,pj:20,dg:"-1",logo:"./equipos/logos/ceibo.png" },
+            { pos:11,nombre:"Salazar FC",pts:22,pj:20,dg:"-7",logo:"./equipos/logos/salazar.png" },
+            { pos:12,nombre:"Deportivo 17",pts:21,pj:19,dg:"-4",logo:"./equipos/logos/17.png" },
+            { pos:13,nombre:"Juventud Unida",pts:18,pj:20,dg:"-10",logo:"./equipos/logos/juventud.png" },
+            { pos:14,nombre:"La Gloria",pts:13,pj:19,dg:"-7",logo:"./equipos/logos/lagloria.png" },
+            { pos:15,nombre:"Villa del Parque",pts:10,pj:20,dg:"-36",logo:"./equipos/logos/villa.png" }
+        ]
+    };
+
+    const containerAcumulado = document.getElementById("tabla-acumulado");
+    const headerA = document.createElement("div");
+    headerA.className = "tabla-header";
+    headerA.textContent = acumulado.titulo;
+    containerAcumulado.appendChild(headerA);
+
+    const subA = document.createElement("div");
+    subA.className = "tabla-subheader";
+    subA.textContent = acumulado.subtitulo;
+    containerAcumulado.appendChild(subA);
+
+    const tableA = document.createElement("table");
+    tableA.innerHTML = `
+        <thead>
+            <tr>
+                <th>POS</th>
+                <th>EQUIPO</th>
+                <th>PTS</th>
+                <th>PJ</th>
+                <th>DG</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${acumulado.equipos.map(eq => `
+                <tr>
+                    <td class="pos">${eq.pos}</td>
+                    <td class="equipo"><img src="${eq.logo}" alt="">${eq.nombre}</td>
+                    <td>${eq.pts}</td>
+                    <td>${eq.pj}</td>
+                    <td>${eq.dg}</td>
+                </tr>
+            `).join("")}
+        </tbody>
+    `;
+    containerAcumulado.appendChild(tableA);
+
+    /* ================= RESULTADOS ================= */
+    const fecha = {
+        numero: 5,
+        partidos: [
+            { local: "Juventud Unida", golesLocal: 1, visitante: "Deportivo Argentino", golesVisitante: 2, logoLocal: "./equipos/logos/juventud.png", logoVisitante: "./equipos/logos/deportivoarg.png" },
+            { local: "Atlético Quenumá", golesLocal: 0, visitante: "Atlético Argentino", golesVisitante: 2, logoLocal: "./equipos/logos/quenuma.png", logoVisitante: "./equipos/logos/argentinos.png" },
+            { local: "Salazar FC", golesLocal: 1, visitante: "Unión de Bonifacio", golesVisitante: 0, logoLocal: "./equipos/logos/salazar.png", logoVisitante: "./equipos/logos/bonifacio.png" },
+            { local: "Villa del Parque", golesLocal: 0, visitante: "El Ceibo", golesVisitante: 0, logoLocal: "./equipos/logos/villa.png", logoVisitante: "./equipos/logos/ceibo.png" },
+            { local: "Unión Deportiva", golesLocal: 1, visitante: "Deportivo Garré", golesVisitante: 0, logoLocal: "./equipos/logos/uniontl.png", logoVisitante: "./equipos/logos/garre.png" },
+            { local: "Deportivo Maza", golesLocal: 0, visitante: "Cecil A. Roberts", golesVisitante: 0, logoLocal: "./equipos/logos/maza.png", logoVisitante: "./equipos/logos/roberts.png" }
+        ],
+        libre: { nombre: "Deportivo 17", logo: "./equipos/logos/17.png" }
+    };
+
+    const containerResultados = document.getElementById("resultados");
+    const titleR = document.createElement("div");
+    titleR.className = "fecha-title";
+    titleR.textContent = "FECHA " + fecha.numero;
+    containerResultados.appendChild(titleR);
+
+    fecha.partidos.forEach(p => {
+        const partido = document.createElement("div");
+        partido.className = "partido";
+        partido.innerHTML = `
+            <div class="equipo-result"><img src="${p.logoLocal}" alt=""><span class="columna-local">${p.local}</span></div>
+            <div class="marcador">${p.golesLocal} - ${p.golesVisitante}</div>
+            <div class="equipo-result"><span class="columna-visitante">${p.visitante}</span><img src="${p.logoVisitante}" alt=""></div>
+        `;
+        containerResultados.appendChild(partido);
+    });
+
+    const libre = document.createElement("div");
+    libre.className = "libre";
+    libre.innerHTML = `LIBRE: <img src="${fecha.libre.logo}" alt="${fecha.libre.nombre}">`;
+    containerResultados.appendChild(libre);
+
+    /* ================= SLIDER DESVANECIMIENTO ================= */
+    let currentSlide = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    function showSlide(index) {
+        slides.forEach((s,i) => {
+            s.classList.remove("active");
+            s.style.zIndex = 0;
+        });
+        slides[index].classList.add("active");
+        slides[index].style.zIndex = 1;
+    }
+
+    showSlide(currentSlide);
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }, 10000);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Marcador en Vivo</title>
+<style>
+  body {
+    margin: 0;
+    background: transparent; /* Ideal para OBS */
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
+    border: 2px solid #8c52ff;
+    border-radius: 20px;
+    padding: 18px 32px 24px;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    position: relative;
+    overflow: visible;
+    min-width: 820px;
+  }
+
+  .scoreboard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(140,82,255,0.15), transparent 60%);
+    pointer-events: none;
+  }
+
+  .team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 33.3%;
+  }
+  #local {
+      justify-content: flex-start;
+  }
+
+  #visitante {
+    justify-content: flex-end;
+    text-align: right;
+  }
+  .team img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #2c2c2c;
+    border-radius: 50%;
+    padding: 4px;
+    border: 2px solid #8c52ff;
+    box-shadow: 0 0 10px rgba(140,82,255,0.4);
+  }
+  .team-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .team-name {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    text-shadow: 0 0 6px rgba(0,0,0,0.6);
+    white-space: nowrap;
+  }
+
+  .score {
+    font-size: 50px;
+    font-weight: 900;
+    color: #8c52ff;
+    
+    text-align: center;
+    width: 33.3%;
+    line-height: 1;
+  }
+
+  /* Temporizador más grande y destacado */
+  .timer {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    min-height: 32px;
+    transform: translateX(-50%);
+    background: rgba(30, 30, 30, 0.9);
+    border: 2px solid #8c52ff;
+    color: #8c52ff;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 1px;
+    padding: 8px 18px;
+    border-radius: 12px;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(140,82,255,0.4);
+  }
+
+  .info {
+    position: absolute;
+    bottom: -38px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    color: #ddd;
+    background: rgba(0,0,0,0.6);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="scoreboard">
+    <div class="timer" id="timer"></div>
+
+    <div class="team-wrapper">
+      <div class="team" id="local">
+        <img id="logo-local" alt="">
+        <span class="team-name" id="nombre-local"></span>
+      </div>
+
+      <div class="score" id="marcador"> - </div>
+
+      <div class="team" id="visitante">
+        <span class="team-name" id="nombre-visitante"></span>
+        <img id="logo-visitante" alt="">
+      </div>
+    </div>
+
+    <div class="info" id="estado">EN VIVO • 2T</div>
+  </div>
+
+<script>
+  const logos = {
+    "Deportivo Garré": "equipos/logos/garre.png",
+    "A. Argentino": "equipos/logos/argentinos.png",
+    "Deportivo Maza": "equipos/logos/maza.png",
+    "El Ceibo": "equipos/logos/ceibo.png",
+    "Deportivo 17": "equipos/logos/17.png",
+    "Unión Deportiva": "equipos/logos/uniontl.png",
+    "J. Newbery": "equipos/logos/newbery.png",
+    "Juventud Unida": "equipos/logos/juventud.png",
+    "A. Quenumá": "equipos/logos/quenuma.png",                 
+    "Villa D.P": "equipos/logos/villa.png",
+    "Salazar FC": "equipos/logos/salazar.png",
+    "Unión de Bonifacio": "equipos/logos/bonifacio.png",
+    "Deportivo Argentino": "equipos/logos/deportivoarg.png",
+    "Roberts": "equipos/logos/roberts.png",
+    "La Gloria": "equipos/logos/lagloria.png"
+  };
+
+  // Datos fijos del partido
+  const local = "A. Quenumá";
+  const visitante = "A. Argentino";
+
+  document.getElementById("nombre-local").textContent = local;
+  document.getElementById("nombre-visitante").textContent = visitante;
+
+  const logoLocal = document.getElementById("logo-local");
+  const logoVisitante = document.getElementById("logo-visitante");
+
+  if (logos[local]) logoLocal.src = logos[local];
+  if (logos[visitante]) logoVisitante.src = logos[visitante];
+
+  logoLocal.onerror = () => logoLocal.style.display = "none";
+  logoVisitante.onerror = () => logoVisitante.style.display = "none";
+</script>
+
+</body>
+</html>

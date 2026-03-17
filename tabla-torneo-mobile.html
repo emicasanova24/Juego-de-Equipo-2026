@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tabla Clausura 2025</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+
+    .tabla-container {
+      width: 500px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .tabla-header {
+
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 30px;
+      border-bottom: 2px solid #ffeb3b;
+    }
+
+    .tabla-subheader {
+
+      text-align: center;
+      padding: 6px;
+      font-size: 30px;
+      letter-spacing: 1px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead th {
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #ccc;
+    }
+
+    tbody td {
+      padding: 8px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+
+    tbody td.equipo {
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+    }
+
+    tbody td.equipo img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+    }
+
+    .pos {
+      font-weight: bold;
+      width: 30px;
+    }
+
+    /* Columna amarilla para los puntos */
+    tbody td.puntos {
+      background: #ffeb3b;
+      color: #111;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="tabla-container" id="tabla-container"></div>
+
+  <script>
+    const posiciones = {
+      titulo: "TABLA DE POSICIONES",
+      subtitulo: "PRIMERA - CLAUSURA 2025",
+      equipos: [
+        { pos: 1, nombre: "Deportivo Argentino", pts: 21, pj: 9, dg: "+10", logo: "./equipos/logos/deportivoarg.png" },
+        { pos: 2, nombre: "El Ceibo", pts: 21, pj: 10, dg: "+6", logo: "./equipos/logos/ceibo.png" },
+        { pos: 3, nombre: "Unión Deportiva", pts: 18, pj: 10, dg: "+7", logo: "./equipos/logos/uniontl.png" },
+        { pos: 4, nombre: "Jorge Newbery", pts: 17, pj: 9, dg: "+6", logo: "./equipos/logos/newbery.png" },
+        { pos: 5, nombre: "Atlético Argentino", pts: 16, pj: 9, dg: "+8", logo: "./equipos/logos/argentinos.png" },
+        { pos: 6, nombre: "Roberts", pts: 15, pj: 9, dg: "+5", logo: "./equipos/logos/roberts.png" },
+        { pos: 7, nombre: "Unión Deportiva (B)", pts: 14, pj: 9, dg: "+4", logo: "./equipos/logos/bonifacio.png" },
+        { pos: 8, nombre: "Deportivo Garré", pts: 12, pj: 9, dg: "0", logo: "./equipos/logos/garre.png" },
+        { pos: 9, nombre: "Deportivo Maza", pts: 9, pj: 9, dg: "+2", logo: "./equipos/logos/maza.png" },
+        { pos: 10, nombre: "Deportivo 17", pts: 9, pj: 8, dg: "-2", logo: "./equipos/logos/17.png" },
+        { pos: 11, nombre: "La Gloria", pts: 9, pj: 9, dg: "-4", logo: "./equipos/logos/lagloria.png" },
+        { pos: 12, nombre: "Salazar FC", pts: 7, pj: 9, dg: "-9", logo: "./equipos/logos/salazar.png" },
+        { pos: 13, nombre: "Juventud Unida", pts: 7, pj: 10, dg: "-9", logo: "./equipos/logos/juventud.png" },
+        { pos: 14, nombre: "Villa del Parque", pts: 6, pj: 10, dg: "-14", logo: "./equipos/logos/villa.png" },
+        { pos: 15, nombre: "Atlético Quenumá", pts: 4, pj: 9, dg: "-7", logo: "./equipos/logos/quenuma.png" }
+      ]
+    };
+
+
+    const container = document.getElementById("tabla-container");
+
+    const header = document.createElement("div");
+    header.className = "tabla-header";
+    header.textContent = posiciones.titulo;
+    container.appendChild(header);
+
+    const subheader = document.createElement("div");
+    subheader.className = "tabla-subheader";
+    subheader.textContent = posiciones.subtitulo;
+    container.appendChild(subheader);
+
+    const table = document.createElement("table");
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>EQUIPO</th>
+          <th>PTS</th>
+          <th>PJ</th>
+          <th>DG</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${posiciones.equipos.map(eq => `
+          <tr>
+            <td class="pos">${eq.pos}</td>
+            <td class="equipo"><img src="${eq.logo}" alt="">${eq.nombre}</td>
+            <td class="puntos">${eq.pts}</td>
+            <td>${eq.pj}</td>
+            <td>${eq.dg}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    `;
+    container.appendChild(table);
+  </script>
+</body>
+</html>

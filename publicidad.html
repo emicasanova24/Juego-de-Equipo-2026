@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Patrocinadores</title>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    .sponsor-strip {
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      background: transparent;
+      padding: 10px 0;
+    }
+
+    .sponsor-track {
+      display: inline-block;
+      animation: scroll 25s linear infinite;
+    }
+
+    .sponsor-track img {
+      height: 60px;
+      margin: 0 30px;
+      vertical-align: middle;
+      filter: brightness(1.2);
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sponsor-strip">
+    <div class="sponsor-track" id="sponsorTrack">
+      <!-- Logos duplicados para efecto continuo -->
+      <img src="sponsors/bunker.png" alt="Sponsor 1">
+      <img src="sponsors/carnes.png" alt="Sponsor 2">
+      <img src="sponsors/dale.png" alt="Sponsor 3">
+      <img src="sponsors/dt.png" alt="Sponsor 4">
+      <img src="sponsors/etn.png" alt="Sponsor 5">
+      <img src="sponsors/forrajeria.png" alt="Sponsor 6">
+      <img src="sponsors/pizza.png" alt="Sponsor 7">
+      <img src="sponsors/sata.png" alt="Sponsor 8">
+
+      <!-- duplicamos para scroll infinito -->
+      <img src="sponsors/fraile.png" alt="Sponsor 1">
+      <img src="sponsors/ganadera.png" alt="Sponsor 2">
+      <img src="sponsors/huentru.png" alt="Sponsor 3">
+      <img src="sponsors/iglesias.png" alt="Sponsor 4">
+      <img src="sponsors/le.png" alt="Sponsor 5">
+      <img src="sponsors/mateo.png" alt="Sponsor 6">
+      <img src="sponsors/mellizos.png" alt="Sponsor 7">
+      <img src="sponsors/monchi.png" alt="Sponsor 8">
+      <img src="sponsors/petete.png" alt="Sponsor 9">
+    </div>
+  </div>
+
+</body>
+</html>

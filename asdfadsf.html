@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultados - Liguilla 2025</title>
+  <style>
+    html, body {
+      width: 1080px;
+      height: 1920px;
+      margin: 0;
+      padding: 0;
+      background: transparent !important;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+    #resultados {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .overlay {
+      width: 100%;
+      height: 100%;
+      padding: 60px 80px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .title {
+      font-size: 70px;
+      color: #f7d36b;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px black;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .match {
+      background: rgba(20,20,20,0.55);
+      border-left: 12px solid #f7d36b;
+      padding: 40px 50px;
+      border-radius: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      box-shadow: 0 0 30px rgba(0,0,0,0.45);
+    }
+
+    .teams {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 40px;
+      font-weight: 600;
+    }
+
+    .team-line {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .teams img {
+      height: 70px;
+      width: auto;
+    }
+
+    .score-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .score {
+      font-size: 80px;
+      font-weight: 900;
+      color: #f7d36b;
+      text-shadow: 0 0 16px black;
+    }
+
+    .penales-container {
+      margin-top: 12px;
+    }
+
+    .penal-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .penal-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: gray; /* default, no tiro */
+    }
+
+    .penal-circle.gol {
+      background-color: #4CAF50; /* verde */
+    }
+
+    .penal-circle.miss {
+      background-color: #E53935; /* rojo */
+    }
+
+    .played, .stadium {
+      font-size: 32px;
+      color: #ccc;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+    .stadium { margin-top: -4px; }
+
+    /* Imagen final (si la querés) */
+    #imagen-final {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body class="container-resultados-liguilla">
+  <div class="overlay">
+    <div class="title">Liguilla 2025 Semifinal</div>
+    <div id="resultados"></div>
+    <img id="imagen-final" src="assets/liguilla-copa.png" alt="Liguilla 2025">
+  </div>
+
+  <script>
+    const logos = {
+      "Atlético Quenuma": "equipos/logos/quenuma.png",
+      "Jorge Newbery": "equipos/logos/newbery.png",
+      "Unión de Bonifacio": "equipos/logos/bonifacio.png",
+      "Atlético Argentino": "equipos/logos/argentinos.png"
+      // ... completos
+    };
+
+    const partidos = [
+      {
+        local: "Atlético Quenuma",
+        visitante: "Jorge Newbery",
+        jugados: "",
+        estadio: "Estadio Roberto Castañeira",
+        resultado: "1 - 1",
+        penales: {
+          local: [true, false, true, true, false],
+          visitante: [true, true, true, false, true]
+        }
+      },
+      {
+        local: "Unión de Bonifacio",
+        visitante: "Atlético Argentino",
+        jugados: "",
+        estadio: "Estadio de Unión de Bonifacio",
+        resultado: "0 - 0",
+        penales: null  // sin penales
+      }
+    ];
+
+    function logo(nombre) {
+      return logos[nombre]
+        ? `<img src="${logos[nombre]}" alt="${nombre}">`
+        : "";
+    }
+
+    const cont = document.getElementById("resultados");
+
+    partidos.forEach(p => {
+      // build penal HTML si hay penales
+      let penalHTML = "";
+      if (p.penales && (p.penales.local || p.penales.visitante)) {
+        penalHTML = `
+          <div class="penales-container">
+            <div class="penal-row">
+              ${p.penales.local.map(hit => `<div class="penal-circle ${hit ? "gol" : "miss"}"></div>`).join("")}
+            </div>
+            <div class="penal-row">
+              ${p.penales.visitante.map(hit => `<div class="penal-circle ${hit ? "gol" : "miss"}"></div>`).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      cont.innerHTML += `
+        <div class="match">
+          <div class="teams">
+            <div class="team-line">${logo(p.local)} <span>${p.local}</span></div>
+            <div class="team-line">${logo(p.visitante)} <span>${p.visitante}</span></div>
+            <div class="played">${p.jugados}</div>
+            <div class="stadium">${p.estadio}</div>
+          </div>
+
+          <div class="score-block">
+            <div class="score">${p.resultado}</div>
+            ${penalHTML}
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

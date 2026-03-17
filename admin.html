@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Control - Juego de Equipo</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 8px; margin-top: 4px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1>Panel de control</h1>
+
+  <label>Minuto:
+    <input type="text" id="minuto">
+  </label>
+
+  <label>Jugador:
+    <input type="text" id="jugador">
+  </label>
+
+  <label>Evento:
+    <select id="evento">
+      <option value="gol">Gol</option>
+      <option value="amarilla">Tarjeta amarilla</option>
+      <option value="roja">Tarjeta roja</option>
+      <option value="cambio">Cambio</option>
+    </select>
+  </label>
+
+  <button onclick="enviarEvento()">Enviar evento</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0qGp051XQV84z460YlmJ5p4qCsScTfoM",
+      authDomain: "juego-de-equipo.firebaseapp.com",
+      projectId: "juego-de-equipo",
+      databaseURL: "https://juego-de-equipo-default-rtdb.firebaseio.com",
+      storageBucket: "juego-de-equipo.firebasestorage.app",
+      messagingSenderId: "5358754385",
+      appId: "1:5358754385:web:b3ae91d0eb1124dce4f670",
+      measurementId: "G-K79EV7NDPP"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function enviarEvento() {
+      const minuto = document.getElementById('minuto').value;
+      const jugador = document.getElementById('jugador').value;
+      const evento = document.getElementById('evento').value;
+
+      const nuevoEvento = {
+        minuto,
+        jugador,
+        evento,
+        timestamp: Date.now()
+      };
+
+      db.ref('eventos').push(nuevoEvento);
+      
+      document.getElementById('minuto').value = '';
+      document.getElementById('jugador').value = '';
+      document.getElementById('evento').value = 'gol';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultados en Vivo</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .overlay {
+      width: 300px;
+      margin: auto;
+      padding: 20px;
+    }
+    .slide {
+      display: none;
+    }
+    .slide.active {
+      display: block;
+      animation: fadein 0.5s ease-in-out;
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .match {
+      background: #222;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .team-names {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .team-names img {
+      height: 24px;
+      vertical-align: middle;
+    }
+    .score {
+      font-size: 18px;
+      font-weight: bold;
+      color: yellow;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay-container"></div>
+
+  <script>
+    const logos = {
+      "Deportivo Garré": "equipos/logos/garre.png",
+      "Atlético Argentino": "equipos/logos/argentinos.png",
+      "Deportivo Maza": "equipos/logos/maza.png",
+      "El Ceibo": "equipos/logos/ceibo.png",
+      "Deportivo 17": "equipos/logos/17.png",
+      "Unión Deportiva": "equipos/logos/uniontl.png",
+      "Jorge Newbery": "equipos/logos/newbery.png",
+      "Juventud Unida": "equipos/logos/juventud.png",
+      "Atlético Quenuma": "equipos/logos/quenuma.png",                 
+      "Villa del Parque": "equipos/logos/villa.png",
+      "Salazar FC": "equipos/logos/salazar.png",
+      "Unión de Bonifacio": "equipos/logos/bonifacio.png",
+      "Deportivo Argentino": "equipos/logos/deportivoarg.png",
+      "Cecil A. Roberts": "equipos/logos/roberts.png",
+      "La Gloria": "equipos/logos/lagloria.png"
+    };
+
+    function reemplazarNombresPorLogos(nombreEquipos) {
+      const [local, visitante] = nombreEquipos.split(' vs. ');
+      const localLogo = logos[local] ? `<img src="${logos[local]}" alt="${local}" title="${local}">` : local;
+      const visitanteLogo = logos[visitante] ? `<img src="${logos[visitante]}" alt="${visitante}" title="${visitante}">` : visitante;
+      return `${localLogo} vs. ${visitanteLogo}`;
+    }
+
+    const data = [
+      [
+        { equipos: "Juventud Unida vs. Jorge Newbery", jugados: "(Finalizado ayer)", resultado: "1 - 1" },
+        { equipos: "Deportivo Argentino vs. El Ceibo", jugados: "", resultado: "1 - 0" },
+        { equipos: "Unión Deportiva vs. Deportivo 17", jugados: "(Finalizado)", resultado: "2 - 1" },
+      ],
+      [
+        { equipos: "Deportivo Garré vs. Unión de Bonifacio", jugados: "(Finalizado)", resultado: "2 - 2" },
+        { equipos: "Deportivo Maza vs. La Gloria", jugados: "(Finalizado)", resultado: "1 - 1" },
+        { equipos: "Villa del Parque vs. Atlético Quenuma", jugados: "(Finalizado)", resultado: "2 - 1" },
+      ]
+    ];
+
+    const container = document.getElementById('overlay-container');
+
+    data.forEach((grupo, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide' + (i === 0 ? ' active' : '');
+      slide.innerHTML = grupo.map(match => `
+        <div class="match">
+          <div class="team-names">
+            ${reemplazarNombresPorLogos(match.equipos)}
+            ${match.jugados ? `<span style="font-size:12px;color:#ccc;margin-left:8px">${match.jugados}</span>` : ''}
+          </div>
+          <div class="score">${match.resultado}</div>
+        </div>`).join('');
+      container.appendChild(slide);
+    });
+
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 5000);
+  </script>
+</body>
+</html>

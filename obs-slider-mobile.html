@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>OBS Slider 1000x1000</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+
+:root{
+  --w: 1100px;
+  --h: 1300px;
+  --interval-ms: 7000;
+}
+
+/* ocultar scroll */
+body::-webkit-scrollbar{display:none;}
+body{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+/* base */
+html, body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:1200px;
+  overflow:hidden;
+  background:transparent;
+}
+
+/* fondo */
+.bg{
+  position:absolute;
+  inset:0;
+  background:url('./Fondo mobile.png') center/cover no-repeat;
+  opacity:1;
+  pointer-events:none;
+  z-index:0;
+}
+
+.scrim{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+}
+
+/* escenario */
+.stage{
+  position:relative;
+  z-index:2;
+  width:var(--w);
+  height:var(--h);
+  margin:0 auto;
+  display:grid;
+  place-items:center;
+}
+
+.frame-wrap{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+}
+
+/* slides */
+iframe.slide{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border:0;
+  background:transparent;
+  opacity:0;
+  transition:opacity 500ms ease;
+  pointer-events:none;
+}
+
+iframe.slide.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* barra progreso */
+.progress{
+  display:none;
+  position:absolute;
+  bottom:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:calc(100% - 80px);
+  height:6px;
+  background:rgba(255,255,255,0.12);
+  border-radius:999px;
+  overflow:hidden;
+  z-index:3;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:#a855f7;
+  transition:width calc(var(--interval-ms) * 1ms) linear;
+}
+
+/* controles */
+.controls{
+  position:absolute;
+  top:12px;
+  right:12px;
+  display:none;
+  gap:8px;
+  z-index:4;
+}
+
+.controls.show{
+  display:flex;
+}
+
+.controls button{
+  font:600 14px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+  padding:6px 8px;
+  border-radius:10px;
+  border:0;
+  color:#fff;
+  background:rgba(0,0,0,0.5);
+  cursor:pointer;
+}
+
+.controls button:hover{
+  background:rgba(0,0,0,0.7);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="scrim"></div>
+
+<div class="stage">
+
+  <div class="frame-wrap">
+
+    <iframe class="slide active" src="./formacion-mobile.html" title="Formaciones"></iframe>
+    <iframe class="slide" src="./partidos-mobile.html" title="Partidos de la fecha"></iframe>
+    <!--
+    <iframe class="slide" src="./tabla-torneo-mobile.html"></iframe>
+    <iframe class="slide" src="./tabla-anual-mobile.html"></iframe>
+    -->
+
+    <div class="progress">
+      <span id="pb"></span>
+    </div>
+
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="controls" id="controls">
+    <button id="prev">◀</button>
+    <button id="pause">⏸</button>
+    <button id="play" style="display:none">▶</button>
+    <button id="next">▶</button>
+  </div>
+
+</div>
+
+<script>
+
+const slides = Array.from(document.querySelectorAll('iframe.slide'));
+const pb = document.getElementById('pb');
+
+const INTERVAL = parseInt(
+  getComputedStyle(document.documentElement)
+  .getPropertyValue('--interval-ms')
+) || 7000;
+
+let idx = 0;
+let timer = null;
+let paused = false;
+
+
+/* aplicar estilos dentro de los iframes */
+
+function tuneIframeStyles(ifr){
+
+  try{
+
+    const doc = ifr.contentDocument;
+    if(!doc) return;
+
+    const s = doc.createElement('style');
+
+    s.textContent = `
+      html,body{
+        background:transparent!important;
+        margin:0!important;
+        padding:0!important;
+        display:flex!important;
+        align-items:flex-start!important;
+        justify-content:center!important;
+      }
+
+      .tabla-container{
+        width:900px!important;
+        max-width:900px!important;
+        height:1200px;
+      }
+
+      .container-formaciones{
+        width:1000px!important;
+        max-width:1000px!important;
+        height:1200px;
+      }
+
+      .resultados-container{
+        width:1020px!important;
+        max-width:1020px!important;
+        height:100%;
+      }
+
+      h1{font-size:44px!important;}
+      h2{font-size:36px!important;}
+      h3{font-size:30px!important;}
+
+      table{font-size:30px!important;}
+      thead th{font-size:16px!important;}
+
+      tbody td{
+        padding:8px 6px!important;
+      }
+
+      .partido{font-size:45px!important;}
+      .marcador{font-size:55px!important;}
+      .fecha-title{font-size:35px!important;}
+    `;
+
+    doc.head.appendChild(s);
+
+  }catch(e){
+    console.warn('No se pudieron aplicar estilos al iframe', e);
+  }
+
+}
+
+slides.forEach(ifr=>{
+  ifr.addEventListener('load',()=>tuneIframeStyles(ifr));
+});
+
+
+/* mostrar slide */
+
+function show(i){
+
+  slides.forEach((s,k)=>{
+    s.classList.toggle('active',k===i);
+  });
+
+  idx=i;
+
+  pb.style.transition='none';
+  pb.style.width='0%';
+
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      pb.style.transition=`width ${INTERVAL}ms linear`;
+      pb.style.width='100%';
+    });
+  });
+
+}
+
+function next(){
+  show((idx+1)%slides.length);
+}
+
+function prev(){
+  show((idx-1+slides.length)%slides.length);
+}
+
+
+/* autoplay */
+
+function start(){
+
+  stop();
+  paused=false;
+
+  timer=setInterval(next,INTERVAL);
+
+  document.getElementById('play').style.display='none';
+  document.getElementById('pause').style.display='inline-block';
+
+}
+
+function stop(){
+
+  if(timer) clearInterval(timer);
+  timer=null;
+
+}
+
+function pause(){
+
+  paused=true;
+  stop();
+
+  document.getElementById('pause').style.display='none';
+  document.getElementById('play').style.display='inline-block';
+
+}
+
+
+/* controles */
+
+const controls=document.getElementById('controls');
+
+document.getElementById('next').onclick=()=>{
+  next();
+  if(!paused) start();
+};
+
+document.getElementById('prev').onclick=()=>{
+  prev();
+  if(!paused) start();
+};
+
+document.getElementById('pause').onclick=pause;
+document.getElementById('play').onclick=start;
+
+
+/* atajos teclado */
+
+document.addEventListener('keydown',(e)=>{
+
+  if(e.key.toLowerCase()==='m')
+    controls.classList.toggle('show');
+
+  if(e.key==='ArrowRight'){
+    next();
+    if(!paused) start();
+  }
+
+  if(e.key==='ArrowLeft'){
+    prev();
+    if(!paused) start();
+  }
+
+  if(e.key.toLowerCase()==='p'){
+    paused ? start() : pause();
+  }
+
+});
+
+
+/* iniciar slider */
+
+start();
+
+</script>
+
+</body>
+</html>

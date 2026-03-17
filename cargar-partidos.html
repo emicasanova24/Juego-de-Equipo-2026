@@ -1,0 +1,96 @@
+<h2>Cargar Partido</h2>
+<form id="formPartido">
+  <label>Fecha:</label>
+  <input type="date" name="fecha" required><br><br>
+
+  <label>Equipo Local:</label>
+  <select name="equipo_local_id" id="equipoLocal" required></select><br><br>
+
+  <label>Equipo Visitante:</label>
+  <select name="equipo_visitante_id" id="equipoVisitante" required></select><br><br>
+
+  <label>Goles Local:</label>
+  <input type="number" name="goles_local" value="0"><br><br>
+
+  <label>Goles Visitante:</label>
+  <input type="number" name="goles_visitante" value="0"><br><br>
+
+  <label>Jugado:</label>
+  <select name="jugado">
+    <option value="true">Sí</option>
+    <option value="false">No</option>
+  </select><br><br>
+
+  <label>Estadio:</label>
+  <select name="estadio" id="estadioSelect" required></select><br><br>
+
+  <button type="submit">Guardar Partido</button>
+</form>
+
+<!-- Mensaje de confirmación -->
+<div id="mensaje" style="margin-top:20px; font-weight:bold; color:lime;"></div>
+
+<script>
+async function cargarEquipos() {
+  const res = await fetch('http://localhost:3000/equipos');
+  const equipos = await res.json();
+
+  const selectLocal = document.getElementById('equipoLocal');
+  const selectVisitante = document.getElementById('equipoVisitante');
+
+  equipos.forEach(eq => {
+    const optionLocal = document.createElement('option');
+    optionLocal.value = eq.id;
+    optionLocal.textContent = eq.nombre;
+    selectLocal.appendChild(optionLocal);
+
+    const optionVisitante = document.createElement('option');
+    optionVisitante.value = eq.id;
+    optionVisitante.textContent = eq.nombre;
+    selectVisitante.appendChild(optionVisitante);
+  });
+}
+
+async function cargarEstadios() {
+  const res = await fetch('http://localhost:3000/estadios');
+  const estadios = await res.json();
+  const selectEstadio = document.getElementById('estadioSelect');
+
+  estadios.forEach(es => {
+    const option = document.createElement('option');
+    option.value = es.nombre;   // usamos el nombre directamente
+    option.textContent = es.nombre;
+    selectEstadio.appendChild(option);
+  });
+}
+
+document.getElementById('formPartido').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
+
+  data.equipo_local_id = parseInt(data.equipo_local_id);
+  data.equipo_visitante_id = parseInt(data.equipo_visitante_id);
+  data.goles_local = parseInt(data.goles_local);
+  data.goles_visitante = parseInt(data.goles_visitante);
+  data.jugado = (data.jugado === "true");
+
+  const res = await fetch('http://localhost:3000/partidos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+
+  // Mostrar mensaje en pantalla
+  const mensaje = document.getElementById('mensaje');
+  mensaje.textContent = "✅ Partido guardado correctamente: " 
+    + result.equipo_local + " vs " + result.equipo_visitante 
+    + " en " + result.estadio;
+});
+
+// Cargar equipos y estadios al iniciar
+cargarEquipos();
+cargarEstadios();
+</script>

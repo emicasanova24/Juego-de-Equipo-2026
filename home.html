@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Juego de Equipo - Football Stream Overlay 1080p</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for high legibility -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&amp;family=Inter:wght@400;600&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandPurple: '#8B5CF6',
+            brandElectric: '#7C3AED',
+            brandDark: '#0B0F19',
+            pitchBlue: '#3B82F6',
+            teamHome: '#0000FF',
+            teamAway: '#00BFFF',
+            primary: "#8B5CF6", // Vibrant Purple
+            accent: "#F472B6",  // Vibrant Pink
+            "background-light": "#F8FAFC",
+            "background-dark": "#0F172A",   
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+              DEFAULT: "0.75rem",
+              'xl': '1.5rem',
+          },
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-glassmorphism">
+    /* Locked to 1920x1080 Aspect Ratio for Stream */
+    .gradient-text {
+        background: linear-gradient(135deg, #8B5CF6 0%, #F472B6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-gradient {
+        background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.1), transparent),
+                    radial-gradient(circle at bottom left, rgba(244, 114, 182, 0.1), transparent);
+    }
+    .italic-slant {
+        transform: skewX(-10deg);
+    }
+    body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .pitch-container {
+      background: linear-gradient(135deg, #111827 0%, #080c14 100%);
+      border: 2px solid rgba(139, 92, 246, 0.2);
+    }
+    .neon-border-purple {
+      box-shadow: 0 0-25px rgba(139, 92, 246, 0.3);
+    }
+    .team-logo{
+      height:18px;
+      width:auto;
+      object-fit:contain;
+    }
+    .slanted-bar {
+      transform: skewX(-15deg);
+    }
+    .slanted-content {
+      transform: skewX(15deg);
+    }
+    /* Custom Scrollbar for Rosters */
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #8B5CF6;
+      border-radius: 10px;
+    }
+    .sponsor-highlight {
+      background: linear-gradient(to bottom, #8B5CF6 0%, #7C3AED 100%);
+      box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-[#05070a] text-white font-sans flex flex-col p-6">
+<!-- BEGIN: HeaderSection -->
+<header class="flex justify-between items-center mb-6" data-purpose="main-header">
+<div class="flex items-center space-x-6">
+<div class="flex items-center space-x-3" data-purpose="logo-container">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">sports_soccer</span>
+</div>
+<span class="font-display font-black text-2xl tracking-tighter uppercase italic-slant">
+                    JUEGO DE <span class="gradient-text">EQUIPO</span>
+</span>
+<div>
+</div>
+</div>
+<div class="h-12 w-px bg-gray-700 ml-4"></div>
+<div class="flex items-center space-x-3 text-gray-300">
+<svg class="h-8 w-8 text-brandPurple" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="font-black text-xl tracking-widest">RADIOFÓNICA 104.7</span>
+</div>
+</div>
+<!-- Right Top: Live Stream Indicator -->
+<div class="flex items-center space-x-4">
+<div class="bg-white text-black px-10 py-3 flex flex-col items-center slanted-bar relative">
+<div class="slanted-content">
+<span class="text-4xl font-black italic">STREAM EN VIVO</span>
+</div>
+<div class="absolute -bottom-1.5 right-0 w-full h-1.5 bg-brandPurple"></div>
+</div>
+</div>
+</header>
+<!-- END: HeaderSection -->
+<!-- BEGIN: MainContent -->
+<main class="flex-grow grid grid-cols-12 gap-6 overflow-hidden">
+<!-- LEFT: Home Roster -->
+<section class="uppercase col-span-2 glass-panel p-5 rounded-2xl flex flex-col shadow-2xl" data-purpose="roster-home">
+
+<div class="flex items-center space-x-2 mb-4 border-b border-gray-700 pb-3">
+<div class="w-2 h-6 bg-red-600"></div>
+
+<h3 id="home-team" class="text-lg font-black text-white uppercase tracking-tighter"></h3>
+
+</div>
+
+<div id="home-roster"
+class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2 flex-grow">
+</div>
+
+</section>
+<!-- CENTER: Scoreboard, Pitch & Simultaneous Results -->
+<section class="col-span-5 flex flex-col space-y-4">
+<!-- Scoreboard -->
+<div class="w-full" data-purpose="scoreboard">
+<div class="relative bg-gray-900/90 rounded-2xl p-5 flex items-center justify-between neon-border-purple border border-brandPurple/40 shadow-2xl">
+<!-- Home Team -->
+<div class="flex items-center space-x-4 flex-1">
+<div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner">
+<img alt="CAQ Logo" class="w-full h-full object-contain" src="equipos\logos\roberts.png"/>
+</div>
+<span class="font-black text-2xl uppercase tracking-tighter leading-tight">Cecil A. Roberts</span>
+</div>
+<!-- Score -->
+<div class="flex items-center space-x-6 px-4 text-[72px] leading-none font-black italic text-brandPurple drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">
+<span class="opacity-0 ">0</span>
+<span class="text-white opacity-20">-</span>
+<span class="opacity-0 ">1</span>
+</div>
+<!-- Away Team -->
+<div class="flex items-center space-x-4 flex-1 justify-end text-right">
+<span class="font-black text-2xl uppercase tracking-tighter leading-tight">Unión de Bonifacio</span>
+<div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner">
+<img alt="AA Logo" class="w-full h-full object-contain" src="equipos\logos\bonifacio.png"/>
+</div>
+</div>
+</div>
+<div class="text-center mt-2">
+<span class="bg-gray-800/80 backdrop-blur-md text-brandPurple px-5 py-1 rounded-full text-xs font-black uppercase tracking-[0.3em] border border-brandPurple/20">EN VIVO • SEGUNDO TIEMPO</span>
+</div>
+</div>
+<!-- Tactical Pitch View (16:9 Aspect Ratio) -->
+<div class="w-full aspect-video relative pitch-container rounded-3xl overflow-hidden shadow-2xl" data-purpose="tactical-view">
+
+<div class="absolute inset-0 border-[3px] border-white/10 m-6 rounded-sm pointer-events-none"></div>
+<div class="absolute inset-y-0 left-1/2 w-[2px] bg-white/10 pointer-events-none"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border-[2px] border-white/10 rounded-full pointer-events-none"></div>
+
+<!-- Player Positions -->
+
+<!-- HOME TEAM -->
+
+<!-- GK -->
+<div class="absolute left-[8%] top-[50%] -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-black border-[3px] border-white shadow-xl text-sm">1</div>
+
+<!-- DEFENSE -->
+<div class="absolute left-[20%] top-[15%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">4</div>
+<div class="absolute left-[20%] top-[35%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">2</div>
+<div class="absolute left-[20%] top-[65%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">6</div>
+<div class="absolute left-[20%] top-[85%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">3</div>
+
+<!-- DOUBLE PIVOT -->
+<div class="absolute left-[29%] top-[36%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">5</div>
+<div class="absolute left-[29%] top-[64%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">7</div>
+
+<!-- ENGANCHE -->
+<div class="absolute left-[34%] top-[50%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">10</div>
+
+<!-- ATTACK -->
+<div class="absolute left-[42%] top-[25%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">9</div>
+<div class="absolute left-[43%] top-[50%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">11</div>
+<div class="absolute left-[42%] top-[75%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">8</div>
+
+
+
+<!-- AWAY TEAM -->
+
+<!-- GK -->
+<div class="absolute right-[8%] top-[50%] -translate-y-1/2 w-10 h-10 bg-black rounded-full flex items-center justify-center font-black border-[3px] border-white shadow-xl text-sm text-white">1</div>
+
+<!-- DEFENSE -->
+<div class="absolute right-[20%] top-[15%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">4</div>
+<div class="absolute right-[20%] top-[35%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">2</div>
+<div class="absolute right-[20%] top-[65%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">6</div>
+<div class="absolute right-[20%] top-[85%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">3</div>
+
+<!-- MIDFIELD LINE -->
+<div class="absolute right-[29%] top-[20%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">8</div>
+<div class="absolute right-[29%] top-[40%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">5</div>
+<div class="absolute right-[29%] top-[60%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">11</div>
+<div class="absolute right-[29%] top-[80%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">7</div>
+
+<!-- ENGANCHE -->
+<div class="absolute right-[36%] top-[50%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">10</div>
+
+<!-- STRIKER -->
+<div class="absolute right-[42%] top-[50%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">9</div>
+
+</div>
+<!-- RESULTS IN SIMULTANEOUS (Relocated below) -->
+<div class="glass-panel rounded-2xl p-4 flex flex-col space-y-3 shadow-xl" data-purpose="results-section">
+
+<div class="bg-brandPurple/20 border-l-4 border-brandPurple py-1 px-3 flex justify-between items-center">
+<div>
+<span class="text-[10px] font-black tracking-[0.2em] uppercase block text-brandPurple">RESULTADOS EN SIMULTÁNEO</span>
+</div>
+<div class="text-[10px] font-bold text-white/50 tracking-widest uppercase">apertura 2026</div>
+</div>
+
+<div class="grid grid-cols-2 gap-x-4 gap-y-2">
+
+<!-- Match 1 -->
+<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
+<span class="truncate">Atlético Quenuma</span>
+<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">1-0</span>
+<span class="truncate text-right">La Gloria</span>
+</div>
+
+<!-- Match 2 -->
+<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
+<span class="truncate">Atlético Argentino</span>
+<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-1</span>
+<span class="truncate text-right">Deportivo Maza</span>
+</div>
+
+<!-- Match 3 -->
+<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
+<span class="truncate">El Ceibo</span>
+<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-1</span>
+<span class="truncate text-right">Unión Deportiva</span>
+</div>
+
+<!-- Match 4 -->
+<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
+<span class="truncate">Salazar FC</span>
+<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-0</span>
+<span class="truncate text-right">Villa del Parque</span>
+</div>
+
+<!-- Match 5 -->
+<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
+<span class="truncate">Juventud Unida</span>
+<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-3</span>
+<span class="truncate text-right">Deportivo Garré</span>
+</div>
+
+<!-- Match 6 -->
+<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
+<span class="truncate">Deportivo 17</span>
+<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-0</span>
+<span class="truncate text-right">Atlético Argentino</span>
+</div>
+
+<!-- Equipo Libre -->
+<div class="bg-black/20 px-3 py-2 rounded-xl border border-white/5 flex justify-center items-center text-[13px] font-bold col-span-2">
+<span class="truncate text-white/70">LIBRE: Jorge Newbery</span>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<!-- Match Info Labels -->
+<div class="flex flex-col space-y-1 px-4" data-purpose="match-info-labels">
+<div class="flex items-center justify-between border-b border-white/10 pb-1">
+<span class="text-brandPurple font-black uppercase tracking-[0.2em] text-[10px]">ÁRBITRO</span>
+<span class="text-xl font-black italic uppercase tracking-tighter">JERÓNIMO GALLO</span>
+</div>
+<div class="flex items-center justify-between pt-0.5">
+<span class="text-brandPurple font-black uppercase tracking-[0.2em] text-[10px]">ESTADIO</span>
+<span class="text-xl font-black italic uppercase tracking-tighter text-right">VILLA DEL PARQUE - CASBAS</span>
+</div>
+</div>
+</section>
+<!-- RIGHT: Away Roster -->
+<section class="uppercase col-span-2 glass-panel p-5 rounded-2xl flex flex-col shadow-2xl" data-purpose="roster-away">
+
+<div class="flex items-center space-x-2 mb-4 border-b border-gray-700 pb-3">
+<div class="w-2 h-6 bg-white"></div>
+<h3 class="text-lg font-black text-white uppercase tracking-tighter" id="away-team"></h3>
+</div>
+
+<div id="away-roster"
+class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2">
+</div>
+
+</section>
+<!-- FAR RIGHT: Sponsors (MAXIMIZED TO FULL HEIGHT) -->
+<section class="col-span-3 flex flex-col" data-purpose="right-sidebar">
+<!-- SPONSORS (MAXIMIZED & PROMINENT) -->
+<div class="glass-panel rounded-2xl flex flex-col overflow-hidden shadow-2xl border-2 border-brandPurple/30" data-purpose="sponsor-sidebar">
+<div class="sponsor-highlight w-full py-6 text-center shadow-lg relative z-10">
+<span class="text-xl font-black tracking-[0.3em] uppercase text-white drop-shadow-md">SPONSORS OFICIALES</span>
+</div>
+<div class="flex flex-col items-center p-6 space-y-8 overflow-y-auto custom-scroll bg-gradient-to-b from-black/20 via-[rgb(139_92_246/0.8)] to-white/80">
+<div class="text-center leading-tight mb-2">
+<span class="text-4xl font-black italic block uppercase tracking-tighter">APERTURA</span>
+<span class="text-2xl font-black italic text-brandPurple block uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(139,92,246,0.4)]">LIGA CULTURA Y DEPORTIVA DE TRES LOMAS</span>
+</div>
+<!-- Premium Sponsor Logos -->
+<div class="grid grid-cols-1 gap-6 w-full px-2 !mt-0">
+<div class="w-full flex justify-center">
+<img alt="PUBLI" class="max-w-[100%] max-h-auto object-contain" src="sponsors\PUBLI.png"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: FooterSection -->
+<footer class="mt-6 flex items-center justify-between" data-purpose="footer-socials">
+<div class="flex items-center space-x-8">
+<div class="flex items-center space-x-3">
+<div class="flex space-x-1.5">
+<div class="w-6 h-10 bg-white skew-x-[-20deg]"></div>
+<div class="w-6 h-10 bg-white skew-x-[-20deg]"></div>
+<div class="w-6 h-10 bg-brandPurple skew-x-[-20deg]"></div>
+</div>
+<div class="bg-black border-2 border-white px-8 py-2 slanted-bar ml-3">
+<span class="slanted-content text-lg font-black tracking-widest">SEGUINOS EN:</span>
+</div>
+</div>
+<!-- Social Media Buttons -->
+<div class="flex space-x-3">
+<!-- Instagram -->
+<div class="flex items-center bg-white text-black pl-4 pr-10 py-2 slanted-bar overflow-hidden shadow-lg">
+<div class="slanted-content flex items-center space-x-3">
+<div class="bg-brandPurple text-white p-1.5 rounded-md">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</div>
+<span class="font-black text-sm uppercase tracking-widest">@JUEGODEQUIPO</span>
+</div>
+</div>
+<!-- Facebook -->
+<div class="flex items-center bg-white text-black pl-4 pr-10 py-2 slanted-bar overflow-hidden shadow-lg">
+<div class="slanted-content flex items-center space-x-3">
+<div class="bg-blue-600 text-white p-1.5 rounded-md">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path></svg>
+</div>
+<span class="font-black text-sm uppercase tracking-widest">@JUEGODQUIPO</span>
+</div>
+</div>
+<!-- Youtube -->
+<div class="flex items-center bg-white text-black pl-4 pr-10 py-2 slanted-bar overflow-hidden shadow-lg">
+<div class="slanted-content flex items-center space-x-3">
+<div class="bg-red-600 text-white p-1.5 rounded-md">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path></svg>
+</div>
+<span class="font-black text-sm uppercase tracking-widest">@JUEGODEEQUIPO</span>
+</div>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xs font-black text-gray-500 uppercase tracking-widest">Powered by</div>
+<div class="text-xl font-black italic text-brandPurple">Juego de Equipo</div>
+</div>
+</footer>
+
+<script src="js/equipos.js"></script>
+<script src="js/resultados.js"></script>
+<script src="js/formaciones.js"></script>
+
+<!-- END: FooterSection -->
+</body></html>

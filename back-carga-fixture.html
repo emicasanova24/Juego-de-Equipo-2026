@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Juego de Equipo - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#8c52ff",
+                "background-light": "#f8f6f6",
+                "background-dark": "#0f0914",
+              },
+              fontFamily: {
+                "display": ["Public Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav {
+            background-color: rgba(140, 82, 255, 0.15);
+            border-left: 4px solid #8c52ff;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="w-64 bg-white dark:bg-[#1a1124] border-r border-slate-200 dark:border-primary/10 flex flex-col">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">sports_soccer</span>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight">Juego de Equipo</h1>
+<p class="text-xs text-slate-500 dark:text-primary/60 uppercase font-semibold">Admin Panel</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary active-nav" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">calendar_month</span>
+<span class="font-medium text-sm">Fixture</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">trophy</span>
+<span class="font-medium text-sm">Standings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium text-sm">Users</span>
+</a>
+</nav>
+<div class="p-4 mt-auto">
+<div class="bg-slate-100 dark:bg-primary/5 rounded-xl p-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="Profile picture of the admin user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3d2JnaDjFnE3cNJ1iNC59JjD6paDG9KMDPLFQezoah4eppKVAvOGcu_PJwuW7HeREI62x9Oaigp8_sIShHko23gXb-nW1yDtUD5e64MQa6C9osascN6zAutAflrGaPwDWYiHMgcuf3rlK0oRUqr9ZdT1OcR713AwuAYLQ4MHu42LCkCuCSkIjcS5zcNGwfdwt0mBAJ65kzlND3B6WQMEUojin8CbYGIz6VW_dS0Al9NqkhnDkLFAPbY0iDeVIyntezd4T1gAEQCI"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate">Alex Rivera</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate">Super Admin</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-8 lg:p-12 overflow-y-auto">
+<header class="mb-10 flex flex-wrap items-center justify-between gap-4">
+<div>
+<h2 class="text-3xl font-bold tracking-tight">Manage Fixtures</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Add and edit tournament matches for the current season.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-lg border border-slate-200 dark:border-primary/20 hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors text-sm font-medium">
+                        View Jornada 1
+                    </button>
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">save</span>
+                        Save Changes
+                    </button>
+</div>
+</header>
+<!-- Form Section -->
+<!-- Sección de Formulario -->
+<section class="max-w-4xl bg-white dark:bg-[#1a1124] rounded-2xl shadow-sm border border-slate-200 dark:border-primary/10 overflow-hidden">
+  <div class="border-b border-slate-200 dark:border-primary/10 px-8 py-6 bg-slate-50/50 dark:bg-primary/5">
+    <h3 class="text-xl font-bold flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary">add_circle</span>
+      Agregar nuevo partido para <span class="text-primary">Jornada 2</span>
+    </h3>
+  </div>
+
+  <form id="formPartido" class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Equipo Local -->
+    <div class="space-y-2">
+      <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Equipo Local</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+        <select id="equipoLocal" name="equipo_local_id"
+                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all appearance-none" required>
+          <option value="">Seleccione equipo local...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Equipo Visitante -->
+    <div class="space-y-2">
+      <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Equipo Visitante</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+        <select id="equipoVisitante" name="equipo_visitante_id"
+                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all appearance-none" required>
+          <option value="">Seleccione equipo visitante...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Fecha -->
+    <div class="space-y-2">
+      <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Fecha del Partido</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">event</span>
+        <input id="fecha" name="fecha"
+               class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all"
+               type="date" required/>
+      </div>
+    </div>
+
+    <!-- Hora -->
+    <div class="space-y-2">
+      <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Hora del Partido</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">schedule</span>
+        <input id="hora" name="hora"
+               class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all"
+               type="time"/>
+      </div>
+    </div>
+
+    <!-- Estadio -->
+    <div class="md:col-span-2 space-y-2">
+      <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Estadio</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">location_on</span>
+        <select id="estadioSelect" name="estadio"
+                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all" required>
+          <option value="">Seleccione estadio...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Link de Transmisión -->
+    <div class="md:col-span-2 space-y-2">
+      <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Link de Transmisión (Opcional)</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">live_tv</span>
+        <input id="broadcast" name="broadcast"
+               class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all"
+               placeholder="https://youtube.com/live/..." type="url"/>
+      </div>
+      <p class="text-xs text-slate-500">Agregue un link de transmisión para que los hinchas puedan ver el partido en vivo.</p>
+    </div>
+
+    <!-- Botones -->
+    <div class="md:col-span-2 pt-4 border-t border-slate-200 dark:border-primary/10 flex justify-end gap-4">
+      <button class="px-6 py-3 rounded-xl border border-slate-200 dark:border-primary/20 text-slate-600 dark:text-slate-400 font-semibold hover:bg-slate-50 dark:hover:bg-primary/5 transition-all" type="reset">
+        Cancelar
+      </button>
+      <button class="px-8 py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all flex items-center gap-2" type="submit">
+        Agregar Partido al Fixture
+      </button>
+    </div>
+  </form>
+
+  <div id="mensaje" class="p-4 text-center font-bold"></div>
+</section>
+
+<!-- Quick Status Table (Preview of existing fixtures for context) -->
+<section class="mt-12">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold">Scheduled Matches</h3>
+<span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">4 matches scheduled</span>
+</div>
+<div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-[#1a1124]">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-primary/5 border-b border-slate-200 dark:border-primary/10">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Matchup</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">DateTime</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Venue</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-primary/5">
+<tr>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="font-semibold">Titans</span>
+<span class="text-xs text-slate-400">VS</span>
+<span class="font-semibold text-slate-500 dark:text-slate-400">Warriors</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm">Oct 24, 2023 • 18:30</td>
+<td class="px-6 py-4 text-sm text-slate-500">National Arena</td>
+<td class="px-6 py-4">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="font-semibold">Phoenix FC</span>
+<span class="text-xs text-slate-400">VS</span>
+<span class="font-semibold text-slate-500 dark:text-slate-400">Thunder Elite</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm">Oct 24, 2023 • 20:45</td>
+<td class="px-6 py-4 text-sm text-slate-500">Olympic Grounds</td>
+<td class="px-6 py-4">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+
+<script>
+async function cargarEquipos() {
+  const res = await fetch("http://localhost:3000/equipos");
+  const equipos = await res.json();
+  const selectLocal = document.getElementById("equipoLocal");
+  const selectVisitante = document.getElementById("equipoVisitante");
+
+  equipos.forEach(eq => {
+    const opt1 = document.createElement("option");
+    opt1.value = eq.id;
+    opt1.textContent = eq.nombre;
+    selectLocal.appendChild(opt1);
+
+    const opt2 = document.createElement("option");
+    opt2.value = eq.id;
+    opt2.textContent = eq.nombre;
+    selectVisitante.appendChild(opt2);
+  });
+}
+
+async function cargarEstadios() {
+  const res = await fetch("http://localhost:3000/estadios");
+  const estadios = await res.json();
+  const selectEstadio = document.getElementById("estadioSelect");
+
+  estadios.forEach(es => {
+    const opt = document.createElement("option");
+    opt.value = es.nombre;
+    opt.textContent = es.nombre;
+    selectEstadio.appendChild(opt);
+  });
+}
+
+document.getElementById("formPartido").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = {
+    fecha: document.getElementById("fecha").value,
+    equipo_local_id: parseInt(document.getElementById("equipoLocal").value),
+    equipo_visitante_id: parseInt(document.getElementById("equipoVisitante").value),
+    estadio: document.getElementById("estadioSelect").value,
+    hora: document.getElementById("hora").value
+  };
+
+  const res = await fetch("http://localhost:3000/partidos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const mensaje = document.getElementById("mensaje");
+  if (res.ok) {
+    const result = await res.json();
+    mensaje.textContent = "✅ Partido guardado: " + result.equipo_local + " vs " + result.equipo_visitante + " en " + result.estadio;
+    mensaje.style.color = "green";
+  } else {
+    mensaje.textContent = "❌ Error al guardar partido";
+    mensaje.style.color = "red";
+  }
+});
+
+// Inicializar selects
+cargarEquipos();
+cargarEstadios();
+</script>
+</body></html>
+
+
+

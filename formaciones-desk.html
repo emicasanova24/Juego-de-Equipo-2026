@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Formaciones</title>
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: transparent;
+    color: white;
+    text-transform: uppercase;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+.equipo {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+}
+.equipo h2 {
+    margin: 0 0 15px 0;
+    font-size: 35px;
+    border-bottom: 2px solid #ffeb3b;
+    padding-bottom: 5px;
+}
+ol {
+    padding-left: 0;
+    margin: 0;
+}
+li {
+    margin-bottom: 12px;
+    font-size: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.stats {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.stats img {
+    width: 27px;
+    height: 27px;
+}
+.numero {
+    width: 30px;
+    display: inline-block;
+}
+.subtitulo {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 20px;
+    font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="container container-formaciones" id="formaciones"></div>
+<div class="subtitulo">ARBITRO: DIEGO DE LA MIYAR</div>
+
+<script>
+const formaciones = {
+    local: {
+        nombre: "Roberts",
+        jugadores: [
+            { nombre: "Angel Arboleda", goles: 0, amarilla: false, roja: false },
+            { nombre: "Julian Ressia", goles: 0, amarilla: false, roja: false },
+            { nombre: "Jose M. Otamendi", goles: 0, amarilla: false, roja: false },
+            { nombre: "Juan I. Mendez", goles: 0, amarilla: false, roja: false },
+            { nombre: "Fabricio Candia", goles: 0, amarilla: false, roja: false },
+            { nombre: "Alejandro Aquino", goles: 0, amarilla: false, roja: false },
+            { nombre: "Nahuel Suarez", goles: 0, amarilla: false, roja: false },
+            { nombre: "German Arias", goles: 0, amarilla: false, roja: false },
+            { nombre: "Maxi Rios", goles: 0, amarilla: false, roja: false },
+            { nombre: "Enzo Alonso", goles: 0, amarilla: false, roja: false },
+            { nombre: "Robert Campaz", goles: 0, amarilla: false, roja: false }
+        ],
+        suplentes: [
+            { nombre: "Enzo Pellegrini", goles: 0, amarilla: false, roja: false },
+            { nombre: "Benjamin Natali", goles: 0, amarilla: false, roja: false },
+            { nombre: "Juan J. Gimenez", goles: 0, amarilla: false, roja: false },
+            { nombre: "Benjamin Vega", goles: 0, amarilla: false, roja: false },
+            { nombre: "Luis Duche", goles: 0, amarilla: false, roja: false },
+            { nombre: "Roman Schap", goles: 0, amarilla: false, roja: false },
+            { nombre: "Luciano Duarte", goles: 0, amarilla: false, roja: false }
+        ]
+    },
+    visitante: {
+        nombre: "El Ceibo",
+        jugadores: [
+            { nombre: "Angel Arboleda", goles: 0, amarilla: false, roja: false },
+            { nombre: "Julian Ressia", goles: 0, amarilla: false, roja: false },
+            { nombre: "Jose M. Otamendi", goles: 0, amarilla: false, roja: false },
+            { nombre: "Juan I. Mendez", goles: 0, amarilla: false, roja: false },
+            { nombre: "Fabricio Candia", goles: 0, amarilla: false, roja: false },
+            { nombre: "Alejandro Aquino", goles: 0, amarilla: false, roja: false },
+            { nombre: "Luis Duche", goles: 0, amarilla: false, roja: false },
+            { nombre: "German Arias", goles: 0, amarilla: false, roja: false },
+            { nombre: "Maxi Rios", goles: 0, amarilla: false, roja: false },
+            { nombre: "Enzo Alonso", goles: 0, amarilla: false, roja: false },
+            { nombre: "Robert Campaz", goles: 0, amarilla: false, roja: false }
+        ],
+        suplentes: [
+            { nombre: "Enzo Pellegrini", goles: 0, amarilla: false, roja: false },
+            { nombre: "Juan J. Gimenez", goles: 0, amarilla: false, roja: false },
+            { nombre: "Nahuel Suarez", goles: 0, amarilla: false, roja: false },
+            { nombre: "Gaston Molina", goles: 0, amarilla: false, roja: false },
+            { nombre: "Roman Schap", goles: 0, amarilla: false, roja: false },
+            { nombre: "Luciano Duarte", goles: 0, amarilla: false, roja: false }
+        ]
+    }
+};
+
+const container = document.getElementById("formaciones");
+
+function renderJugador(jugador, numero) {
+    const li = document.createElement("li");
+    li.innerHTML = `
+        <span class="numero">${numero}.</span>
+        <span class="nombre">${jugador.nombre}</span>
+        <span class="stats">
+            ${"⚽".repeat(jugador.goles)}
+            ${jugador.amarilla ? '<img src="./assets/amarilla.png" alt="amarilla">' : ""}
+            ${jugador.roja ? '<img src="./assets/roja.png" alt="roja">' : ""}
+        </span>
+    `;
+    return li;
+}
+
+function renderFormaciones() {
+    container.innerHTML = "";
+    Object.values(formaciones).forEach(eq => {
+        const box = document.createElement("div");
+        box.className = "equipo";
+        box.innerHTML = `<h2>${eq.nombre}</h2><h3>Titulares</h3>`;
+        
+        const olJugadores = document.createElement("ol");
+        eq.jugadores.forEach((j, i) => olJugadores.appendChild(renderJugador(j, i+1)));
+        box.appendChild(olJugadores);
+
+        box.innerHTML += "<h3>Suplentes</h3>";
+        const olSuplentes = document.createElement("ol");
+        olSuplentes.start = eq.jugadores.length + 1;
+        eq.suplentes.forEach((j, i) => olSuplentes.appendChild(renderJugador(j, i + eq.jugadores.length + 1)));
+        box.appendChild(olSuplentes);
+
+        container.appendChild(box);
+    });
+}
+
+renderFormaciones();
+
+// Funciones para actualizar estadísticas en tiempo real
+function agregarGol(jugador) { jugador.goles++; renderFormaciones(); }
+function ponerAmarilla(jugador) { jugador.amarilla = true; renderFormaciones(); }
+function ponerRoja(jugador) { jugador.roja = true; renderFormaciones(); }
+</script>
+</body>
+</html>

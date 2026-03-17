@@ -1,0 +1,98 @@
+{
+  "torneo": "PRIMERA – APERTURA 2025",
+  "tabla": [
+    {
+      "posicion": 1,
+      "equipo": "Atlético Quenumá",
+      "puntos": 23,
+      "logo": "./equipos/logos/quenuma.png",
+      "puntero": true
+    },
+    {
+      "posicion": 2,
+      "equipo": "Jorge Newbery",
+      "puntos": 21,
+      "logo": "./equipos/logos/newbery.png"
+    },
+    {
+      "posicion": 3,
+      "equipo": "Unión Deportiva",
+      "puntos": 19,
+      "logo": "./equipos/logos/uniontl.png"
+    },
+    {
+      "posicion": 4,
+      "equipo": "Unión Deportiva",
+      "puntos": 19,
+      "logo": "./equipos/logos/bonifacio.png"
+    },
+    {
+      "posicion": 5,
+      "equipo": "Salazar FC",
+      "puntos": 15,
+      "logo": "./equipos/logos/salazar.png"
+    },
+    {
+      "posicion": 6,
+      "equipo": "Deportivo 17",
+      "puntos": 15,
+      "logo": "./equipos/logos/17.png"
+    },
+    {
+      "posicion": 7,
+      "equipo": "Deportivo Garré",
+      "puntos": 15,
+      "logo": "./equipos/logos/garre.png"
+    },
+    {
+      "posicion": 8,
+      "equipo": "Deportivo Maza",
+      "puntos": 15,
+      "logo": "./equipos/logos/maza.png"
+    },
+    {
+      "posicion": 9,
+      "equipo": "Roberts",
+      "puntos": 15,
+      "logo": "./equipos/logos/roberts.png"
+    },
+    {
+      "posicion": 10,
+      "equipo": "Atlético Argentino",
+      "puntos": 13,
+      "logo": "./equipos/logos/argentinos.png"
+    },
+    {
+      "posicion": 11,
+      "equipo": "Deportivo Argentino",
+      "puntos": 13,
+      "logo": "./equipos/logos/deportivoarg.png"
+    },
+    {
+      "posicion": 12,
+      "equipo": "Juventud Unida",
+      "puntos": 10,
+      "logo": "./equipos/logos/juventud.png"
+    },
+    {
+      "posicion": 13,
+      "equipo": "El Ceibo",
+      "puntos": 7,
+      "logo": "./equipos/logos/ceibo.png"
+    },
+    {
+      "posicion": 14,
+      "equipo": "Villa del Parque",
+      "puntos": 5,
+      "logo": "./equipos/logos/villa.png"
+    },
+    {
+      "posicion": 15,
+      "equipo": "La Gloria",
+      "puntos": 4,
+      "logo": "./equipos/logos/lagloria.png"
+    }
+  ]
+}
+
+

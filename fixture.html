@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Liga Apertura 2026</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #222; color: #eee; }
+    h1 { color: #9c27b0; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+    th, td { border: 1px solid #555; padding: 8px; text-align: center; }
+    th { background: #333; }
+    tr:nth-child(even) { background: #2c2c2c; }
+  </style>
+</head>
+<body>
+  <h1>Apertura 2026 - Primera</h1>
+
+  <h2>Tabla de Posiciones</h2>
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th>
+        <th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Fixture</h2>
+  <table id="fixture">
+    <thead>
+      <tr>
+        <th>Fecha</th><th>Local</th><th>Visitante</th><th>Resultado</th><th>Estadio</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Goleadores</h2>
+  <table id="goleadores">
+    <thead>
+      <tr><th>Jugador</th><th>Equipo</th><th>Goles</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function cargarTabla() {
+      const res = await fetch('http://localhost:3000/tabla');
+      const data = await res.json();
+      const tbody = document.querySelector('#tabla tbody');
+      tbody.innerHTML = data.map(e => `
+        <tr>
+          <td>${e.equipo}</td>
+          <td>${e.jugados}</td>
+          <td>${e.ganados}</td>
+          <td>${e.empatados}</td>
+          <td>${e.perdidos}</td>
+          <td>${e.goles_favor}</td>
+          <td>${e.goles_contra}</td>
+          <td>${e.goles_favor - e.goles_contra}</td>
+          <td>${e.puntos}</td>
+        </tr>`).join('');
+    }
+
+    async function cargarFixture() {
+      const res = await fetch('http://localhost:3000/fixture');
+      const data = await res.json();
+      const tbody = document.querySelector('#fixture tbody');
+      tbody.innerHTML = data.map(p => `
+        <tr>
+          <td>${p.fecha.split('T')[0]}</td>
+          <td>${p.equipo_local}</td>
+          <td>${p.equipo_visitante || '-'}</td>
+          <td>${p.jugado ? p.goles_local + ' - ' + p.goles_visitante : 'Pendiente'}</td>
+          <td>${p.estadio || '-'}</td>
+        </tr>`).join('');
+    }
+
+    async function cargarGoleadores() {
+      const res = await fetch('http://localhost:3000/goleadores');
+      const data = await res.json();
+      const tbody = document.querySelector('#goleadores tbody');
+      tbody.innerHTML = data.map(g => `
+        <tr>
+          <td>${g.jugador}</td>
+          <td>${g.equipo}</td>
+          <td>${g.goles}</td>
+        </tr>`).join('');
+    }
+
+    cargarTabla();
+    cargarFixture();
+    cargarGoleadores();
+  </script>
+</body>
+</html>
