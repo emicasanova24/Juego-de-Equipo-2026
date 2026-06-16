@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tabla de Posiciones</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+
+    .tabla-container {
+      width: 320px;
+      background: transparent;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .slide {
+      display: none;
+    }
+
+    .slide.active {
+      display: block;
+      animation: fadein 0.5s ease-in-out;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .tabla-title {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 6px 4px;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    th {
+      font-weight: bold;
+      color: #fffd61;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    td:last-child, th:last-child {
+      text-align: right;
+    }
+
+
+    .puntero {
+      font-weight: bold;
+    }
+
+    .equipo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .equipo img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+    }
+  </style>
+</head>
+<body>
+  <div class="tabla-container" id="tabla-slides-container">
+    <!-- Se agregarán dinámicamente las tablas aquí -->
+  </div>
+
+  <script>
+   const tablas = [
+      {
+        torneo: "PRIMERA – CLAUSURA 2025",
+        tabla: [
+          { posicion: 1, equipo: "Deportivo Argentino", puntos: 21, logo: "/equipos/logos/deportivoarg.png", puntero: true },
+          { posicion: 2, equipo: "El Ceibo", puntos: 21, logo: "/equipos/logos/ceibo.png", puntero: true },
+          { posicion: 3, equipo: "Unión Deportiva", puntos: 18, logo: "/equipos/logos/uniontl.png" },
+          { posicion: 4, equipo: "Jorge Newbery", puntos: 17, logo: "/equipos/logos/newbery.png" },
+          { posicion: 5, equipo: "Atlético Argentino", puntos: 16, logo: "/equipos/logos/argentinos.png" },
+          { posicion: 6, equipo: "Roberts", puntos: 15, logo: "/equipos/logos/roberts.png" },
+          { posicion: 7, equipo: "Unión Deportiva (B)", puntos: 14, logo: "/equipos/logos/bonifacio.png" },
+          { posicion: 8, equipo: "Deportivo Garré", puntos: 12, logo: "/equipos/logos/garre.png" },
+          { posicion: 9, equipo: "Deportivo Maza", puntos: 9, logo: "/equipos/logos/maza.png" },
+          { posicion: 10, equipo: "Deportivo 17", puntos: 9, logo: "/equipos/logos/17.png" },
+          { posicion: 11, equipo: "La Gloria", puntos: 9, logo: "/equipos/logos/lagloria.png" },
+          { posicion: 12, equipo: "Salazar FC", puntos: 7, logo: "/equipos/logos/salazar.png" },
+          { posicion: 13, equipo: "Juventud Unida", puntos: 7, logo: "/equipos/logos/juventud.png" },
+          { posicion: 14, equipo: "Villa del Parque", puntos: 6, logo: "/equipos/logos/villa.png" },
+          { posicion: 15, equipo: "Atlético Quenumá", puntos: 4, logo: "/equipos/logos/quenuma.png" }
+        ]
+      },
+      {
+        torneo: "PRIMERA – ACUMULADO 2025",
+        tabla: [
+          { posicion: 1, equipo: "Jorge Newbery", puntos: 44, logo: "/equipos/logos/newbery.png", puntero: true },
+          { posicion: 2, equipo: "Unión Deportiva", puntos: 43, logo: "/equipos/logos/uniontl.png", puntero: true },
+          { posicion: 3, equipo: "Unión Deportiva (B)", puntos: 40, logo: "/equipos/logos/bonifacio.png", puntero: true },
+          { posicion: 4, equipo: "Deportivo Argentino", puntos: 40, logo: "/equipos/logos/deportivoarg.png", puntero: true },
+          { posicion: 5, equipo: "Roberts", puntos: 37, logo: "/equipos/logos/roberts.png", puntero: true },
+          { posicion: 6, equipo: "Atlético Argentino", puntos: 36, logo: "/equipos/logos/argentinos.png", puntero: true },
+          { posicion: 7, equipo: "Deportivo Garré", puntos: 34, logo: "/equipos/logos/garre.png", puntero: true },
+          { posicion: 8, equipo: "Atlético Quenumá", puntos: 33, logo: "/equipos/logos/quenuma.png", puntero: true },
+          { posicion: 9, equipo: "El Ceibo", puntos: 32, logo: "/equipos/logos/ceibo.png" },
+          { posicion: 10, equipo: "Deportivo Maza", puntos: 30, logo: "/equipos/logos/maza.png" },
+          { posicion: 11, equipo: "Deportivo 17", puntos: 28, logo: "/equipos/logos/17.png" },
+          { posicion: 12, equipo: "Salazar FC", puntos: 26, logo: "/equipos/logos/salazar.png" },
+          { posicion: 13, equipo: "Juventud Unida", puntos: 22, logo: "/equipos/logos/juventud.png" },
+          { posicion: 14, equipo: "La Gloria", puntos: 16, logo: "/equipos/logos/lagloria.png" },
+          { posicion: 15, equipo: "Villa del Parque", puntos: 11, logo: "/equipos/logos/villa.png" }
+        ]
+      }
+    ];
+
+    const container = document.getElementById("tabla-slides-container");
+
+    tablas.forEach((torneoData, i) => {
+      const slide = document.createElement("div");
+      slide.className = "slide" + (i === 0 ? " active" : "");
+
+      const title = document.createElement("div");
+      title.className = "tabla-title";
+      title.textContent = torneoData.torneo;
+
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Equipo</th>
+            <th>PTS</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${torneoData.tabla.map(equipo => `
+            <tr class="${equipo.puntero ? 'puntero' : ''}">
+              <td>${equipo.posicion}</td>
+              <td class="equipo">
+                <img src="${equipo.logo}" alt="">
+                ${equipo.equipo}
+              </td>
+              <td>${equipo.puntos}</td>
+            </tr>`).join("")}
+        </tbody>
+      `;
+
+      slide.appendChild(title);
+      slide.appendChild(table);
+      container.appendChild(slide);
+    });
+
+    // Transición automática
+    const slides = document.querySelectorAll(".slide");
+    let current = 0;
+
+    setInterval(() => {
+      slides[current].classList.remove("active");
+      current = (current + 1) % slides.length;
+      slides[current].classList.add("active");
+    }, 5000);
+  </script>
+</body>
+</html>

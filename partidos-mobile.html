@@ -1,144 +1,244 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Resultados Fecha</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-    }
-    .nombre-corto-derecho { justify-content: flex-end; }
-    .nombre-corto-izquierdo { justify-content: flex-start; }
-    .resultados-container {
-      width: 420px;
-      background: transparent;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-    }
-    .fecha-title {
-      font-size: 22px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding-bottom: 8px;
-    }
-    .partido {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 18px;
-      font-weight: bold;
-      margin: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 15px 0;
-    }
-    .columna-local { text-align: left; margin-left: 10px; }
-    .columna-visitante { text-align: right; margin-right: 10px; }
-    .equipo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-    }
-    .equipo img {
-      width: 120px;
-      height: 120px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
-    }
-    .marcador {
-      font-size: 22px;
-      font-weight: bold;
-      padding: 0 30px;
-      min-width: 50px;
-      text-align: center;
-    }
-    .libre {
-      margin-top: 20px;
-      font-size: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      opacity: 0.9;
-    }
-    .libre img {
-      width: 70px;
-      height: 70px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Resultados Fecha</title>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+}
+
+body {
+  width: 1080px;
+  height: 1920px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.resultados-container {
+  width: 760px;
+  background: rgba(0,0,0,0.65);
+  border-radius: 18px;
+  padding: 28px;
+}
+
+.fecha-title {
+  font-size: 36px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 28px;
+  letter-spacing: 2px;
+}
+
+/* PARTIDO */
+.partido {
+  display: grid;
+  grid-template-columns: 33% 34% 33%;
+  align-items: center;
+  padding: 10px 18px;
+  margin: 12px 0;
+  background: rgba(120, 70, 200, 0.20);
+  border-left: 6px solid rgb(120, 70, 200);
+  border-radius: 6px;
+}
+
+.equipo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 30px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.equipo.izq {
+  justify-content: flex-start;
+}
+
+.equipo.der {
+  justify-content: flex-end;
+}
+
+.equipo img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.marcador {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+/* LIBRE */
+.libre {
+  margin-top: 36px;
+  padding-top: 18px;
+  border-top: 2px solid rgba(255,255,255,0.25);
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.libre img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+/* ── SPONSOR SLIDER ── */
+.sponsors-section {
+  flex-shrink: 0;
+  padding: 24px 0 32px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.75) 40%);
+  overflow: hidden;
+}
+
+.sponsors-label {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 20px;
+}
+
+.sponsors-track-wrapper {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+.sponsors-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  animation: sponsorScroll 35s linear infinite;
+}
+
+.sponsor-card {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+}
+
+.sponsor-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+@keyframes sponsorScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+</style>
 </head>
+
 <body>
-  <div class="resultados-container" id="resultados-container"></div>
 
-  <script>
-    // Diccionario de equipos -> logo
-    const logosEquipos = {
-      "Juventud Unida": "./equipos/logos/juventud.png",
-      "Deportivo Argentino": "./equipos/logos/deportivoarg.png",
-      "Atlético Quenumá": "./equipos/logos/quenuma.png",
-      "Atlético Argentino": "./equipos/logos/argentinos.png",
-      "Salazar FC": "./equipos/logos/salazar.png",
-      "Unión de Bonifacio": "./equipos/logos/bonifacio.png",
-      "Jorge Newbery": "./equipos/logos/newbery.png",
-      "Villa del Parque": "./equipos/logos/villa.png",
-      "El Ceibo": "./equipos/logos/ceibo.png",
-      "Unión Deportiva": "./equipos/logos/uniontl.png",
-      "Deportivo Garré": "./equipos/logos/garre.png",
-      "Deportivo Maza": "./equipos/logos/maza.png",
-      "Cecil A. Roberts": "./equipos/logos/roberts.png",
-      "Deportivo 17": "./equipos/logos/17.png",
-      "La Gloria": "./equipos/logos/lagloria.png"
-    };
+<div style="margin-top: 2rem; display:flex; justify-content:center; align-items:flex-start; padding-top:120px;">
+  <div class="resultados-container" id="resultados"></div>
+</div>
 
-    const fecha = {
-      numero: 1,
-      partidos: [
-        { local: "Atlético Quenumá", golesLocal: 1, visitante: "La Gloria", golesVisitante: 0  },
-        { local: "Atlético Argentino", golesLocal: 0, visitante: "Deportivo Maza", golesVisitante: 1 },
-        { local: "El Ceibo", golesLocal: 0, visitante: "Unión Deportiva", golesVisitante: 1 },
-        { local: "Salazar FC", golesLocal: 0, visitante: "Villa del Parque", golesVisitante: 0 },
-        { local: "Juventud Unida", golesLocal: 0, visitante: "Deportivo Garré", golesVisitante: 3 },
-      ],
-      libre: { nombre: "Jorge Newbery" }
-    };
+<!-- SPONSOR SLIDER -->
+<div class="sponsors-section">
+  <div class="sponsors-label">Sponsors Oficiales</div>
+  <div class="sponsors-track-wrapper">
+    <div class="sponsors-track" id="sponsorTrack"></div>
+  </div>
+</div>
 
-    const container = document.getElementById("resultados-container");
+<script src="./js/overlay-client.js"></script>
+<script>
+const cont = document.getElementById("resultados");
 
-    const title = document.createElement("div");
-    title.className = "fecha-title";
-    title.textContent = "FECHA " + fecha.numero;
-    container.appendChild(title);
+// ── Sponsors ──
+const sponsorLogos = [
+  "sponsors/1.png",
+  "sponsors/2.png",
+  "sponsors/3.png",
+  "sponsors/4.png",
+  "sponsors/5.png",
+  "sponsors/6.png",
+  "sponsors/7.png",
+  "sponsors/8.png",
+  "sponsors/9.png",
+  "sponsors/10.png",
+  "sponsors/11.png",
+  "sponsors/12.png",
+  "sponsors/13.png",
+  "sponsors/14.png",
+  "sponsors/15.png",
+  "sponsors/16.png",
+  "sponsors/17.png",
+  "sponsors/18.png",
+  "sponsors/19.png"
+];
 
-    fecha.partidos.forEach(p => {
-      const partido = document.createElement("div");
-      partido.className = "partido";
-      partido.innerHTML = `
-        <div class="equipo nombre-corto-izquierdo">
-          <img src="${logosEquipos[p.local] || ''}" alt="">
-          <span class="columna-local">${p.local}</span>
+(function initSponsors() {
+  const track = document.getElementById("sponsorTrack");
+  const all = [...sponsorLogos, ...sponsorLogos];
+  track.innerHTML = all.map(src =>
+    `<div class="sponsor-card"><img src="${src}" loading="lazy"></div>`
+  ).join('');
+})();
+
+// ── Resultados ──
+function renderResultados(state) {
+  cont.innerHTML = "";
+
+  cont.innerHTML += `<div class="fecha-title">RESULTADOS</div>`;
+
+  (state.resultados || []).forEach(p => {
+    cont.innerHTML += `
+      <div class="partido">
+        <div class="equipo izq">
+          <img src="${p.logoLocal || ''}">
+          <span>${p.local}</span>
         </div>
-        <div class="marcador">${p.golesLocal} - ${p.golesVisitante}</div>
-        <div class="equipo nombre-corto-derecho">
-          <span class="columna-visitante">${p.visitante}</span>
-          <img src="${logosEquipos[p.visitante] || ''}" alt="">
+        <div class="marcador">${p.gl} - ${p.gv}</div>
+        <div class="equipo der">
+          <span>${p.visitante}</span>
+          <img src="${p.logoVisitante || ''}">
         </div>
-      `;
-      container.appendChild(partido);
-    });
+      </div>
+    `;
+  });
 
-    const libre = document.createElement("div");
-    libre.className = "libre";
-    libre.innerHTML = `LIBRE: <img src="${logosEquipos[fecha.libre.nombre] || ''}" alt="${fecha.libre.nombre}">`;
-    container.appendChild(libre);
-  </script>
+  if (state.libre) {
+    // Buscar logo del equipo libre en los resultados o catálogo
+    let logoLibre = '';
+    // Intentar encontrar logo en resultados existentes
+    const match = (state.resultados || []).find(r => r.local === state.libre || r.visitante === state.libre);
+    if (match) {
+      logoLibre = match.local === state.libre ? match.logoLocal : match.logoVisitante;
+    }
+    cont.innerHTML += `
+      <div class="libre">
+        LIBRE:
+        ${logoLibre ? `<img src="${logoLibre}">` : ''}
+        <strong>${state.libre}</strong>
+      </div>
+    `;
+  }
+}
+
+window.onOverlayState = renderResultados;
+</script>
+
 </body>
 </html>

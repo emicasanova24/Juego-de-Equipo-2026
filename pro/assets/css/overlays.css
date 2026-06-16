@@ -1,0 +1,16 @@
+/* ============================================================
+   overlays.css — Base compartida de todos los overlays de OBS (/pro)
+   Cada overlay enlaza este archivo y agrega sólo sus estilos propios.
+   Lienzo fijo 1920x1080, fondo transparente (Browser Source de OBS).
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+}

@@ -62,70 +62,22 @@ li {
 </head>
 <body>
 <div class="container container-formaciones" id="formaciones"></div>
-<div class="subtitulo">ARBITRO: DIEGO DE LA MIYAR</div>
+<div class="subtitulo" id="arbitro"></div>
 
+<script src="./js/overlay-client.js"></script>
 <script>
-const formaciones = {
-    local: {
-        nombre: "Roberts",
-        jugadores: [
-            { nombre: "Angel Arboleda", goles: 0, amarilla: false, roja: false },
-            { nombre: "Julian Ressia", goles: 0, amarilla: false, roja: false },
-            { nombre: "Jose M. Otamendi", goles: 0, amarilla: false, roja: false },
-            { nombre: "Juan I. Mendez", goles: 0, amarilla: false, roja: false },
-            { nombre: "Fabricio Candia", goles: 0, amarilla: false, roja: false },
-            { nombre: "Alejandro Aquino", goles: 0, amarilla: false, roja: false },
-            { nombre: "Nahuel Suarez", goles: 0, amarilla: false, roja: false },
-            { nombre: "German Arias", goles: 0, amarilla: false, roja: false },
-            { nombre: "Maxi Rios", goles: 0, amarilla: false, roja: false },
-            { nombre: "Enzo Alonso", goles: 0, amarilla: false, roja: false },
-            { nombre: "Robert Campaz", goles: 0, amarilla: false, roja: false }
-        ],
-        suplentes: [
-            { nombre: "Enzo Pellegrini", goles: 0, amarilla: false, roja: false },
-            { nombre: "Benjamin Natali", goles: 0, amarilla: false, roja: false },
-            { nombre: "Juan J. Gimenez", goles: 0, amarilla: false, roja: false },
-            { nombre: "Benjamin Vega", goles: 0, amarilla: false, roja: false },
-            { nombre: "Luis Duche", goles: 0, amarilla: false, roja: false },
-            { nombre: "Roman Schap", goles: 0, amarilla: false, roja: false },
-            { nombre: "Luciano Duarte", goles: 0, amarilla: false, roja: false }
-        ]
-    },
-    visitante: {
-        nombre: "El Ceibo",
-        jugadores: [
-            { nombre: "Angel Arboleda", goles: 0, amarilla: false, roja: false },
-            { nombre: "Julian Ressia", goles: 0, amarilla: false, roja: false },
-            { nombre: "Jose M. Otamendi", goles: 0, amarilla: false, roja: false },
-            { nombre: "Juan I. Mendez", goles: 0, amarilla: false, roja: false },
-            { nombre: "Fabricio Candia", goles: 0, amarilla: false, roja: false },
-            { nombre: "Alejandro Aquino", goles: 0, amarilla: false, roja: false },
-            { nombre: "Luis Duche", goles: 0, amarilla: false, roja: false },
-            { nombre: "German Arias", goles: 0, amarilla: false, roja: false },
-            { nombre: "Maxi Rios", goles: 0, amarilla: false, roja: false },
-            { nombre: "Enzo Alonso", goles: 0, amarilla: false, roja: false },
-            { nombre: "Robert Campaz", goles: 0, amarilla: false, roja: false }
-        ],
-        suplentes: [
-            { nombre: "Enzo Pellegrini", goles: 0, amarilla: false, roja: false },
-            { nombre: "Juan J. Gimenez", goles: 0, amarilla: false, roja: false },
-            { nombre: "Nahuel Suarez", goles: 0, amarilla: false, roja: false },
-            { nombre: "Gaston Molina", goles: 0, amarilla: false, roja: false },
-            { nombre: "Roman Schap", goles: 0, amarilla: false, roja: false },
-            { nombre: "Luciano Duarte", goles: 0, amarilla: false, roja: false }
-        ]
-    }
-};
-
 const container = document.getElementById("formaciones");
+const arbitroEl = document.getElementById("arbitro");
 
-function renderJugador(jugador, numero) {
+function renderJugador(jugador, numero, colorNumero) {
     const li = document.createElement("li");
+    const subIcon = jugador.entro ? ' <span style="color:#22c55e;font-size:0.75em">▲</span>' : (jugador.sustituido ? ' <span style="color:#ef4444;font-size:0.75em">▼</span>' : '');
+    const numStyle = colorNumero ? ` style="color:${colorNumero}"` : '';
     li.innerHTML = `
-        <span class="numero">${numero}.</span>
-        <span class="nombre">${jugador.nombre}</span>
+        <span class="numero"${numStyle}>${numero}.</span>
+        <span class="nombre">${jugador.nombre}${subIcon}</span>
         <span class="stats">
-            ${"⚽".repeat(jugador.goles)}
+            ${"⚽".repeat(jugador.goles || 0)}
             ${jugador.amarilla ? '<img src="./assets/amarilla.png" alt="amarilla">' : ""}
             ${jugador.roja ? '<img src="./assets/roja.png" alt="roja">' : ""}
         </span>
@@ -133,33 +85,32 @@ function renderJugador(jugador, numero) {
     return li;
 }
 
-function renderFormaciones() {
+function renderFormaciones(state) {
     container.innerHTML = "";
-    Object.values(formaciones).forEach(eq => {
+    ["local", "visitante"].forEach(side => {
+        const eq = state[side];
+        if (!eq || !eq.nombre) return;
+
         const box = document.createElement("div");
         box.className = "equipo";
         box.innerHTML = `<h2>${eq.nombre}</h2><h3>Titulares</h3>`;
-        
+
         const olJugadores = document.createElement("ol");
-        eq.jugadores.forEach((j, i) => olJugadores.appendChild(renderJugador(j, i+1)));
+        (eq.jugadores || []).forEach((j, i) => olJugadores.appendChild(renderJugador(j, i + 1, eq.colorNumero)));
         box.appendChild(olJugadores);
 
         box.innerHTML += "<h3>Suplentes</h3>";
         const olSuplentes = document.createElement("ol");
-        olSuplentes.start = eq.jugadores.length + 1;
-        eq.suplentes.forEach((j, i) => olSuplentes.appendChild(renderJugador(j, i + eq.jugadores.length + 1)));
+        olSuplentes.start = (eq.jugadores || []).length + 1;
+        (eq.suplentes || []).forEach((j, i) => olSuplentes.appendChild(renderJugador(j, i + (eq.jugadores || []).length + 1, eq.colorNumero)));
         box.appendChild(olSuplentes);
 
         container.appendChild(box);
     });
+    arbitroEl.textContent = state.match?.referee ? "ARBITRO: " + state.match.referee : "";
 }
 
-renderFormaciones();
-
-// Funciones para actualizar estadísticas en tiempo real
-function agregarGol(jugador) { jugador.goles++; renderFormaciones(); }
-function ponerAmarilla(jugador) { jugador.amarilla = true; renderFormaciones(); }
-function ponerRoja(jugador) { jugador.roja = true; renderFormaciones(); }
+window.onOverlayState = renderFormaciones;
 </script>
 </body>
 </html>

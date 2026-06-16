@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Cortina de Sponsor</title>
+<link rel="stylesheet" href="/pro/assets/css/overlays.css">
+<style>
+  .cortina{position:absolute;inset:0;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;pointer-events:none;transition:opacity .7s ease}
+  .cortina.show{opacity:1}
+  .particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .p{position:absolute;background:rgba(139,92,246,.55);border-radius:50%;animation:float linear infinite}
+  @keyframes float{from{transform:translateY(110vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.4}to{transform:translateY(-10vh) scale(1.5);opacity:0}}
+  .slogo{width:280px;height:280px;object-fit:contain;filter:drop-shadow(0 0 60px rgba(139,92,246,.7));animation:pulse 3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{filter:drop-shadow(0 0 40px rgba(139,92,246,.5))}50%{filter:drop-shadow(0 0 80px rgba(139,92,246,.9))}}
+  .ph{width:180px;height:180px;border:4px solid #8B5CF6;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:80px;animation:pulse 3s ease-in-out infinite}
+  .sname{font-size:68px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:6px;text-shadow:0 0 40px rgba(139,92,246,.8)}
+  .tag{font-size:22px;font-weight:700;color:#a78bfa;letter-spacing:4px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="cortina" id="cortina">
+  <div class="particles" id="particles"></div>
+  <img id="slogo" class="slogo" src="" alt="" onerror="this.style.display='none'">
+  <div id="ph" class="ph" style="display:none">🏆</div>
+  <div class="sname" id="sname">SPONSOR</div>
+  <div class="tag">Presentado por Juego de Equipo</div>
+</div>
+<script src="/pro/assets/js/overlay-client.js"></script>
+<script>
+const pc=document.getElementById('particles');
+for(let i=0;i<30;i++){const p=document.createElement('div');p.className='p';p.style.cssText=`left:${Math.random()*100}%;animation-duration:${4+Math.random()*8}s;animation-delay:${Math.random()*8}s;width:${3+Math.random()*8}px;height:${3+Math.random()*8}px`;pc.appendChild(p)}
+window.onOverlayState=function(s){
+  const show=!s.emergencyMode&&s.widgets?.publicidad&&s.ads?.active&&s.ads?.current==='cortina';
+  document.getElementById('cortina').classList.toggle('show',!!show);
+  if(show&&s.ads){
+    const l=document.getElementById('slogo'),ph=document.getElementById('ph');
+    if(s.ads.logoSponsor){if(l.src!==s.ads.logoSponsor)l.src=s.ads.logoSponsor;l.style.display='';ph.style.display='none'}else{l.style.display='none';ph.style.display='flex'}
+    if(s.ads.sponsor){const nm=s.ads.sponsor.toUpperCase();const el=document.getElementById('sname');if(el.textContent!==nm)el.textContent=nm}
+  }
+};
+</script>
+</body>
+</html>

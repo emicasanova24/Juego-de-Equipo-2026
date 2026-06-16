@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JUEGO DE EQUIPO - Lineups</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700;800;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Manrope:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#4c137c",
+                        "on-primary": "#3b008a",
+                        "on-secondary-fixed-variant": "#6a369b",
+                        "on-error-container": "#ffb2b9",
+                        "tertiary-fixed-dim": "#f77ca0",
+                        "on-tertiary": "#670731",
+                        "on-primary-fixed-variant": "#380084",
+                        "inverse-primary": "#7232e4",
+                        "primary-fixed": "#b08cff",
+                        "on-background": "#ffffff",
+                        "surface-container-high": "#201f21",
+                        "on-secondary-container": "#e4c4ff",
+                        "on-secondary": "#430474",
+                        "surface-container-lowest": "#000000",
+                        "on-surface": "#ffffff",
+                        "secondary-container": "#602b90",
+                        "error-container": "#a70138",
+                        "secondary-dim": "#bc86f0",
+                        "error-dim": "#d73357",
+                        "on-tertiary-fixed-variant": "#701037",
+                        "tertiary-fixed": "#ff8eae",
+                        "outline-variant": "#484849",
+                        "background": "#0e0e0f",
+                        "surface": "#0e0e0f",
+                        "on-surface-variant": "#adaaab",
+                        "on-primary-container": "#2d006d",
+                        "surface-variant": "#262627",
+                        "surface-container-highest": "#262627",
+                        "secondary-fixed": "#e5c6ff",
+                        "outline": "#767576",
+                        "inverse-surface": "#fcf8f9",
+                        "tertiary-container": "#fa7ea3",
+                        "inverse-on-surface": "#565556",
+                        "on-error": "#490013",
+                        "surface-container": "#1a191b",
+                        "on-primary-fixed": "#000000",
+                        "surface-container-low": "#131314",
+                        "tertiary": "#ff93b1",
+                        "primary": "#bc9eff",
+                        "on-tertiary-fixed": "#380017",
+                        "surface-dim": "#0e0e0f",
+                        "tertiary-dim": "#f0779b",
+                        "primary-fixed-dim": "#a47bff",
+                        "secondary-fixed-dim": "#dcb4ff",
+                        "primary-container": "#b08cff",
+                        "primary-dim": "#884efb",
+                        "surface-bright": "#2c2c2d",
+                        "on-tertiary-container": "#550026",
+                        "surface-tint": "#bc9eff",
+                        "error": "#ff6e84",
+                        "secondary": "#ca93fe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Lexend"],
+                        "display": ["Lexend"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pitch-pattern {
+            background-image: linear-gradient(to right, rgba(188, 158, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(188, 158, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .perspective-field {
+            perspective: 1000px;
+        }
+        .field-3d {
+            transform: rotateX(20deg);
+            transform-origin: bottom;
+        }
+        .glow-soft {
+            box-shadow: 0 0 20px rgba(140, 82, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary min-h-screen pb-24 md:pb-0">
+<main class="pt-24 px-4 md:px-8 max-w-[1600px] mx-auto overflow-hidden">
+<!-- Match Hero Header -->
+<section class="mb-8 rounded-xl overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest via-surface-container-low to-surface-container-lowest opacity-90 z-10"></div>
+
+<div class="relative z-20 p-8 flex flex-col md:flex-row justify-between items-center gap-8">
+<!-- Home Team -->
+<div class="flex items-center gap-6 text-center md:text-left">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center p-4 border border-primary/20">
+<img alt="Cecil A. Roberts Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBum9iopTEs8Xrxy2OKoCawR1s-t6UTx1-4HpNcegCCw-PDvq1IOwqo3oQD4rgTmyRMmH7Cy5w3LbxOvz2X5z2LLbpm4f_lISKLHpJ9kqC6Cd8asXeFHRmcI3OE6Q_OlqVbwwv6eQ8w-LQ9TX83mVGii_I-WARThVBo4N3rYpK700eg19WX_L8cYysm-ZNXBq407h8pktbCF9YLzjfKdJV8l35Xc3Z1xfS8dHidN0RIfi2iicrtLMxBWudNYfyJrxlgQa_GV3-6O6w"/>
+</div>
+<div>
+<span class="text-primary font-bold tracking-widest text-xs uppercase mb-1 block">Home Team</span>
+<h2 class="text-headline-lg font-display font-black leading-none">CECIL A. ROBERTS</h2>
+<p class="text-on-surface-variant text-label-md mt-1">Manager: Julian S.</p>
+</div>
+</div>
+<!-- Match Info -->
+<div class="text-center">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold tracking-tighter mb-4 inline-block">LIVE FORMATIONS</span>
+<div class="text-headline-md font-display font-bold text-on-surface-variant flex items-center gap-4">
+<span>PREMIER LEAGUE</span>
+</div>
+<div class="text-on-surface-variant font-label text-sm mt-2 opacity-80">
+                        OCT 24, 2023 • STADIUM ROVER • LONDON
+                    </div>
+</div>
+<!-- Away Team -->
+<div class="flex items-center flex-row-reverse gap-6 text-center md:text-right">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center p-4 border border-secondary/20">
+<img alt="Deportivo Garré Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFu6xnANvjDBcPQhZtqSBXcsPE9LurLiBquirsgqs1chRaQ9X38nrycwRIWZgO-D7Be66QaEkdHuJ5r05TfZqsJRgFIDKwphAg7_7PrA040v-UJ7X_H-2O51lxu7Jr-Vt3zdOHeDmXJ2LnS_-dK--NvrE3yG8nLeB9pz85HR0pLLBu8J-hDv-btzf9a7DTnEyDlbFJ3OvZ19jUbMlrYzQAhJZ1jDbwvSyfS-6L03zUjSPXZ3gc4l-CXF031p0HvYg0qMy8Uo4spAY"/>
+</div>
+<div>
+<span class="text-secondary font-bold tracking-widest text-xs uppercase mb-1 block">Away Team</span>
+<h2 class="text-headline-lg font-display font-black leading-none uppercase">Deportivo Garré</h2>
+<p class="text-on-surface-variant text-label-md mt-1">Manager: Elena R.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Formations Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+<!-- Home Team Formation (4-4-2) -->
+<div class="lg:col-span-6 bg-surface-container-low rounded-xl p-6 relative overflow-hidden flex flex-col border border-white/5">
+<div class="flex justify-between items-center mb-8 relative z-10">
+<div class="flex items-center gap-3">
+<span class="w-2 h-8 bg-primary rounded-full"></span>
+<h3 class="text-headline-sm font-display font-bold">4-4-2 ATTACK</h3>
+</div>
+<span class="text-on-surface-variant font-label text-sm">Cecil A. Roberts</span>
+</div>
+<!-- Tactical Board -->
+<div class="flex-1 min-h-[500px] relative rounded-lg bg-surface-container-lowest border border-white/5 pitch-pattern p-8 flex flex-col justify-between overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+<!-- Forwards -->
+<div class="flex justify-around items-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">9</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">MORGAN</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">10</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">SILVA</span>
+</div>
+</div>
+<!-- Midfield -->
+<div class="flex justify-around items-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">7</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">BLAKE</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">8</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">WARD</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">6</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">PARK</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">11</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">ROSS</span>
+</div>
+</div>
+<!-- Defense -->
+<div class="flex justify-around items-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">2</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">REED</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">4</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">DIAZ</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">5</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">LEE</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg shadow-primary/40 ring-4 ring-primary/20">3</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">COOK</span>
+</div>
+</div>
+<!-- Goalkeeper -->
+<div class="flex justify-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary font-bold shadow-lg shadow-tertiary/40 ring-4 ring-tertiary/20">1</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-tertiary transition-colors uppercase">Foster</span>
+</div>
+</div>
+</div>
+<!-- Key Note Side -->
+</div>
+
+<!-- Away Team Formation (4-3-3) -->
+<div class="lg:col-span-6 bg-surface-container-low rounded-xl p-6 relative overflow-hidden flex flex-col border border-white/5">
+<div class="flex justify-between items-center mb-8 relative z-10">
+<span class="text-on-surface-variant font-label text-sm">Deportivo Garré</span>
+<div class="flex items-center gap-3">
+<h3 class="text-headline-sm font-display font-bold text-right">4-3-3 BALANCED</h3>
+<span class="w-2 h-8 bg-secondary rounded-full"></span>
+</div>
+</div>
+<!-- Tactical Board -->
+<div class="flex-1 min-h-[500px] relative rounded-lg bg-surface-container-lowest border border-white/5 pitch-pattern p-8 flex flex-col justify-between overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-secondary/5 to-transparent pointer-events-none"></div>
+<!-- Forwards -->
+<div class="flex justify-around items-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">7</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">VEGA</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">9</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">TORRES</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">11</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">LUZ</span>
+</div>
+</div>
+<!-- Midfield -->
+<div class="flex justify-around items-center px-8">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">8</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">RIOS</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">5</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">SOSA</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">10</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">MEZA</span>
+</div>
+</div>
+<!-- Defense -->
+<div class="flex justify-around items-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">3</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">LARA</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">4</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">ORTEGA</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">2</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">CRUZ</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-lg shadow-secondary/40 ring-4 ring-secondary/20">22</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-secondary transition-colors">RUIZ</span>
+</div>
+</div>
+<!-- Goalkeeper -->
+<div class="flex justify-center">
+<div class="flex flex-col items-center gap-2 group cursor-pointer transition-transform hover:scale-110">
+<div class="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary font-bold shadow-lg shadow-tertiary/40 ring-4 ring-tertiary/20">13</div>
+<span class="text-xs font-bold text-on-surface group-hover:text-tertiary transition-colors uppercase">Blanco</span>
+</div>
+</div>
+</div>
+<!-- Key Note Side -->
+</div>
+</div>
+<!-- Substitutes / Depth Chart Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+<div class="bg-surface-container-low rounded-xl p-6">
+<h4 class="text-label-lg font-bold text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">groups</span>
+                    CECIL A. ROBERTS BENCH
+                </h4>
+<div class="grid grid-cols-2 gap-x-8 gap-y-2">
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">12. Harrison (GK)</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">15. Miller</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">18. Tanaka</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">21. Bennett</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6">
+<h4 class="text-label-lg font-bold text-secondary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">groups</span>
+                    DEPORTIVO GARRÉ BENCH
+                </h4>
+<div class="grid grid-cols-2 gap-x-8 gap-y-2">
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">1. Bravo (GK)</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">14. Lopez</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">17. Navarro</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-white/5">
+<span class="text-sm font-medium">25. Mendez</span>
+<span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface/90 backdrop-blur-2xl flex justify-around items-center px-4 pb-4 pt-2 shadow-2xl shadow-primary/10 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">play_circle</span>
+<span class="text-label-sm font-label">Live</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 active:scale-95" href="#">
+<span class="material-symbols-outlined">sports_soccer</span>
+<span class="text-label-sm font-label">Matches</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="text-label-sm font-label">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">table_chart</span>
+<span class="text-label-sm font-label">Standings</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for tactical elements
+        document.querySelectorAll('.group.cursor-pointer').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                const icon = el.querySelector('div');
+                icon.style.transform = 'translateY(-4px) scale(1.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                const icon = el.querySelector('div');
+                icon.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body></html>

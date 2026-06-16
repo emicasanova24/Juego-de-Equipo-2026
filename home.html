@@ -135,7 +135,7 @@
 <section class="uppercase col-span-2 glass-panel p-5 rounded-2xl flex flex-col shadow-2xl" data-purpose="roster-home">
 
 <div class="flex items-center space-x-2 mb-4 border-b border-gray-700 pb-3">
-<div class="w-2 h-6 bg-red-600"></div>
+<div id="home-color-bar" class="w-2 h-6" style="background:#019604"></div>
 
 <h3 id="home-team" class="text-lg font-black text-white uppercase tracking-tighter"></h3>
 
@@ -154,26 +154,26 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2 flex-grow">
 <!-- Home Team -->
 <div class="flex items-center space-x-4 flex-1">
 <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner">
-<img alt="CAQ Logo" class="w-full h-full object-contain" src="equipos\logos\roberts.png"/>
+<img id="sb-local-logo" alt="Local Logo" class="w-full h-full object-contain" src=""/>
 </div>
-<span class="font-black text-2xl uppercase tracking-tighter leading-tight">Cecil A. Roberts</span>
+<span id="sb-local-name" class="font-black text-2xl uppercase tracking-tighter leading-tight"></span>
 </div>
 <!-- Score -->
-<div class="flex items-center space-x-6 px-4 text-[72px] leading-none font-black italic text-brandPurple drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">
-<span class="opacity-0 ">0</span>
+<div class="flex items-center space-x-6 px-4 text-[60px] leading-none font-black text-brandPurple drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">
+<span id="sb-local-score">0</span>
 <span class="text-white opacity-20">-</span>
-<span class="opacity-0 ">1</span>
+<span id="sb-away-score">0</span>
 </div>
 <!-- Away Team -->
 <div class="flex items-center space-x-4 flex-1 justify-end text-right">
-<span class="font-black text-2xl uppercase tracking-tighter leading-tight">Unión de Bonifacio</span>
+<span id="sb-away-name" class="font-black text-2xl uppercase tracking-tighter leading-tight"></span>
 <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner">
-<img alt="AA Logo" class="w-full h-full object-contain" src="equipos\logos\bonifacio.png"/>
+<img id="sb-away-logo" alt="Away Logo" class="w-full h-full object-contain" src=""/>
 </div>
 </div>
 </div>
 <div class="text-center mt-2">
-<span class="bg-gray-800/80 backdrop-blur-md text-brandPurple px-5 py-1 rounded-full text-xs font-black uppercase tracking-[0.3em] border border-brandPurple/20">EN VIVO • SEGUNDO TIEMPO</span>
+<span id="sb-status" class="bg-gray-800/80 backdrop-blur-md text-brandPurple px-5 py-1 rounded-full text-xs font-black uppercase tracking-[0.3em] border border-brandPurple/20"></span>
 </div>
 </div>
 <!-- Tactical Pitch View (16:9 Aspect Ratio) -->
@@ -183,55 +183,9 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2 flex-grow">
 <div class="absolute inset-y-0 left-1/2 w-[2px] bg-white/10 pointer-events-none"></div>
 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border-[2px] border-white/10 rounded-full pointer-events-none"></div>
 
-<!-- Player Positions -->
-
-<!-- HOME TEAM -->
-
-<!-- GK -->
-<div class="absolute left-[8%] top-[50%] -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-black border-[3px] border-white shadow-xl text-sm">1</div>
-
-<!-- DEFENSE -->
-<div class="absolute left-[20%] top-[15%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">4</div>
-<div class="absolute left-[20%] top-[35%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">2</div>
-<div class="absolute left-[20%] top-[65%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">6</div>
-<div class="absolute left-[20%] top-[85%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">3</div>
-
-<!-- DOUBLE PIVOT -->
-<div class="absolute left-[29%] top-[36%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">5</div>
-<div class="absolute left-[29%] top-[64%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">7</div>
-
-<!-- ENGANCHE -->
-<div class="absolute left-[34%] top-[50%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">10</div>
-
-<!-- ATTACK -->
-<div class="absolute left-[42%] top-[25%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">9</div>
-<div class="absolute left-[43%] top-[50%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">11</div>
-<div class="absolute left-[42%] top-[75%] -translate-y-1/2 w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold border-2 border-white text-sm">8</div>
-
-
-
-<!-- AWAY TEAM -->
-
-<!-- GK -->
-<div class="absolute right-[8%] top-[50%] -translate-y-1/2 w-10 h-10 bg-black rounded-full flex items-center justify-center font-black border-[3px] border-white shadow-xl text-sm text-white">1</div>
-
-<!-- DEFENSE -->
-<div class="absolute right-[20%] top-[15%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">4</div>
-<div class="absolute right-[20%] top-[35%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">2</div>
-<div class="absolute right-[20%] top-[65%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">6</div>
-<div class="absolute right-[20%] top-[85%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">3</div>
-
-<!-- MIDFIELD LINE -->
-<div class="absolute right-[29%] top-[20%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">8</div>
-<div class="absolute right-[29%] top-[40%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">5</div>
-<div class="absolute right-[29%] top-[60%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">11</div>
-<div class="absolute right-[29%] top-[80%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">7</div>
-
-<!-- ENGANCHE -->
-<div class="absolute right-[36%] top-[50%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">10</div>
-
-<!-- STRIKER -->
-<div class="absolute right-[42%] top-[50%] -translate-y-1/2 w-9 h-9 bg-black rounded-full flex items-center justify-center font-bold border-2 border-white text-sm text-white">9</div>
+<!-- Player Positions (dynamic) -->
+<div id="pitch-home"></div>
+<div id="pitch-away"></div>
 
 </div>
 <!-- RESULTS IN SIMULTANEOUS (Relocated below) -->
@@ -244,54 +198,7 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2 flex-grow">
 <div class="text-[10px] font-bold text-white/50 tracking-widest uppercase">apertura 2026</div>
 </div>
 
-<div class="grid grid-cols-2 gap-x-4 gap-y-2">
-
-<!-- Match 1 -->
-<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
-<span class="truncate">Atlético Quenuma</span>
-<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">1-0</span>
-<span class="truncate text-right">La Gloria</span>
-</div>
-
-<!-- Match 2 -->
-<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
-<span class="truncate">Atlético Argentino</span>
-<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-1</span>
-<span class="truncate text-right">Deportivo Maza</span>
-</div>
-
-<!-- Match 3 -->
-<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
-<span class="truncate">El Ceibo</span>
-<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-1</span>
-<span class="truncate text-right">Unión Deportiva</span>
-</div>
-
-<!-- Match 4 -->
-<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
-<span class="truncate">Salazar FC</span>
-<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-0</span>
-<span class="truncate text-right">Villa del Parque</span>
-</div>
-
-<!-- Match 5 -->
-<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
-<span class="truncate">Juventud Unida</span>
-<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-3</span>
-<span class="truncate text-right">Deportivo Garré</span>
-</div>
-
-<!-- Match 6 -->
-<div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex justify-between items-center text-[13px] font-bold">
-<span class="truncate">Deportivo 17</span>
-<span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black mx-2">0-0</span>
-<span class="truncate text-right">Atlético Argentino</span>
-</div>
-
-<!-- Equipo Libre -->
-<div class="bg-black/20 px-3 py-2 rounded-xl border border-white/5 flex justify-center items-center text-[13px] font-bold col-span-2">
-<span class="truncate text-white/70">LIBRE: Jorge Newbery</span>
-</div>
+<div id="results-grid" class="grid grid-cols-2 gap-x-4 gap-y-2">
 </div>
 
 </div>
@@ -301,11 +208,11 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2 flex-grow">
 <div class="flex flex-col space-y-1 px-4" data-purpose="match-info-labels">
 <div class="flex items-center justify-between border-b border-white/10 pb-1">
 <span class="text-brandPurple font-black uppercase tracking-[0.2em] text-[10px]">ÁRBITRO</span>
-<span class="text-xl font-black italic uppercase tracking-tighter">JERÓNIMO GALLO</span>
+<span id="info-referee" class="text-xl font-black italic uppercase tracking-tighter"></span>
 </div>
 <div class="flex items-center justify-between pt-0.5">
 <span class="text-brandPurple font-black uppercase tracking-[0.2em] text-[10px]">ESTADIO</span>
-<span class="text-xl font-black italic uppercase tracking-tighter text-right">VILLA DEL PARQUE - CASBAS</span>
+<span id="info-stadium" class="text-xl font-black italic uppercase tracking-tighter text-right"></span>
 </div>
 </div>
 </section>
@@ -313,7 +220,7 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2 flex-grow">
 <section class="uppercase col-span-2 glass-panel p-5 rounded-2xl flex flex-col shadow-2xl" data-purpose="roster-away">
 
 <div class="flex items-center space-x-2 mb-4 border-b border-gray-700 pb-3">
-<div class="w-2 h-6 bg-white"></div>
+<div id="away-color-bar" class="w-2 h-6" style="background:#FFFFFF"></div>
 <h3 class="text-lg font-black text-white uppercase tracking-tighter" id="away-team"></h3>
 </div>
 
@@ -329,16 +236,29 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2">
 <div class="sponsor-highlight w-full py-6 text-center shadow-lg relative z-10">
 <span class="text-xl font-black tracking-[0.3em] uppercase text-white drop-shadow-md">SPONSORS OFICIALES</span>
 </div>
-<div class="flex flex-col items-center p-6 space-y-8 overflow-y-auto custom-scroll bg-gradient-to-b from-black/20 via-[rgb(139_92_246/0.8)] to-white/80">
-<div class="text-center leading-tight mb-2">
-<span class="text-4xl font-black italic block uppercase tracking-tighter">APERTURA</span>
-<span class="text-2xl font-black italic text-brandPurple block uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(139,92,246,0.4)]">LIGA CULTURA Y DEPORTIVA DE TRES LOMAS</span>
-</div>
+<div class="flex flex-col items-center p-6 space-y-4 overflow-y-auto custom-scroll">
+
 <!-- Premium Sponsor Logos -->
-<div class="grid grid-cols-1 gap-6 w-full px-2 !mt-0">
-<div class="w-full flex justify-center">
-<img alt="PUBLI" class="max-w-[100%] max-h-auto object-contain" src="sponsors\PUBLI.png"/>
-</div>
+<div class="grid grid-cols-2 gap-[10px] w-full px-2 !mt-0">
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 1" class="max-w-full max-h-12 object-contain" src="sponsors/1.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 2" class="max-w-full max-h-12 object-contain" src="sponsors/2.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 3" class="max-w-full max-h-12 object-contain" src="sponsors/3.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 4" class="max-w-full max-h-12 object-contain" src="sponsors/4.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 5" class="max-w-full max-h-12 object-contain" src="sponsors/5.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 6" class="max-w-full max-h-12 object-contain" src="sponsors/6.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 7" class="w-[80px] h-auto object-contain" src="sponsors/7.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 8" class="max-w-full max-h-12 object-contain" src="sponsors/8.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 9" class="max-w-full max-h-12 object-contain" src="sponsors/9.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 10" class="max-w-full max-h-12 object-contain" src="sponsors/10.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 11" class="w-[80px] h-auto object-contain" src="sponsors/11.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 12" class="w-[80px] h-auto object-contain" src="sponsors/12.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 13" class="w-[80px] h-auto object-contain" src="sponsors/13.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 14" class="w-[80px] h-auto object-contain" src="sponsors/14.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 15" class="w-[80px] h-auto object-contain" src="sponsors/15.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 16" class="max-w-full max-h-12 object-contain" src="sponsors/16.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 17" class="max-w-full max-h-12 object-contain" src="sponsors/17.png"/></div>
+<div class="w-full flex justify-center items-center"><img alt="Sponsor 18" class="max-w-full max-h-12 object-contain" src="sponsors/18.png"/></div>
+<div class="w-full flex justify-center items-center col-span-2"><img alt="Sponsor 19" class="w-[100px] h-auto object-contain" src="sponsors/19.png"/></div>
 </div>
 </div>
 </div>
@@ -395,9 +315,117 @@ class="text-[15px] space-y-3 overflow-y-auto custom-scroll pr-2">
 </div>
 </footer>
 
-<script src="js/equipos.js"></script>
-<script src="js/resultados.js"></script>
-<script src="js/formaciones.js"></script>
+<script src="./js/overlay-client.js"></script>
+<script>
+// ── Formation position maps [x%, y%] — 11 positions including GK ──
+const FORMATIONS = {
+  "4-4-2":   [[8,50],[20,15],[20,38],[20,62],[20,85],[32,15],[32,38],[32,62],[32,85],[43,35],[43,65]],
+  "4-3-3":   [[8,50],[20,15],[20,38],[20,62],[20,85],[31,25],[31,50],[31,75],[42,20],[42,50],[42,80]],
+  "4-2-3-1": [[8,50],[19,15],[19,38],[19,62],[19,85],[27,35],[27,65],[35,20],[35,50],[35,80],[43,50]],
+  "4-3-1-2": [[8,50],[19,15],[19,38],[19,62],[19,85],[28,25],[28,50],[28,75],[36,50],[43,35],[43,65]],
+  "4-1-4-1": [[8,50],[19,15],[19,38],[19,62],[19,85],[26,50],[34,15],[34,38],[34,62],[34,85],[43,50]],
+  "4-1-3-2": [[8,50],[19,15],[19,38],[19,62],[19,85],[27,50],[34,25],[34,50],[34,75],[43,35],[43,65]],
+  "4-4-1-1": [[8,50],[19,15],[19,38],[19,62],[19,85],[29,15],[29,38],[29,62],[29,85],[37,50],[43,50]],
+  "4-5-1":   [[8,50],[19,15],[19,38],[19,62],[19,85],[31,10],[31,30],[31,50],[31,70],[31,90],[43,50]],
+  "3-5-2":   [[8,50],[19,25],[19,50],[19,75],[30,10],[30,30],[30,50],[30,70],[30,90],[42,35],[42,65]],
+  "3-4-3":   [[8,50],[19,25],[19,50],[19,75],[30,15],[30,38],[30,62],[30,85],[42,20],[42,50],[42,80]],
+  "3-4-1-2": [[8,50],[19,25],[19,50],[19,75],[28,15],[28,38],[28,62],[28,85],[37,50],[43,35],[43,65]],
+  "5-3-2":   [[8,50],[19,10],[19,30],[19,50],[19,70],[19,90],[32,25],[32,50],[32,75],[42,35],[42,65]],
+  "5-4-1":   [[8,50],[19,10],[19,30],[19,50],[19,70],[19,90],[32,15],[32,38],[32,62],[32,85],[43,50]],
+  "5-2-3":   [[8,50],[19,10],[19,30],[19,50],[19,70],[19,90],[30,35],[30,65],[42,20],[42,50],[42,80]]
+};
+
+function renderPitch(team, containerId, side) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const positions = FORMATIONS[team.formacion] || FORMATIONS["4-3-3"];
+  const color = team.color || (side === 'home' ? '#019604' : '#FFFFFF');
+  const numColor = team.colorNumero || '#ffffff';
+  const jugadores = team.jugadores || [];
+
+  container.innerHTML = positions.map((pos, i) => {
+    const num = jugadores[i]?.numero || (i + 1);
+    const isGK = i === 0;
+    const size = isGK ? 'w-10 h-10 border-[3px] font-black shadow-xl' : 'w-9 h-9 border-2 font-bold';
+    const posStyle = side === 'home'
+      ? `left:${pos[0]}%;top:${pos[1]}%`
+      : `right:${pos[0]}%;top:${pos[1]}%`;
+    return `<div class="absolute -translate-y-1/2 ${size} rounded-full flex items-center justify-center text-sm" style="${posStyle};background:${color};color:${numColor};border-color:${numColor}">${num}</div>`;
+  }).join('');
+}
+
+window.onOverlayState = function(state) {
+  // ── Scoreboard ──
+  const el = (id) => document.getElementById(id);
+  el('sb-local-logo').src = state.local.logo || '';
+  el('sb-local-name').textContent = state.local.nombre || '';
+  el('sb-local-score').textContent = state.local.goles ?? 0;
+  el('sb-away-logo').src = state.visitante.logo || '';
+  el('sb-away-name').textContent = state.visitante.nombre || '';
+  el('sb-away-score').textContent = state.visitante.goles ?? 0;
+  el('sb-status').textContent = state.match.status === 'NO INICIADO' ? '' : 'EN VIVO • ' + state.match.status;
+
+  // ── Árbitro / Estadio ──
+  el('info-referee').textContent = state.match.referee || '';
+  el('info-stadium').textContent = state.match.stadium || '';
+
+  // ── Colores de equipo ──
+  el('home-color-bar').style.background = state.local.color || '#019604';
+  el('away-color-bar').style.background = state.visitante.color || '#FFFFFF';
+
+  // ── Pitch (formación dinámica) ──
+  renderPitch(state.local, 'pitch-home', 'home');
+  renderPitch(state.visitante, 'pitch-away', 'away');
+
+  // ── Rosters ──
+  renderRoster(state.local, 'home-roster', 'home-team');
+  renderRoster(state.visitante, 'away-roster', 'away-team');
+
+  // ── Resultados simultáneos ──
+  const grid = el('results-grid');
+  grid.innerHTML = '';
+  (state.resultados || []).forEach(r => {
+    grid.innerHTML += `
+      <div class="bg-black/40 px-3 py-2 rounded-xl border border-white/5 flex items-center gap-2 text-[13px] font-bold min-w-0">
+        <span class="flex flex-1 min-w-0 items-center gap-1 overflow-hidden">${r.logoLocal ? `<img src="${r.logoLocal}" style="height:18px;flex-shrink:0">` : ''}<span class="truncate block">${r.local}</span></span>
+        <span class="text-brandPurple bg-brandPurple/10 px-2 py-0.5 rounded font-black shrink-0">${r.gl}-${r.gv}</span>
+        <span class="flex flex-1 min-w-0 items-center gap-1 justify-end overflow-hidden"><span class="truncate block text-right">${r.visitante}</span>${r.logoVisitante ? `<img src="${r.logoVisitante}" style="height:18px;flex-shrink:0">` : ''}</span>
+      </div>`;
+  });
+  if (state.libre) {
+    grid.innerHTML += `
+      <div class="bg-black/20 px-3 py-2 rounded-xl border border-white/5 flex justify-center items-center text-[13px] font-bold col-span-2">
+        <span class="truncate text-white/70">LIBRE: ${state.libre}</span>
+      </div>`;
+  }
+};
+
+function renderRoster(team, rosterId, titleId) {
+  const container = document.getElementById(rosterId);
+  const title = document.getElementById(titleId);
+  if (!container || !title) return;
+  title.textContent = team.nombre || '';
+  container.innerHTML = '';
+  function crearJugador(j, numero, suplente) {
+    const row = document.createElement('div');
+    row.className = `flex justify-between items-center py-1 border-b border-white/5 ${suplente ? 'opacity-50 italic' : ''}`;
+    const nombre = document.createElement('span');
+    const subIcon = j.entro ? ' \u25b2' : (j.sustituido ? ' \u25bc' : '');
+    const subColor = j.entro ? 'color:#22c55e' : (j.sustituido ? 'color:#ef4444' : '');
+    nombre.innerHTML = (j.numero || numero) + '. ' + (j.nombre || '').replace(/</g,'&lt;') + (subIcon ? ` <span style="font-size:0.7em;${subColor}">${subIcon}</span>` : '');
+    const stats = document.createElement('div');
+    stats.className = 'flex items-center gap-1';
+    if (j.goles) stats.innerHTML += '⚽'.repeat(j.goles);
+    if (j.amarilla) stats.innerHTML += '<div class="w-3 h-4 bg-yellow-400 rounded-sm shadow-sm"></div>';
+    if (j.roja) stats.innerHTML += '<div class="w-3 h-4 bg-red-600 rounded-sm shadow-sm"></div>';
+    row.appendChild(nombre);
+    row.appendChild(stats);
+    return row;
+  }
+  (team.jugadores || []).forEach((j, i) => container.appendChild(crearJugador(j, i + 1, false)));
+  (team.suplentes || []).forEach((j, i) => container.appendChild(crearJugador(j, i + (team.jugadores?.length || 0) + 1, true)));
+}
+</script>
 
 <!-- END: FooterSection -->
 </body></html>

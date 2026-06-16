@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Formaciones</title>
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: transparent;
+    color: white;
+    text-transform: uppercase;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+.equipo {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+}
+.equipo h2 {
+    margin: 0 0 15px 0;
+    font-size: 35px;
+    border-bottom: 2px solid #ffeb3b;
+    padding-bottom: 5px;
+}
+ol {
+    padding-left: 0;
+    margin: 0;
+}
+li {
+    margin-bottom: 12px;
+    font-size: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.stats {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.stats img {
+    width: 27px;
+    height: 27px;
+}
+.numero {
+    width: 30px;
+    display: inline-block;
+}
+.subtitulo {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 20px;
+    font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="container container-formaciones" id="formaciones"></div>
+<div class="subtitulo" id="arbitro"></div>
+
+<script src="/pro/assets/js/overlay-client.js"></script>
+<script>
+const container = document.getElementById("formaciones");
+const arbitroEl = document.getElementById("arbitro");
+
+function renderJugador(jugador, numero, colorNumero) {
+    const li = document.createElement("li");
+    const subIcon = jugador.entro ? ' <span style="color:#22c55e;font-size:0.75em">▲</span>' : (jugador.sustituido ? ' <span style="color:#ef4444;font-size:0.75em">▼</span>' : '');
+    const numStyle = colorNumero ? ` style="color:${colorNumero}"` : '';
+    li.innerHTML = `
+        <span class="numero"${numStyle}>${numero}.</span>
+        <span class="nombre">${jugador.nombre}${subIcon}</span>
+        <span class="stats">
+            ${"⚽".repeat(jugador.goles || 0)}
+            ${jugador.amarilla ? '<img src="/assets/amarilla.png" alt="amarilla">' : ""}
+            ${jugador.roja ? '<img src="/assets/roja.png" alt="roja">' : ""}
+        </span>
+    `;
+    return li;
+}
+
+function renderFormaciones(state) {
+    container.innerHTML = "";
+    ["local", "visitante"].forEach(side => {
+        const eq = state[side];
+        if (!eq || !eq.nombre) return;
+
+        const box = document.createElement("div");
+        box.className = "equipo";
+        box.innerHTML = `<h2>${eq.nombre}</h2><h3>Titulares</h3>`;
+
+        const olJugadores = document.createElement("ol");
+        (eq.jugadores || []).forEach((j, i) => olJugadores.appendChild(renderJugador(j, i + 1, eq.colorNumero)));
+        box.appendChild(olJugadores);
+
+        box.innerHTML += "<h3>Suplentes</h3>";
+        const olSuplentes = document.createElement("ol");
+        olSuplentes.start = (eq.jugadores || []).length + 1;
+        (eq.suplentes || []).forEach((j, i) => olSuplentes.appendChild(renderJugador(j, i + (eq.jugadores || []).length + 1, eq.colorNumero)));
+        box.appendChild(olSuplentes);
+
+        container.appendChild(box);
+    });
+    arbitroEl.textContent = state.match?.referee ? "ARBITRO: " + state.match.referee : "";
+}
+
+// Solo redibuja si cambia la data de equipos/árbitro; el resto de acciones
+// del panel (marcador, stats, etc.) no afectan a este overlay.
+let _sigForm = null;
+window.onOverlayState = function(state) {
+    const sig = JSON.stringify({ l: state.local, v: state.visitante, r: state.match?.referee });
+    if (sig === _sigForm) return;
+    _sigForm = sig;
+    renderFormaciones(state);
+};
+</script>
+</body>
+</html>

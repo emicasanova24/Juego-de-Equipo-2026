@@ -1,72 +1,593 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Panel de Control - Juego de Equipo</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    label { display: block; margin-top: 10px; }
-    input, select { width: 100%; padding: 8px; margin-top: 4px; }
-    button { margin-top: 20px; padding: 10px 20px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin — Juego de Equipo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; }
+</style>
+<script>
+tailwind.config = {
+  theme: { extend: { colors: {
+    brand: '#8B5CF6',
+    brandDark: '#6D28D9'
+  }}}
+}
+</script>
 </head>
-<body>
-  <h1>Panel de control</h1>
+<body class="bg-gray-950 text-white min-h-screen">
 
-  <label>Minuto:
-    <input type="text" id="minuto">
-  </label>
+<div class="max-w-7xl mx-auto p-6">
 
-  <label>Jugador:
-    <input type="text" id="jugador">
-  </label>
+  <!-- HEADER -->
+  <header class="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
+    <div>
+      <h1 class="text-3xl font-black uppercase tracking-tight">Panel de Control
+        <span class="text-brand">— Overlay</span>
+      </h1>
+      <p class="text-gray-500 text-sm mt-1">Administrá el partido en vivo. Los cambios se reflejan automáticamente en OBS.</p>
+    </div>
+    <div class="flex gap-3">
+      <span id="connectionBadge" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-red-900 text-red-300">Desconectado</span>
+      <button onclick="resetState()" class="bg-red-700 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-bold">Resetear</button>
+    </div>
+  </header>
 
-  <label>Evento:
-    <select id="evento">
-      <option value="gol">Gol</option>
-      <option value="amarilla">Tarjeta amarilla</option>
-      <option value="roja">Tarjeta roja</option>
-      <option value="cambio">Cambio</option>
-    </select>
-  </label>
+  <!-- MATCH INFO -->
+  <section class="bg-gray-900 rounded-2xl p-6 mb-6">
+    <h2 class="text-lg font-black text-brand uppercase tracking-wider mb-4">Partido</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-xs text-gray-400 mb-1 uppercase">Estado</label>
+        <select id="matchStatus" onchange="updateMatch()" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm">
+          <option value="NO INICIADO">NO INICIADO</option>
+          <option value="PRIMER TIEMPO">PRIMER TIEMPO</option>
+          <option value="ENTRETIEMPO">ENTRETIEMPO</option>
+          <option value="SEGUNDO TIEMPO">SEGUNDO TIEMPO</option>
+          <option value="FINALIZADO">FINALIZADO</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-400 mb-1 uppercase">Torneo</label>
+        <input id="matchTournament" onchange="updateMatch()" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm" value="APERTURA 2026">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-400 mb-1 uppercase">Árbitro</label>
+        <input id="matchReferee" onchange="updateMatch()" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-400 mb-1 uppercase">Estadio</label>
+        <input id="matchStadium" onchange="updateMatch()" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm">
+      </div>
+    </div>
+  </section>
 
-  <button onclick="enviarEvento()">Enviar evento</button>
+  <!-- MARCADOR -->
+  <section class="bg-gray-900 rounded-2xl p-6 mb-6">
+    <h2 class="text-lg font-black text-brand uppercase tracking-wider mb-4">Marcador</h2>
+    <div class="flex items-center justify-center gap-6">
+      <!-- Local -->
+      <div class="text-center flex-1">
+        <select id="localTeam" onchange="changeTeam('local')" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-2 font-bold"></select>
+        <img id="logoLocalAdmin" src="" alt="" class="w-16 h-16 object-contain mx-auto mb-2 rounded" style="display:none">
+        <div class="flex items-center justify-center gap-4 mb-2">
+          <div class="flex items-center gap-1">
+            <label class="text-xs text-gray-400 uppercase">Color</label>
+            <input type="color" id="localColor" value="#019604" onchange="changeColor('local',this.value)"
+              class="w-8 h-8 rounded cursor-pointer border border-gray-600 bg-transparent">
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-xs text-gray-400 uppercase">Nro.</label>
+            <input type="color" id="localColorNumero" value="#ffffff" onchange="changeNumeroColor('local',this.value)"
+              class="w-8 h-8 rounded cursor-pointer border border-gray-600 bg-transparent">
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-4">
+          <button onclick="changeScore('local',-1)" class="bg-gray-700 hover:bg-gray-600 w-10 h-10 rounded-full text-xl font-bold">−</button>
+          <span id="localScore" class="text-6xl font-black text-brand">0</span>
+          <button onclick="changeScore('local',1)" class="bg-brand hover:bg-brandDark w-10 h-10 rounded-full text-xl font-bold">+</button>
+        </div>
+      </div>
+      <span class="text-4xl font-black text-gray-600">VS</span>
+      <!-- Visitante -->
+      <div class="text-center flex-1">
+        <select id="visitanteTeam" onchange="changeTeam('visitante')" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-2 font-bold"></select>
+        <img id="logoVisitanteAdmin" src="" alt="" class="w-16 h-16 object-contain mx-auto mb-2 rounded" style="display:none">
+        <div class="flex items-center justify-center gap-4 mb-2">
+          <div class="flex items-center gap-1">
+            <label class="text-xs text-gray-400 uppercase">Color</label>
+            <input type="color" id="visitanteColor" value="#FFFFFF" onchange="changeColor('visitante',this.value)"
+              class="w-8 h-8 rounded cursor-pointer border border-gray-600 bg-transparent">
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-xs text-gray-400 uppercase">Nro.</label>
+            <input type="color" id="visitanteColorNumero" value="#ffffff" onchange="changeNumeroColor('visitante',this.value)"
+              class="w-8 h-8 rounded cursor-pointer border border-gray-600 bg-transparent">
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-4">
+          <button onclick="changeScore('visitante',-1)" class="bg-gray-700 hover:bg-gray-600 w-10 h-10 rounded-full text-xl font-bold">−</button>
+          <span id="visitanteScore" class="text-6xl font-black text-brand">0</span>
+          <button onclick="changeScore('visitante',1)" class="bg-brand hover:bg-brandDark w-10 h-10 rounded-full text-xl font-bold">+</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD0qGp051XQV84z460YlmJ5p4qCsScTfoM",
-      authDomain: "juego-de-equipo.firebaseapp.com",
-      projectId: "juego-de-equipo",
-      databaseURL: "https://juego-de-equipo-default-rtdb.firebaseio.com",
-      storageBucket: "juego-de-equipo.firebasestorage.app",
-      messagingSenderId: "5358754385",
-      appId: "1:5358754385:web:b3ae91d0eb1124dce4f670",
-      measurementId: "G-K79EV7NDPP"
-    };
+  <!-- FORMACIONES -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div id="panelLocal" class="bg-gray-900 rounded-2xl p-6">
+      <h2 class="text-lg font-black text-brand uppercase tracking-wider mb-4">Formación Local</h2>
+      <select id="formacionLocal" onchange="changeFormacion('local',this.value)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-4 font-bold">
+        <option value="4-3-3">4-3-3</option><option value="4-4-2">4-4-2</option><option value="4-2-3-1">4-2-3-1</option>
+        <option value="4-3-1-2">4-3-1-2</option><option value="4-1-4-1">4-1-4-1</option><option value="4-1-3-2">4-1-3-2</option>
+        <option value="4-4-1-1">4-4-1-1</option><option value="4-5-1">4-5-1</option><option value="3-5-2">3-5-2</option>
+        <option value="3-4-3">3-4-3</option><option value="3-4-1-2">3-4-1-2</option><option value="5-3-2">5-3-2</option>
+        <option value="5-4-1">5-4-1</option><option value="5-2-3">5-2-3</option>
+      </select>
+      <div id="formLocal"></div>
+      <button onclick="addPlayer('local','jugadores')" class="mt-3 text-sm text-brand hover:underline">+ Agregar titular</button>
+      <h3 class="text-sm font-bold text-gray-400 mt-4 mb-2 uppercase">Suplentes</h3>
+      <div id="suplLocal"></div>
+      <button onclick="addPlayer('local','suplentes')" class="mt-2 text-sm text-brand hover:underline">+ Agregar suplente</button>
+    </div>
+    <div id="panelVisitante" class="bg-gray-900 rounded-2xl p-6">
+      <h2 class="text-lg font-black text-brand uppercase tracking-wider mb-4">Formación Visitante</h2>
+      <select id="formacionVisitante" onchange="changeFormacion('visitante',this.value)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-4 font-bold">
+        <option value="4-3-3">4-3-3</option><option value="4-4-2">4-4-2</option><option value="4-2-3-1">4-2-3-1</option>
+        <option value="4-3-1-2">4-3-1-2</option><option value="4-1-4-1">4-1-4-1</option><option value="4-1-3-2">4-1-3-2</option>
+        <option value="4-4-1-1">4-4-1-1</option><option value="4-5-1">4-5-1</option><option value="3-5-2">3-5-2</option>
+        <option value="3-4-3">3-4-3</option><option value="3-4-1-2">3-4-1-2</option><option value="5-3-2">5-3-2</option>
+        <option value="5-4-1">5-4-1</option><option value="5-2-3">5-2-3</option>
+      </select>
+      <div id="formVisitante"></div>
+      <button onclick="addPlayer('visitante','jugadores')" class="mt-3 text-sm text-brand hover:underline">+ Agregar titular</button>
+      <h3 class="text-sm font-bold text-gray-400 mt-4 mb-2 uppercase">Suplentes</h3>
+      <div id="suplVisitante"></div>
+      <button onclick="addPlayer('visitante','suplentes')" class="mt-2 text-sm text-brand hover:underline">+ Agregar suplente</button>
+    </div>
+  </section>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  <!-- RESULTADOS SIMULTÁNEOS -->
+  <section class="bg-gray-900 rounded-2xl p-6 mb-6">
+    <h2 class="text-lg font-black text-brand uppercase tracking-wider mb-4">Resultados Simultáneos</h2>
+    <div id="resultadosList"></div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="addResultado()" class="bg-brand hover:bg-brandDark px-4 py-2 rounded-lg text-sm font-bold">+ Agregar partido</button>
+      <div class="flex items-center gap-2 ml-auto">
+        <label class="text-xs text-gray-400 uppercase">Libre:</label>
+        <select id="libreTeam" onchange="updateResultados()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm">
+          <option value="">Ninguno</option>
+        </select>
+      </div>
+    </div>
+  </section>
 
-    function enviarEvento() {
-      const minuto = document.getElementById('minuto').value;
-      const jugador = document.getElementById('jugador').value;
-      const evento = document.getElementById('evento').value;
+</div>
 
-      const nuevoEvento = {
-        minuto,
-        jugador,
-        evento,
-        timestamp: Date.now()
-      };
+<script>
+const API = window.location.origin;
+let state = null;
+let equipos = {};
 
-      db.ref('eventos').push(nuevoEvento);
-      
-      document.getElementById('minuto').value = '';
-      document.getElementById('jugador').value = '';
-      document.getElementById('evento').value = 'gol';
+// ── LocalStorage backup ──
+function saveToLocal() {
+  try { localStorage.setItem('overlay-state-backup', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadFromLocal() {
+  try {
+    const raw = localStorage.getItem('overlay-state-backup');
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+// ── Inicialización ──
+async function init() {
+  try {
+    const eqRes = await fetch(API + '/overlay-equipos');
+    equipos = await eqRes.json();
+
+    const stRes = await fetch(API + '/overlay-state');
+    state = await stRes.json();
+
+    // Si backend devolvió state vacío pero hay backup local con datos, restaurar
+    const backup = loadFromLocal();
+    if (backup && !state.local.nombre && backup.local.nombre) {
+      state = backup;
+      await fetch(API + '/overlay-state', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      });
     }
-  </script>
+
+    saveToLocal();
+    ensureNumeros();
+    // Persistir numeros asignados
+    await pushSide('local');
+    await pushSide('visitante');
+    populateTeamSelectors();
+    renderAll();
+    connectSSE();
+    document.getElementById('connectionBadge').textContent = 'Conectado';
+    document.getElementById('connectionBadge').className = 'px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-green-900 text-green-300';
+  } catch (err) {
+    console.error('Error init:', err);
+    // Sin conexión al backend: cargar desde localStorage
+    const backup = loadFromLocal();
+    if (backup) {
+      state = backup;
+      populateTeamSelectors();
+      renderAll();
+      document.getElementById('connectionBadge').textContent = 'Offline (local)';
+      document.getElementById('connectionBadge').className = 'px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-yellow-900 text-yellow-300';
+    }
+  }
+}
+
+function connectSSE() {
+  const es = new EventSource(API + '/overlay-events');
+  es.onmessage = (e) => {
+    state = JSON.parse(e.data);
+    ensureNumeros();
+    saveToLocal();
+    renderAll();
+  };
+  es.onerror = () => {
+    document.getElementById('connectionBadge').textContent = 'Desconectado';
+    document.getElementById('connectionBadge').className = 'px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-red-900 text-red-300';
+    es.close();
+    setTimeout(connectSSE, 3000);
+  };
+}
+
+// ── Populate selectors ──
+function ensureNumeros() {
+  ['local','visitante'].forEach(side => {
+    (state[side].jugadores || []).forEach((j, i) => { if (!j.numero) j.numero = i + 1; });
+    const base = (state[side].jugadores || []).length;
+    (state[side].suplentes || []).forEach((j, i) => { if (!j.numero) j.numero = base + i + 1; });
+  });
+}
+
+function populateTeamSelectors() {
+  const names = Object.keys(equipos).sort();
+  const optHtml = '<option value="">— Elegir equipo —</option>' +
+    names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  document.getElementById('localTeam').innerHTML = optHtml;
+  document.getElementById('visitanteTeam').innerHTML = optHtml;
+  document.getElementById('libreTeam').innerHTML = '<option value="">Ninguno</option>' +
+    names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+}
+
+// ── Render all sections from state ──
+function renderAll() {
+  if (!state) return;
+  // Match
+  document.getElementById('matchStatus').value = state.match.status;
+  document.getElementById('matchTournament').value = state.match.tournament || '';
+  document.getElementById('matchReferee').value = state.match.referee || '';
+  document.getElementById('matchStadium').value = state.match.stadium || '';
+  // Scores
+  document.getElementById('localTeam').value = state.local.nombre;
+  document.getElementById('visitanteTeam').value = state.visitante.nombre;
+  const imgL = document.getElementById('logoLocalAdmin');
+  if (imgL && state.local.logo) { imgL.src = state.local.logo; imgL.style.display = ''; } else if (imgL) imgL.style.display = 'none';
+  const imgV = document.getElementById('logoVisitanteAdmin');
+  if (imgV && state.visitante.logo) { imgV.src = state.visitante.logo; imgV.style.display = ''; } else if (imgV) imgV.style.display = 'none';
+  document.getElementById('localScore').textContent = state.local.goles;
+  document.getElementById('visitanteScore').textContent = state.visitante.goles;
+  document.getElementById('localColor').value = state.local.color || '#019604';
+  document.getElementById('visitanteColor').value = state.visitante.color || '#FFFFFF';
+  document.getElementById('localColorNumero').value = state.local.colorNumero || '#ffffff';
+  document.getElementById('visitanteColorNumero').value = state.visitante.colorNumero || '#ffffff';
+  document.getElementById('formacionLocal').value = state.local.formacion || '4-3-3';
+  document.getElementById('formacionVisitante').value = state.visitante.formacion || '4-4-2';
+  // Formations
+  renderFormation('local', 'formLocal', 'jugadores');
+  renderFormation('local', 'suplLocal', 'suplentes');
+  renderFormation('visitante', 'formVisitante', 'jugadores');
+  renderFormation('visitante', 'suplVisitante', 'suplentes');
+  // Resultados
+  renderResultados();
+}
+
+// ── Position labels from formation ──
+function getPositionLabels(formacion) {
+  const parts = (formacion || '4-3-3').split('-').map(Number);
+  const labels = ['ARQ'];
+  const tags = ['DEF','MED','DEL','DEL'];
+  parts.forEach((count, idx) => {
+    for (let c = 0; c < count; c++) labels.push(tags[idx] || 'DEL');
+  });
+  return labels;
+}
+
+// ── Render formation rows ──
+function renderFormation(side, containerId, listKey) {
+  const list = state[side][listKey] || [];
+  const formacion = state[side].formacion || '4-3-3';
+  const posLabels = listKey === 'jugadores' ? getPositionLabels(formacion) : null;
+  const container = document.getElementById(containerId);
+  container.innerHTML = list.map((j, i) => {
+    const label = posLabels && posLabels[i] ? posLabels[i] : '';
+    const labelColor = {'ARQ':'text-yellow-400','DEF':'text-blue-400','MED':'text-green-400','DEL':'text-red-400'}[label] || 'text-gray-400';
+    const isSub = listKey === 'suplentes';
+    const entro = j.entro;     // suplente que entró a la cancha
+    const salio = j.sustituido; // titular que salió
+    const rowBorder = (listKey === 'jugadores' && entro) ? 'border-l-2 border-green-500 pl-1' : (salio ? 'border-l-2 border-red-500 pl-1 opacity-50' : '');
+    return `
+    <div class="flex items-center gap-2 mb-2 group ${rowBorder}">
+      <div class="flex flex-col gap-0.5">
+        <button onclick="movePlayer('${side}','${listKey}',${i},-1)" title="Subir"
+          class="text-gray-500 hover:text-white text-[10px] leading-none ${i === 0 ? 'invisible' : ''}">▲</button>
+        <button onclick="movePlayer('${side}','${listKey}',${i},1)" title="Bajar"
+          class="text-gray-500 hover:text-white text-[10px] leading-none ${i === list.length - 1 ? 'invisible' : ''}">▼</button>
+      </div>
+      ${label ? `<span class="text-[10px] font-black uppercase w-7 text-center ${labelColor}">${label}</span>` : ''}
+      <input type="number" min="1" max="99" value="${j.numero || (listKey === 'jugadores' ? i + 1 : i + (state[side].jugadores?.length || 0) + 1)}"
+        onchange="updatePlayer('${side}','${listKey}',${i},'numero',+this.value)"
+        class="w-11 bg-gray-800 border border-gray-700 rounded px-1 py-1 text-sm text-center font-bold">
+      <input value="${esc(j.nombre)}" onchange="updatePlayer('${side}','${listKey}',${i},'nombre',this.value)"
+        class="flex-1 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm ${salio ? 'line-through' : ''}">
+      <div class="flex items-center gap-0.5">
+        <button onclick="removeGoal('${side}','${listKey}',${i})" title="Quitar gol"
+          class="bg-gray-800 hover:bg-red-800 px-1.5 py-1 rounded-l text-xs ${j.goles ? '' : 'opacity-30 pointer-events-none'}">−</button>
+        <span class="bg-gray-800 px-1.5 py-1 text-sm min-w-[28px] text-center">${j.goles ? '⚽' + j.goles : '⚽'}</span>
+        <button onclick="addGoal('${side}','${listKey}',${i})" title="Agregar gol"
+          class="bg-gray-800 hover:bg-green-800 px-1.5 py-1 rounded-r text-xs">+</button>
+      </div>
+      <button onclick="toggleCard('${side}','${listKey}',${i},'amarilla')" title="Amarilla"
+        class="px-2 py-1 rounded text-sm ${j.amarilla ? 'bg-yellow-500 text-black' : 'bg-gray-800 hover:bg-yellow-800'}">🟨</button>
+      <button onclick="toggleCard('${side}','${listKey}',${i},'roja')" title="Roja"
+        class="px-2 py-1 rounded text-sm ${j.roja ? 'bg-red-600' : 'bg-gray-800 hover:bg-red-800'}">🟥</button>
+      ${isSub && !salio ? `<button onclick="startSubstitution('${side}',${i})" title="Sustituir titular"
+        class="px-2 py-1 rounded text-sm bg-green-800 hover:bg-green-600">🔄</button>` : ''}
+      <button onclick="removePlayer('${side}','${listKey}',${i})" title="Quitar"
+        class="text-gray-600 hover:text-red-500 text-sm opacity-0 group-hover:opacity-100">✕</button>
+    </div>
+  `}).join('');
+}
+
+// ── Render resultados ──
+function renderResultados() {
+  const list = state.resultados || [];
+  const names = Object.keys(equipos).sort();
+  const container = document.getElementById('resultadosList');
+  container.innerHTML = list.map((r, i) => `
+    <div class="flex items-center gap-2 mb-2">
+      <select onchange="updateResultado(${i},'local',this.value)" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm flex-1">
+        <option value="">Local</option>
+        ${names.map(n => `<option value="${esc(n)}" ${n === r.local ? 'selected' : ''}>${esc(n)}</option>`).join('')}
+      </select>
+      <input type="number" min="0" value="${r.gl}" onchange="updateResultado(${i},'gl',+this.value)"
+        class="w-12 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-center">
+      <span class="text-gray-500">-</span>
+      <input type="number" min="0" value="${r.gv}" onchange="updateResultado(${i},'gv',+this.value)"
+        class="w-12 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-center">
+      <select onchange="updateResultado(${i},'visitante',this.value)" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm flex-1">
+        <option value="">Visitante</option>
+        ${names.map(n => `<option value="${esc(n)}" ${n === r.visitante ? 'selected' : ''}>${esc(n)}</option>`).join('')}
+      </select>
+      <button onclick="removeResultado(${i})" class="text-gray-600 hover:text-red-500 text-sm">✕</button>
+    </div>
+  `).join('');
+  document.getElementById('libreTeam').value = state.libre || '';
+}
+
+// ═══ ACTION HANDLERS ═══
+
+async function updateMatch() {
+  await fetch(API + '/overlay-state/match', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      status: document.getElementById('matchStatus').value,
+      tournament: document.getElementById('matchTournament').value,
+      referee: document.getElementById('matchReferee').value,
+      stadium: document.getElementById('matchStadium').value
+    })
+  });
+}
+
+async function changeTeam(side) {
+  const sel = document.getElementById(side === 'local' ? 'localTeam' : 'visitanteTeam');
+  const nombre = sel.value;
+  const logo = equipos[nombre] || '';
+  await fetch(API + '/overlay-state/' + side, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre, logo })
+  });
+  const imgId = side === 'local' ? 'logoLocalAdmin' : 'logoVisitanteAdmin';
+  const img = document.getElementById(imgId);
+  if (img) { if (logo) { img.src = logo; img.style.display = ''; } else img.style.display = 'none'; }
+}
+
+async function changeColor(side, color) {
+  await fetch(API + '/overlay-state/' + side, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ color })
+  });
+}
+
+async function changeNumeroColor(side, colorNumero) {
+  await fetch(API + '/overlay-state/' + side, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ colorNumero })
+  });
+}
+
+async function changeFormacion(side, formacion) {
+  await fetch(API + '/overlay-state/' + side, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ formacion })
+  });
+}
+
+async function changeScore(side, delta) {
+  const newGoles = Math.max(0, (state[side].goles || 0) + delta);
+  await fetch(API + '/overlay-state/' + side, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ goles: newGoles })
+  });
+}
+
+async function updatePlayer(side, listKey, idx, prop, value) {
+  state[side][listKey][idx][prop] = value;
+  await pushSide(side);
+}
+
+async function addGoal(side, listKey, idx) {
+  state[side][listKey][idx].goles = (state[side][listKey][idx].goles || 0) + 1;
+  await pushSide(side);
+}
+
+async function removeGoal(side, listKey, idx) {
+  const current = state[side][listKey][idx].goles || 0;
+  if (current <= 0) return;
+  state[side][listKey][idx].goles = current - 1;
+  await pushSide(side);
+}
+
+async function toggleCard(side, listKey, idx, card) {
+  state[side][listKey][idx][card] = !state[side][listKey][idx][card];
+  await pushSide(side);
+}
+
+async function addPlayer(side, listKey) {
+  const nextNum = state[side][listKey].length + (listKey === 'suplentes' ? (state[side].jugadores?.length || 0) : 0) + 1;
+  state[side][listKey].push({ nombre: '', numero: nextNum, goles: 0, amarilla: false, roja: false });
+  await pushSide(side);
+}
+
+async function removePlayer(side, listKey, idx) {
+  state[side][listKey].splice(idx, 1);
+  await pushSide(side);
+}
+
+async function movePlayer(side, listKey, idx, dir) {
+  const arr = state[side][listKey];
+  const target = idx + dir;
+  if (target < 0 || target >= arr.length) return;
+  [arr[idx], arr[target]] = [arr[target], arr[idx]];
+  await pushSide(side);
+}
+
+// ── Sustituciones ──
+function startSubstitution(side, suplIdx) {
+  const titulares = state[side].jugadores || [];
+  const suplente = state[side].suplentes[suplIdx];
+  const formacion = state[side].formacion || '4-3-3';
+  const posLabels = getPositionLabels(formacion);
+
+  // Crear modal de selección
+  let overlay = document.getElementById('subOverlay');
+  if (overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'subOverlay';
+  overlay.className = 'fixed inset-0 bg-black/70 z-50 flex items-center justify-center';
+  overlay.innerHTML = `
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+      <h3 class="text-lg font-black text-brand mb-1">Sustitución</h3>
+      <p class="text-sm text-gray-400 mb-4">Entra <span class="text-white font-bold">${esc(suplente.nombre)} (#${suplente.numero || ''})</span> por:</p>
+      <div class="flex flex-col gap-2 max-h-[50vh] overflow-y-auto" id="subOptions">
+        ${titulares.map((t, ti) => {
+          const pl = posLabels[ti] || '';
+          const plColor = {'ARQ':'text-yellow-400','DEF':'text-blue-400','MED':'text-green-400','DEL':'text-red-400'}[pl] || '';
+          return `<button onclick="confirmSubstitution('${side}',${suplIdx},${ti})" 
+            class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 rounded-lg px-4 py-3 text-left transition">
+            <span class="text-xs font-black uppercase w-8 ${plColor}">${pl}</span>
+            <span class="font-bold">#${t.numero || ti + 1}</span>
+            <span class="flex-1">${esc(t.nombre)}</span>
+          </button>`;
+        }).join('')}
+      </div>
+      <button onclick="document.getElementById('subOverlay').remove()" class="mt-4 w-full bg-gray-800 hover:bg-gray-700 rounded-lg px-4 py-2 text-sm text-gray-400">Cancelar</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+async function confirmSubstitution(side, suplIdx, titIdx) {
+  const titular = state[side].jugadores[titIdx];
+  const suplente = state[side].suplentes[suplIdx];
+
+  // Suplente entra en la posición exacta del titular
+  suplente.entro = true; // marca que entró desde el banco
+  state[side].jugadores[titIdx] = suplente;
+
+  // Titular sale al banco marcado como sustituido
+  titular.sustituido = true;
+  state[side].suplentes.splice(suplIdx, 1);
+  state[side].suplentes.push(titular);
+
+  // Cerrar modal y sincronizar
+  const overlay = document.getElementById('subOverlay');
+  if (overlay) overlay.remove();
+  await pushSide(side);
+}
+
+async function pushSide(side) {
+  await fetch(API + '/overlay-state/' + side, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jugadores: state[side].jugadores,
+      suplentes: state[side].suplentes
+    })
+  });
+}
+
+function addResultado() {
+  state.resultados.push({ local: '', logoLocal: '', gl: 0, visitante: '', logoVisitante: '', gv: 0 });
+  updateResultados();
+}
+
+function updateResultado(idx, key, value) {
+  state.resultados[idx][key] = value;
+  if (key === 'local') state.resultados[idx].logoLocal = equipos[value] || '';
+  if (key === 'visitante') state.resultados[idx].logoVisitante = equipos[value] || '';
+  updateResultados();
+}
+
+function removeResultado(idx) {
+  state.resultados.splice(idx, 1);
+  updateResultados();
+}
+
+async function updateResultados() {
+  await fetch(API + '/overlay-state/resultados', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      resultados: state.resultados,
+      libre: document.getElementById('libreTeam').value
+    })
+  });
+}
+
+async function resetState() {
+  if (!confirm('¿Resetear todo el estado del partido?')) return;
+  await fetch(API + '/overlay-state/reset', { method: 'POST' });
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+init();
+</script>
 </body>
 </html>

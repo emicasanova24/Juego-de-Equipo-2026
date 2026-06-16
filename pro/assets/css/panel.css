@@ -1,0 +1,116 @@
+/* ============================================================
+   panel.css — Estilos del Panel PRO (index.html)
+   Componentes propios. Las utilidades (bg-gray-950, flex, etc.)
+   provienen de Tailwind CDN cargado en index.html.
+   Nota: las reglas se escriben en CSS plano (sin @apply) para que
+   funcionen como archivo externo sin depender del compilador de Tailwind.
+   ============================================================ */
+
+body { font-family: 'Inter', sans-serif; }
+
+/* ── Inputs ── */
+.input-base {
+  width: 100%;
+  background: #7c3aed;
+  border: 1px solid #6d28d9;
+  border-radius: 2px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  color: #000;
+  font-weight: 500;
+}
+.input-base::placeholder { color: #c4b5fd; }
+.input-base:focus { outline: none; border-color: #a78bfa; }
+select.input-base { color: #000; background: #7c3aed; }
+select.input-base option { background: #1f2937; color: #fff; }
+
+/* ── Botones ── */
+.btn-brand  { background: #7e22ce; color: #fff; font-weight: 700; }
+.btn-brand:hover  { background: #9333ea; }
+.btn-gray   { background: #374151; color: #fff; font-weight: 700; }
+.btn-gray:hover   { background: #4b5563; }
+.btn-red    { background: #991b1b; color: #fff; font-weight: 700; }
+.btn-red:hover    { background: #b91c1c; }
+.btn-green  { background: #166534; color: #fff; font-weight: 700; }
+.btn-green:hover  { background: #15803d; }
+.btn-yellow { background: #a16207; color: #fff; font-weight: 700; }
+.btn-yellow:hover { background: #ca8a04; }
+
+/* ── Tarjetas ── */
+.card { background: #111827; border-radius: 0.25rem; padding: 1.25rem; margin-bottom: 1.25rem; }
+
+/* ── Etiquetas ── */
+.label-xs {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Botones de período del timer ── */
+.period-btn {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #1f2937;
+  color: #6b7280;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.period-btn:hover { background: #374151; color: #d1d5db; }
+.period-btn.active { background: #1e1b4b; color: #a78bfa; border-bottom-color: #8b5cf6; }
+
+/* ── Botones de tiempo agregado ── */
+.added-btn {
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  font-family: monospace;
+  background: #374151;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.added-btn:hover { background: #4b5563; }
+
+/* ── Pestañas ── */
+.active-tab   { background: #7e22ce; color: #fff; }
+.inactive-tab { background: #1f2937; color: #9ca3af; }
+.inactive-tab:hover { background: #374151; }
+
+/* ── Interruptores (toggle) ── */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  height: 1.5rem;
+  width: 2.75rem;
+  cursor: pointer;
+  border-radius: 9999px;
+  background: #374151;
+  transition: background-color 0.15s;
+  flex-shrink: 0;
+}
+.toggle-switch.on { background: #9333ea; }
+.toggle-knob {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 9999px;
+  background: #fff;
+  transition: transform 0.15s;
+}
+.toggle-switch.on .toggle-knob { transform: translateX(20px); }
+
+/* ── Fila de estadística ── */
+.stat-row { display: flex; align-items: center; gap: 0.5rem; }

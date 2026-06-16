@@ -1,58 +1,56 @@
 const formaciones = {
 
 home:{
-nombre:"Cecil A. Roberts",
+nombre:"Jorge Newbery",
 
-jugadores:[
-{nombre:"Fabricio Cerutti"},
-{nombre:"Julian Cocimano"},
-{nombre:"Emanuel Klundt"},
-{nombre:"Luciano Duarte"},
-{nombre:"Lucas Avellaneda"},
-{nombre:"Julian Ressia", goles:0, amarilla:true, roja:false},
-{nombre:"Joel Carrizo"},
-{nombre:"Tomas Altamiranda", goles:1, amarilla:false, roja:false},
-{nombre:"Lucas Rivas"},
-{nombre:"Enzo Alonzo"},
-{nombre:"Robert Campaz", goles:1, amarilla:false, roja:false},
-],
-
-suplentes:[
-{nombre:"Enzo Pellegrini"},
-{nombre:"Gaston Molina", goles:0, amarilla:true, roja:false},
-{nombre:"Justin Gomez"},
-{nombre:"Benjamin Natali"},
-{nombre:"Luis Duche"},
-{nombre:"Nahuel Mercadin"},
-{nombre:"Maximiliano Seminth"}
-]
-
+jugadores: [
+    { nombre: "Sebastian Illesca" },
+    { nombre: "Sebastian Dominguez" },
+    { nombre: "Ignacio Peñas" },
+    { nombre: "Kevin Caicedo" },
+    { nombre: "Juan C. Cuevas" },
+    { nombre: "Luciano Ramos", goles: 0, amarilla: false, roja: false },
+    { nombre: "Cesar Medina" , goles: 3, amarilla: false, roja: false },
+    { nombre: "Enzo Candia", goles: 0, amarilla: false, roja: false },
+    { nombre: "Nicolas Ibañez" },
+    { nombre: "Hector Cardozo" },
+    { nombre: "Tobias Barrios" }
+  ],
+  suplentes: [
+    { nombre: "Lucas Troya" },
+    { nombre: "Braian Duché", goles: 0, amarilla: false, roja: false },
+    { nombre: "Ignacio Siri" },
+    { nombre: "Donato Herrero" },
+    { nombre: "Juan C. Corral", goles: 0, amarilla: false, roja: false },
+    { nombre: "Alejo Palacios" },
+    { nombre: "Sergio Aranda" }
+  ]
 },
 
 away:{
-nombre:"Unión de Bonifacio",
+nombre:"Deportivo Maza",
 
-jugadores:[
-{nombre:"Agustin Gomez"},
-{nombre:"Agustin Duarte"},
-{nombre:"Juan Feloy"},
-{nombre:"Mariano Leiva"},
-{nombre:"Francisco Ramirez"},
-{nombre:"Felipe Borniego"},
-{nombre:"Miche Fernandez"},
-{nombre:"Yaco Leiva"},
-{nombre:"Roman Aispuru", goles:0, amarilla:false, roja:true},
-{nombre:"Juan Schafer"},
-{nombre:"Denis Ramirez", goles:0, amarilla:false, roja:true},
-],
-
-suplentes:[
-{nombre:"Felipe Cepeda"},
-{nombre:"Julian Torres"},
-{nombre:"Gonzalo Achaval"},
-{nombre:"Santiago Satarain"},
-{nombre:"Diego Achaval", goles:1, amarilla:false, roja:false},
-]
+jugadores: [
+    { nombre: "Angel Arboleda", goles: 0, amarilla: true, roja: false },
+    { nombre: "Francisco Alvarez" },
+    { nombre: "Juan Labin" },
+    { nombre: "Genaro Gertner" },
+    { nombre: "Benjamin Fernandez" },
+    { nombre: "Lucio Moggia", goles: 1, amarilla: true, roja: false },
+    { nombre: "Sebastian Duckardt" , goles: 1, amarilla: false, roja: false },
+    { nombre: "Jeremias Risso" },
+    { nombre: "Angel Kowalsuk", roja: false },
+    { nombre: "Santos Paturlanne" },
+    { nombre: "Matias Rodi", roja: false }
+  ],
+  suplentes: [
+    { nombre: "Cayetano Rivero" },
+    { nombre: "Fernando Gonzalez" },
+    { nombre: "Juan Diser" },
+    { nombre: "Leonel Minor" },
+    { nombre: "Juan Sanchez" },
+    { nombre: "Leandro Alvarez" }
+  ]
 
 }
 

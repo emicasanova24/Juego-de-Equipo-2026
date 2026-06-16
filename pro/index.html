@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel PRO — Juego de Equipo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/pro/assets/css/panel.css">
+<script>tailwind.config={ theme:{ extend:{ colors:{ brand:'#8B5CF6' } } } }</script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+
+<!-- EMERGENCY OVERLAY -->
+<div id="emergencyOverlay" class="hidden fixed inset-0 bg-red-950 bg-opacity-95 z-50 flex flex-col items-center justify-center gap-6">
+  <div class="text-red-300 text-6xl font-black">⚠ MODO EMERGENCIA</div>
+  <div class="text-gray-300 text-xl">Todos los overlays están ocultos</div>
+  <button onclick="toggleEmergency()" class="bg-red-600 hover:bg-red-500 px-10 py-4 rounded-xl text-white font-black text-xl">DESACTIVAR</button>
+</div>
+
+<div class="max-w-screen-xl mx-auto p-4 lg:p-6">
+
+  <!-- HEADER -->
+  <header class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-800 pb-5">
+    <div class="flex items-center gap-3">
+      <div>
+        <h1 class="text-2xl lg:text-3xl font-black uppercase tracking-tight">Panel PRO <span class="text-purple-400">Transmisión</span></h1>
+        <p class="text-gray-500 text-xs mt-0.5">Juego de Equipo · <a href="/pro/instructivo.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">Ver Instructivo</a></p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <span id="connectionBadge" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-red-900 text-red-300">Desconectado</span>
+      <span id="matchStatusBadge" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-gray-800 text-gray-400">NO INICIADO</span>
+      <select id="templateSel" onchange="applyTemplate(this.value)" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white">
+        <option value="">Plantilla…</option>
+        <option value="liga">Liga Regular</option>
+        <option value="copa">Copa / Eliminatoria</option>
+        <option value="amistoso">Amistoso</option>
+        <option value="liguilla">Liguilla Final</option>
+      </select>
+      <button onclick="toggleEmergency()" class="bg-red-800 hover:bg-red-700 border border-red-600 px-4 py-1.5 rounded-lg text-xs font-black text-red-200 uppercase tracking-wider">🚨 EMERGENCIA</button>
+    </div>
+  </header>
+
+  <!-- ── BARRA DE INCIDENCIAS EN VIVO (debajo del header) ── -->
+  <div id="liveAlertBar" class="hidden mb-6"></div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+
+  <!-- ══════════════ COLUMNA IZQUIERDA (2/3) ══════════════ -->
+  <div class="xl:col-span-2 flex flex-col gap-5">
+
+    <!-- ── TIMER ── -->
+    <div class="card">
+      <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-4">⏱ Timer Oficial</h2>
+      <div class="text-6xl font-black text-purple-400 text-center tabular-nums mb-1 tracking-widest" id="timerDisplay">00:00</div>
+      <div class="text-center text-yellow-400 text-sm font-bold mb-4 h-5" id="addedDisplay"></div>
+      <div class="flex justify-center gap-3 mb-4">
+        <button id="btnStart" onclick="timerStart()" class="btn-green font-black px-6 py-3 rounded-xl text-base">▶ INICIAR</button>
+        <button id="btnPause" onclick="timerPause()" class="btn-yellow font-black px-6 py-3 rounded-xl text-base hidden">⏸ PAUSAR</button>
+        <button onclick="timerReset()" class="btn-gray px-4 py-3 rounded-xl text-base">↺ RESET</button>
+      </div>
+      <div class="flex justify-center bg-gray-800 rounded-sm overflow-hidden mb-4">
+        <button id="pPT"   onclick="setPeriod('PT',0)"    class="period-btn active">1er T.</button>
+        <button id="pET"   onclick="setPeriod('ET',45)"   class="period-btn">Entretiempo</button>
+        <button id="pST"   onclick="setPeriod('ST',45)"   class="period-btn">2do T.</button>
+        <button id="pPROL" onclick="setPeriod('PROL',90)" class="period-btn">Prórroga</button>
+        <button id="pPEN"  onclick="setPeriod('PEN',120)" class="period-btn">Penales</button>
+        <button id="pFIN"  onclick="setPeriod('FIN',0)"   class="period-btn">FIN</button>
+      </div>
+      <div class="flex justify-center items-center gap-1 flex-wrap bg-gray-800 rounded-sm px-3 py-2">
+        <span class="text-[10px] text-gray-500 font-black uppercase tracking-wider mr-1">+MIN:</span>
+        <button onclick="setAdded(0)" class="added-btn">0</button>
+        <button onclick="setAdded(1)" class="added-btn">+1</button>
+        <button onclick="setAdded(2)" class="added-btn">+2</button>
+        <button onclick="setAdded(3)" class="added-btn">+3</button>
+        <button onclick="setAdded(4)" class="added-btn">+4</button>
+        <button onclick="setAdded(5)" class="added-btn">+5</button>
+        <button onclick="setAdded(7)" class="added-btn">+7</button>
+        <input type="number" id="addedCustom" min="0" max="30" placeholder="?" style="width:44px;background:#374151;border:1px solid #4b5563;border-radius:2px;padding:5px 4px;font-size:11px;font-family:monospace;color:#e5e7eb;text-align:center" onchange="setAdded(+this.value)">
+      </div>
+    </div>
+
+    <!-- ── MARCADOR ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">⚽ Marcador</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-marcador" onclick="toggleWidget('marcador')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <div class="flex items-start gap-4">
+        <!-- Local -->
+        <div class="flex-1 text-center">
+          <div class="flex items-center gap-2 mb-2">
+            <img id="logoLocalMini" class="w-9 h-9 object-contain rounded bg-gray-800 border border-gray-700" src="" alt="">
+            <select id="localTeam" onchange="changeTeam('local')" style="flex:1;background:#1f2937;border:1px solid #374151;border-radius:2px;padding:6px 8px;font-size:0.875rem;color:#fff;font-weight:700"></select>
+          </div>
+          <div class="flex items-center justify-center gap-3 my-2">
+            <button onclick="changeScore('local',-1)" class="bg-gray-700 hover:bg-gray-600 w-10 h-10 rounded text-xl font-bold">−</button>
+            <span id="localScore" class="text-5xl font-black text-purple-400 tabular-nums">0</span>
+            <button onclick="changeScore('local',1)" class="bg-purple-700 hover:bg-purple-600 w-10 h-10 rounded text-xl font-bold">+</button>
+          </div>
+          <div class="flex items-center justify-center gap-2 mb-2">
+            <label class="text-xs text-gray-400">Camiseta</label>
+            <input type="color" id="localColor" value="#019604" onchange="changeColor('local',this.value)" class="w-7 h-7 cursor-pointer border border-gray-600">
+            <label class="text-xs text-gray-400">Número</label>
+            <input type="color" id="localColorNumero" value="#ffffff" onchange="changeNumeroColor('local',this.value)" class="w-7 h-7 cursor-pointer border border-gray-600">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1 uppercase">DT</label>
+            <input id="dtLocal" class="input-base text-xs" placeholder="Director Técnico" onchange="changeDT('local',this.value)">
+          </div>
+        </div>
+
+        <div class="text-3xl font-black text-gray-600 pt-6">VS</div>
+
+        <!-- Visitante -->
+        <div class="flex-1 text-center">
+          <div class="flex items-center gap-2 mb-2">
+            <select id="visitanteTeam" onchange="changeTeam('visitante')" style="flex:1;background:#1f2937;border:1px solid #374151;border-radius:2px;padding:6px 8px;font-size:0.875rem;color:#fff;font-weight:700"></select>
+            <img id="logoVisitanteMini" class="w-9 h-9 object-contain rounded bg-gray-800 border border-gray-700" src="" alt="">
+          </div>
+          <div class="flex items-center justify-center gap-3 my-2">
+            <button onclick="changeScore('visitante',-1)" class="bg-gray-700 hover:bg-gray-600 w-10 h-10 rounded text-xl font-bold">−</button>
+            <span id="visitanteScore" class="text-5xl font-black text-purple-400 tabular-nums">0</span>
+            <button onclick="changeScore('visitante',1)" class="bg-purple-700 hover:bg-purple-600 w-10 h-10 rounded text-xl font-bold">+</button>
+          </div>
+          <div class="flex items-center justify-center gap-2 mb-2">
+            <label class="text-xs text-gray-400">Camiseta</label>
+            <input type="color" id="visitanteColor" value="#FFFFFF" onchange="changeColor('visitante',this.value)" class="w-7 h-7 cursor-pointer border border-gray-600">
+            <label class="text-xs text-gray-400">Número</label>
+            <input type="color" id="visitanteColorNumero" value="#000000" onchange="changeNumeroColor('visitante',this.value)" class="w-7 h-7 cursor-pointer border border-gray-600">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1 uppercase">DT</label>
+            <input id="dtVisitante" class="input-base text-xs" placeholder="Director Técnico" onchange="changeDT('visitante',this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Info partido -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-4 border-t border-gray-800">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Torneo</label>
+          <input id="matchTournament" onchange="updateMatch()" class="input-base text-xs" value="APERTURA 2026">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Árbitro</label>
+          <input id="matchReferee" onchange="updateMatch()" class="input-base text-xs" placeholder="Árbitro">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Estadio</label>
+          <input id="matchStadium" onchange="updateMatch()" class="input-base text-xs" placeholder="Estadio">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Estado</label>
+          <select id="matchStatus" onchange="updateMatch()" class="input-base text-xs">
+            <option value="NO INICIADO">NO INICIADO</option>
+            <option value="PRIMER TIEMPO">PRIMER TIEMPO</option>
+            <option value="ENTRETIEMPO">ENTRETIEMPO</option>
+            <option value="SEGUNDO TIEMPO">SEGUNDO TIEMPO</option>
+            <option value="FINALIZADO">FINALIZADO</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PLANTEL DEL PARTIDO (admin-style) ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">👕 Plantel del Partido</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">Formaciones</span>
+          <button id="hdr-widget-formaciones" onclick="toggleWidget('formaciones')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+        <!-- LOCAL -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span id="plantelLocalName" class="font-bold text-purple-300 text-sm">—</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500">(<span id="titCountLocal">0</span>t/<span id="supCountLocal">0</span>s)</span>
+              <button onclick="loadPlayersFromDB('local')" class="btn-gray text-xs px-2 py-1 rounded-sm">📥 BD</button>
+              <button onclick="clearPlayers('local')" class="btn-gray text-xs px-2 py-1 rounded-sm">🗑</button>
+            </div>
+          </div>
+          <select id="localFormacion" onchange="changeFormacion('local',this.value);renderPlantel('local')" class="w-full mb-3 input-base text-sm font-bold">
+            <option value="4-3-3">4-3-3</option><option value="4-4-2">4-4-2</option><option value="4-2-3-1">4-2-3-1</option>
+            <option value="4-3-1-2">4-3-1-2</option><option value="4-1-4-1">4-1-4-1</option><option value="4-1-3-2">4-1-3-2</option>
+            <option value="4-4-1-1">4-4-1-1</option><option value="4-5-1">4-5-1</option><option value="3-5-2">3-5-2</option>
+            <option value="3-4-3">3-4-3</option><option value="3-4-1-2">3-4-1-2</option><option value="5-3-2">5-3-2</option>
+            <option value="5-4-1">5-4-1</option><option value="5-2-3">5-2-3</option>
+          </select>
+          <div class="text-[10px] text-purple-400 font-black uppercase tracking-wider mb-1">◼ Titulares</div>
+          <div id="titListLocal" class="mb-1"><p class="text-gray-600 text-xs text-center py-2">Sin jugadores</p></div>
+          <button onclick="addPlayerManual('local','titulares')" class="text-xs text-purple-400 hover:underline mb-3 block">+ Agregar titular</button>
+          <div class="text-[10px] text-gray-500 font-black uppercase tracking-wider mb-1">▫ Suplentes</div>
+          <div id="supListLocal" class="mb-1"><p class="text-gray-600 text-xs text-center py-2">Sin suplentes</p></div>
+          <button onclick="addPlayerManual('local','suplentes')" class="text-xs text-gray-400 hover:underline mb-3 block">+ Agregar suplente</button>
+          <button onclick="savePlayers('local')" class="btn-brand w-full py-2 rounded-sm text-xs">📡 Guardar en Pantalla</button>
+        </div>
+        <!-- VISITANTE -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span id="plantelVisitanteName" class="font-bold text-cyan-300 text-sm">—</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500">(<span id="titCountVisitante">0</span>t/<span id="supCountVisitante">0</span>s)</span>
+              <button onclick="loadPlayersFromDB('visitante')" class="btn-gray text-xs px-2 py-1 rounded-sm">📥 BD</button>
+              <button onclick="clearPlayers('visitante')" class="btn-gray text-xs px-2 py-1 rounded-sm">🗑</button>
+            </div>
+          </div>
+          <select id="visitanteFormacion" onchange="changeFormacion('visitante',this.value);renderPlantel('visitante')" class="w-full mb-3 input-base text-sm font-bold">
+            <option value="4-4-2">4-4-2</option><option value="4-3-3">4-3-3</option><option value="4-2-3-1">4-2-3-1</option>
+            <option value="4-3-1-2">4-3-1-2</option><option value="4-1-4-1">4-1-4-1</option><option value="4-1-3-2">4-1-3-2</option>
+            <option value="4-4-1-1">4-4-1-1</option><option value="4-5-1">4-5-1</option><option value="3-5-2">3-5-2</option>
+            <option value="3-4-3">3-4-3</option><option value="3-4-1-2">3-4-1-2</option><option value="5-3-2">5-3-2</option>
+            <option value="5-4-1">5-4-1</option><option value="5-2-3">5-2-3</option>
+          </select>
+          <div class="text-[10px] text-cyan-400 font-black uppercase tracking-wider mb-1">◼ Titulares</div>
+          <div id="titListVisitante" class="mb-1"><p class="text-gray-600 text-xs text-center py-2">Sin jugadores</p></div>
+          <button onclick="addPlayerManual('visitante','titulares')" class="text-xs text-cyan-400 hover:underline mb-3 block">+ Agregar titular</button>
+          <div class="text-[10px] text-gray-500 font-black uppercase tracking-wider mb-1">▫ Suplentes</div>
+          <div id="supListVisitante" class="mb-1"><p class="text-gray-600 text-xs text-center py-2">Sin suplentes</p></div>
+          <button onclick="addPlayerManual('visitante','suplentes')" class="text-xs text-gray-400 hover:underline mb-3 block">+ Agregar suplente</button>
+          <button onclick="savePlayers('visitante')" class="btn-brand w-full py-2 rounded-sm text-xs">📡 Guardar en Pantalla</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INCIDENCIAS ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📋 Incidencias del Partido</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-alerta" onclick="toggleWidget('alerta')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Tipo</label>
+          <select id="incType" class="input-base text-sm" onchange="togglePlayerOut()">
+            <option value="gol">⚽ Gol</option>
+            <option value="amarilla">🟨 Amarilla</option>
+            <option value="roja">🟥 Roja</option>
+            <option value="cambio">🔄 Cambio</option>
+            <option value="var">📺 VAR</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Equipo</label>
+          <select id="incTeam" class="input-base text-sm" onchange="refreshIncPlayers()">
+            <option value="local">Local</option>
+            <option value="visitante">Visitante</option>
+          </select>
+        </div>
+        <div>
+          <label id="incPlayerLabel" class="block text-xs text-gray-400 mb-1 uppercase">Jugador</label>
+          <select id="incPlayer" class="input-base text-sm"><option value="">— Seleccionar —</option></select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1 uppercase">Minuto</label>
+          <input id="incMinute" type="number" min="0" max="130" class="input-base text-sm" placeholder="Auto">
+        </div>
+      </div>
+      <div id="changeOutRow" class="mb-3 hidden">
+        <label class="block text-xs mb-1 uppercase font-bold text-red-400">▼ Sale</label>
+        <select id="incPlayerOut" class="input-base text-sm"><option value="">— Seleccionar —</option></select>
+      </div>
+      <button onclick="addIncident()" class="btn-brand w-full py-3 rounded-sm text-sm">+ Registrar Incidencia</button>
+      <div id="incidentList" class="mt-4 flex flex-col gap-2 max-h-72 overflow-y-auto">
+        <p class="text-gray-600 text-xs text-center">Sin incidencias</p>
+      </div>
+    </div>
+
+    <!-- ── ESTADÍSTICAS ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📊 Estadísticas en Vivo</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-estadisticas" onclick="toggleWidget('estadisticas')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <!-- Posesión -->
+      <div class="bg-gray-800 rounded-sm p-3 mb-3">
+        <div class="flex justify-between text-xs font-black mb-2">
+          <span id="posLocalLabel" class="text-purple-400">LOCAL 50%</span>
+          <span class="text-gray-500 uppercase tracking-wider">Posesión</span>
+          <span id="posVisitLabel" class="text-cyan-400">50% VISITANTE</span>
+        </div>
+        <div class="relative h-3 bg-gray-700 overflow-hidden">
+          <div id="posBarLocal" class="absolute left-0 top-0 h-full bg-purple-600 transition-all duration-300" style="width:50%"></div>
+          <div id="posBarVisit" class="absolute right-0 top-0 h-full bg-cyan-600 transition-all duration-300" style="width:50%"></div>
+        </div>
+        <input type="range" id="posesionSlider" min="0" max="100" value="50" class="w-full accent-purple-500 mt-2" oninput="updatePosesion(this.value)">
+      </div>
+      <!-- Tabla unificada -->
+      <div class="flex justify-between text-[10px] font-black uppercase tracking-wider mb-2 px-1">
+        <span id="statsLocalName" class="text-purple-400">LOCAL</span>
+        <span class="text-gray-600">STAT</span>
+        <span id="statsVisitName" class="text-cyan-400">VISITANTE</span>
+      </div>
+      <div id="statsUnifiedGrid" class="flex flex-col gap-1"></div>
+      <!-- Jugador Destacado -->
+      <div class="mt-4 pt-4 border-t border-gray-800">
+        <label class="block text-xs text-gray-400 mb-2 uppercase">⭐ Jugador Destacado</label>
+        <div class="grid grid-cols-3 gap-2">
+          <select id="destTeam" onchange="refreshDestPlayers()" class="input-base text-xs">
+            <option value="local">Local</option>
+            <option value="visitante">Visitante</option>
+          </select>
+          <select id="destPlayer" class="input-base text-xs"><option value="">— Jugador —</option></select>
+          <input id="destStat" class="input-base text-xs" placeholder="Ej: 2 goles">
+        </div>
+        <button onclick="saveDestacado()" class="btn-brand w-full mt-2 py-2 rounded-sm text-xs">Guardar Destacado</button>
+      </div>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- ══════════════ COLUMNA DERECHA (1/3) ══════════════ -->
+  <div class="flex flex-col gap-5">
+
+    <!-- ── WIDGETS ── -->
+    <div class="card">
+      <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-4">📡 Widgets en Pantalla</h2>
+      <div class="flex flex-col gap-2" id="widgetsPanel"></div>
+    </div>
+
+    <!-- ── PUBLICIDAD (botonera) ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">💰 Publicidad</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-publicidad" onclick="toggleWidget('publicidad')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <!-- Sponsor compartido -->
+      <div class="mb-3">
+        <label class="block text-[10px] text-gray-400 mb-1 uppercase tracking-wider">Nombre sponsor</label>
+        <input id="adSponsor" class="input-base text-xs" placeholder="Nombre del sponsor" onchange="updateAdSponsor()">
+      </div>
+      <!-- Botonera de banners -->
+      <div class="flex flex-col gap-2 mb-3">
+        <!-- Banner -->
+        <div class="bg-gray-800 rounded-sm px-3 py-2">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-black uppercase tracking-wider text-gray-300 w-20 shrink-0">📺 Banner</span>
+            <button id="adBannerBtn" onclick="toggleAdType('banner')" class="px-4 py-1 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600 shrink-0 ml-auto">OFF</button>
+          </div>
+          <input id="adLogoBanner" class="input-base text-xs" placeholder="URL imagen logo sponsor" oninput="cacheAdLogo('banner',this.value)">
+        </div>
+        <!-- Cortina -->
+        <div class="bg-gray-800 rounded-sm px-3 py-2">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-black uppercase tracking-wider text-gray-300 w-20 shrink-0">🎬 Cortina</span>
+            <button id="adCortinaBtn" onclick="toggleAdType('cortina')" class="px-4 py-1 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600 shrink-0 ml-auto">OFF</button>
+          </div>
+          <input id="adLogoCortina" class="input-base text-xs" placeholder="URL imagen logo sponsor" oninput="cacheAdLogo('cortina',this.value)">
+        </div>
+        <!-- Overlay Marca -->
+        <div class="bg-gray-800 rounded-sm px-3 py-2">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-black uppercase tracking-wider text-gray-300 w-20 shrink-0">🏷 Overlay</span>
+            <button id="adOverlayBtn" onclick="toggleAdType('overlay')" class="px-4 py-1 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600 shrink-0 ml-auto">OFF</button>
+          </div>
+          <input id="adLogoOverlay" class="input-base text-xs" placeholder="URL imagen logo sponsor" oninput="cacheAdLogo('overlay',this.value)">
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap border-t border-gray-800 pt-3">
+        <label class="text-xs text-gray-400">Auto cada</label>
+        <input id="adInterval" type="number" min="1" max="60" value="10" style="width:44px;background:#374151;border:1px solid #4b5563;border-radius:2px;padding:5px 4px;font-size:11px;color:#e5e7eb;text-align:center">
+        <label class="text-xs text-gray-400">min</label>
+        <button onclick="toggleAutoAd()" id="btnAutoAd" class="btn-gray px-3 py-1 rounded-sm text-xs ml-auto">Activar Auto</button>
+      </div>
+      <div id="adNextLabel" class="text-xs text-gray-500 mt-2 h-4"></div>
+    </div>
+
+    <!-- ── TICKER ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📰 Ticker de Noticias</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-ticker" onclick="toggleWidget('ticker')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <div class="flex gap-2 mb-2">
+        <input id="tickerInput" class="input-base text-xs flex-1" placeholder="Escribir noticia…">
+        <button onclick="addTickerItem()" class="btn-brand px-3 py-2 rounded-sm text-xs">+</button>
+      </div>
+      <div id="tickerList" class="flex flex-col gap-1 max-h-36 overflow-y-auto">
+        <p class="text-gray-600 text-xs text-center">Sin items</p>
+      </div>
+    </div>
+
+    <!-- ── OTROS PARTIDOS ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">⚽ Otros Partidos</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-otrosPartidos" onclick="toggleWidget('otrosPartidos')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <input id="resTitulo" class="input-base text-xs w-full mb-2" placeholder="Título (ej: Fecha 12)" onchange="saveResultados()">
+      <div class="grid grid-cols-[1fr_auto_auto_1fr] gap-1 items-center mb-2">
+        <select id="resLocal" class="input-base text-xs"></select>
+        <input id="resGl" type="number" min="0" value="0" class="input-base text-xs w-12 text-center">
+        <input id="resGv" type="number" min="0" value="0" class="input-base text-xs w-12 text-center">
+        <select id="resVisitante" class="input-base text-xs"></select>
+      </div>
+      <button onclick="addResultado()" class="btn-brand w-full py-2 rounded-sm text-xs mb-3">+ Agregar Partido</button>
+      <div id="resultadosList" class="flex flex-col gap-1 max-h-40 overflow-y-auto mb-3">
+        <p class="text-gray-600 text-xs text-center">Sin partidos cargados</p>
+      </div>
+      <div class="flex items-center gap-2 border-t border-gray-700 pt-3">
+        <span class="label-xs whitespace-nowrap">Equipo libre</span>
+        <select id="resLibre" class="input-base text-xs flex-1" onchange="saveResultados()"></select>
+      </div>
+      <p class="text-xs text-gray-600 text-center mt-2">OBS: <code class="bg-gray-800 px-1">pro/overlays/otros-partidos.html</code></p>
+    </div>
+
+    <!-- ── FORMACIONES PRE-PARTIDO ── -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">🗂 Previa Formaciones</h2>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
+          <button id="hdr-widget-formacionPrevia" onclick="toggleWidget('formacionPrevia')" class="toggle-switch"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+      <p class="text-xs text-gray-600 text-center mt-2">Las formaciones se toman del plantel. OBS: <code class="bg-gray-800 px-1">pro/overlays/formaciones-previa.html</code></p>
+    </div>
+
+    <!-- ── HISTORIAL ── -->
+    <div class="card">
+      <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-3">🕐 Historial</h2>
+      <div id="historyList" class="flex flex-col gap-0.5 max-h-60 overflow-y-auto text-xs">
+        <p class="text-gray-600 text-center">Sin acciones</p>
+      </div>
+    </div>
+
+    <!-- ── SISTEMA ── -->
+    <div class="card">
+      <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-3">⚙ Sistema</h2>
+      <div class="flex flex-col gap-2">
+        <button onclick="resetState()" class="btn-red py-2 rounded-sm text-xs">🔄 Resetear Todo el Estado</button>
+        <a href="/admin.html" target="_blank" class="btn-gray py-2 rounded-sm text-xs text-center block">← Panel Admin Original</a>
+        <a href="/pro/instructivo.html" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2 rounded-sm text-xs text-center block">📖 Ver Instructivo</a>
+      </div>
+    </div>
+
+  </div><!-- /col-right -->
+  </div><!-- /grid -->
+</div><!-- /container -->
+
+<!-- Configuración (widgets, estadísticas) y lógica del panel -->
+<script src="/pro/assets/js/config.js"></script>
+<script src="/pro/assets/js/panel.js"></script>
+</body>
+</html>

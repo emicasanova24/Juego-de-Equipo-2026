@@ -107,8 +107,7 @@ JUEGO DE <span class="text-neon-pink">EQUIPO</span>
 </div>
 
 <div class="bg-primary/20 border border-primary/40 px-6 py-2 rounded-full">
-<p class="text-sm text-neon-blue font-bold tracking-widest uppercase">
-En Vivo • Segundo Tiempo
+<p id="mb-status" class="text-sm text-neon-blue font-bold tracking-widest uppercase">
 </p>
 </div>
 
@@ -122,12 +121,11 @@ En Vivo • Segundo Tiempo
 
 <div class="flex flex-col items-center text-center">
 
-<div class="w-36 h-36 bg-red-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4 overflow-hidden">
-<img src="equipos/logos/roberts.png"/>
+<div class="w-36 h-36 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4 overflow-hidden">
+<img id="mb-local-logo" src="" class="w-full h-full object-contain"/>
 </div>
 
-<h2 class="font-display font-bold text-2xl uppercase">
-CECIL A. ROBERTS
+<h2 id="mb-local-name" class="font-display font-bold text-2xl uppercase">
 </h2>
 
 </div>
@@ -143,9 +141,9 @@ CECIL A. ROBERTS
 
 <div class="flex items-center gap-6">
 
-<span class="text-8xl font-display font-black text-primary italic opacity-0">0</span>
+<span id="mb-local-score" class="text-8xl font-display font-black text-primary italic">0</span>
 <span class="text-4xl font-display text-gray-600">-</span>
-<span class="text-8xl font-display font-black text-primary italic opacity-0">0</span>
+<span id="mb-away-score" class="text-8xl font-display font-black text-primary italic">0</span>
 
 </div>
 
@@ -157,11 +155,10 @@ CECIL A. ROBERTS
 <div class="flex flex-col items-center text-center">
 
 <div class="w-36 h-36 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4 overflow-hidden">
-<img src="equipos/logos/bonifacio.png"/>
+<img id="mb-away-logo" src="" class="w-full h-full object-contain"/>
 </div>
 
-<h2 class="font-display font-bold text-2xl uppercase">
-UNIÓN DE BONIFACIO
+<h2 id="mb-away-name" class="font-display font-bold text-2xl uppercase">
 </h2>
 
 </div>
@@ -203,6 +200,21 @@ Juego de Equipo
 </footer>
 
 </div>
+
+<script src="./js/overlay-client.js"></script>
+<script>
+window.onOverlayState = function(state) {
+  const el = (id) => document.getElementById(id);
+  el('mb-local-logo').src = state.local.logo || '';
+  el('mb-local-name').textContent = state.local.nombre || '';
+  el('mb-local-score').textContent = state.local.goles ?? 0;
+  el('mb-away-logo').src = state.visitante.logo || '';
+  el('mb-away-name').textContent = state.visitante.nombre || '';
+  el('mb-away-score').textContent = state.visitante.goles ?? 0;
+  const s = state.match.status;
+  el('mb-status').textContent = s === 'NO INICIADO' ? '' : 'EN VIVO • ' + s;
+};
+</script>
 
 </body>
 </html>

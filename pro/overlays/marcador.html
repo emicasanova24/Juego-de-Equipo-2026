@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Marcador en Vivo</title>
+<link rel="stylesheet" href="/pro/assets/css/overlays.css">
+<style>
+  .scoreboard {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Tarjeta principal */
+  .card {
+    display: flex;
+    align-items: stretch;
+    background: rgba(10, 8, 22, 0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 8px;
+    overflow: hidden;
+    border-left: 4px solid #8c52ff;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .card.hidden-overlay { opacity: 0; pointer-events: none; }
+
+  .info-block {
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .league {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #7c7c96;
+  }
+  .teams-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .team-left, .team-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .team-name {
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #f0f0f0;
+    white-space: nowrap;
+  }
+  .logo-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+  }
+
+  .score-box {
+    background: rgba(28, 24, 50, 0.95);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 6px 20px;
+    font-size: 30px;
+    font-weight: 900;
+    color: #8c52ff;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  /* Bloque del timer */
+  .timer-block {
+    background: rgba(140,82,255,0.1);
+    border-left: 1px solid rgba(255,255,255,0.1);
+    padding: 12px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+  .timer-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: #8c52ff;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .timer-sub {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #6d28d9;
+    margin-top: 3px;
+  }
+
+  /* Banner de última acción */
+  .action-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.15);
+    transform: translateY(-6px);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(.22,1,.36,1), opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .action-banner.show { transform: translateY(0); opacity: 1; }
+  .banner-icon { font-size: 20px; }
+  .banner-main { font-size: 15px; font-weight: 800; color: inherit; }
+  .banner-sub  { font-size: 11px; font-weight: 500; opacity: 0.8; margin-top: 1px; }
+  .action-banner.type-gol      { background:#8c52ff; color:#fff; box-shadow:0 0 40px rgba(140,82,255,0.5); }
+  .action-banner.type-amarilla { background:#78350f; border-color:#f59e0b; color:#fef3c7; }
+  .action-banner.type-roja     { background:#7f1d1d; border-color:#ef4444; color:#fee2e2; }
+  .action-banner.type-cambio   { background:#1e3a5f; border-color:#60a5fa; color:#dbeafe; }
+  .action-banner.type-var      { background:#1e1b4b; border-color:#818cf8; color:#e0e7ff; }
+</style>
+</head>
+<body>
+
+  <div class="scoreboard" id="scoreboard">
+    <div class="card" id="card">
+      <div class="info-block">
+        <span class="league" id="leagueLabel">EN VIVO</span>
+        <div class="teams-row">
+          <div class="team-left">
+            <span class="team-name" id="nombre-local"></span>
+            <div class="logo-wrap"><img id="logo-local" alt="" onerror="this.style.opacity=0"></div>
+          </div>
+          <div class="score-box" id="marcador">0 – 0</div>
+          <div class="team-right">
+            <div class="logo-wrap"><img id="logo-visitante" alt="" onerror="this.style.opacity=0"></div>
+            <span class="team-name" id="nombre-visitante"></span>
+          </div>
+        </div>
+      </div>
+      <div class="timer-block">
+        <span class="timer-value" id="timerMin">00:00</span>
+        <span class="timer-sub" id="timerAdded">LIVE</span>
+      </div>
+    </div>
+    <div class="action-banner" id="actionBanner">
+      <span class="banner-icon" id="bannerIcon"></span>
+      <div>
+        <div class="banner-main" id="bannerMain"></div>
+        <div class="banner-sub"  id="bannerSub"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let timerState = { running: false, baseMinute: 0, startTimestamp: null, period: 'PT', addedTime: 0 };
+  let localTick = null;
+  let _lastIncidentId = null;
+  let _actionHideTimer = null;
+
+  const PERIOD_LABELS = { PT: '1ER TIEMPO', ET: 'DESCANSO', ST: '2DO TIEMPO', PROL: 'PRÓRROGA', PEN: 'PENALES', FIN: 'FINALIZADO' };
+  const INC_ICONS = { gol:'⚽', amarilla:'🟨', roja:'🟥', cambio:'🔄', var:'📺' };
+
+  function pad2(n) { return String(Math.max(0, Math.floor(n))).padStart(2,'0'); }
+
+  function renderTimer() {
+    const liveSec = timerState.running && timerState.startTimestamp
+      ? Math.floor((Date.now() - timerState.startTimestamp) / 1000)
+      : 0;
+    const total = (timerState.baseMinute || 0) * 60 + liveSec;
+    const min = Math.floor(total / 60);
+    const sec = total % 60;
+    const added = timerState.addedTime > 0 ? ' +' + timerState.addedTime + "'" : '';
+    document.getElementById('timerMin').textContent = pad2(min) + ':' + pad2(sec) + added;
+    const label = PERIOD_LABELS[timerState.period] || timerState.period || 'LIVE';
+    document.getElementById('timerAdded').textContent = timerState.running ? 'LIVE' : label;
+  }
+
+  function startTick() { if (!localTick) localTick = setInterval(renderTimer, 1000); }
+  function stopTick()  { if (localTick) { clearInterval(localTick); localTick = null; } }
+
+  function applyTimerState(t) {
+    timerState = Object.assign({}, timerState, t);
+    renderTimer();
+    if (timerState.running) startTick(); else stopTick();
+  }
+
+  function connect() {
+    const API = window.OVERLAY_API || 'http://localhost:3000';
+    const es = new EventSource(API + '/overlay-events');
+    let lastJson = '';
+    es.onmessage = function(e) {
+      if (e.data === lastJson) return;
+      lastJson = e.data;
+      try {
+        const data = JSON.parse(e.data);
+        if (data && data.type === 'timer-tick') {
+          applyTimerState({ running: data.running, baseMinute: data.baseMinute, addedTime: data.addedTime, period: data.period, startTimestamp: data.startTimestamp });
+        } else {
+          renderState(data);
+        }
+      } catch(err) { console.error(err); }
+    };
+    es.onerror = function() { es.close(); setTimeout(connect, 3000); };
+  }
+
+  function renderState(state) {
+    const card = document.getElementById('card');
+    if (state.emergencyMode || (state.widgets && state.widgets.marcador === false)) {
+      card.classList.add('hidden-overlay'); return;
+    }
+    card.classList.remove('hidden-overlay');
+
+    document.getElementById('nombre-local').textContent    = state.local?.nombre    || '';
+    document.getElementById('nombre-visitante').textContent = state.visitante?.nombre || '';
+    document.getElementById('marcador').textContent = (state.local?.goles ?? 0) + ' – ' + (state.visitante?.goles ?? 0);
+
+    const logoL = document.getElementById('logo-local');
+    const logoV = document.getElementById('logo-visitante');
+    const logoUrl = (p) => !p ? '' : (/^(https?:|\/)/.test(p) ? p : '/' + p.replace(/^\.?\//, ''));
+    logoL.src = logoUrl(state.local?.logo);    logoL.style.opacity = state.local?.logo    ? '1' : '0';
+    logoV.src = logoUrl(state.visitante?.logo); logoV.style.opacity = state.visitante?.logo ? '1' : '0';
+
+    if (state.match?.torneo) document.getElementById('leagueLabel').textContent = state.match.torneo;
+
+    if (state.timer) applyTimerState(state.timer);
+
+    const incidents = state.incidents || [];
+    if (incidents.length > 0) {
+      const last = incidents[incidents.length - 1];
+      const uid = last.id || (last.type + last.player + last.minute);
+      if (uid !== _lastIncidentId) {
+        _lastIncidentId = uid;
+        showActionBanner(last, state);
+      }
+    }
+  }
+
+  function showActionBanner(inc, state) {
+    const banner = document.getElementById('actionBanner');
+    const teamName = inc.team === 'local' ? (state.local?.nombre || 'Local') : (state.visitante?.nombre || 'Visitante');
+    const icon = INC_ICONS[inc.type] || '•';
+    const player = (inc.player || '').toUpperCase();
+    const minText = inc.minute !== undefined ? inc.minute + "'" : '';
+
+    let main = '';
+    if (inc.type === 'gol')      main = '¡GOL' + (player ? ' DE ' + player : '') + '!';
+    else if (inc.type === 'amarilla') main = 'AMARILLA · ' + (player || teamName);
+    else if (inc.type === 'roja')     main = 'TARJETA ROJA · ' + (player || teamName);
+    else if (inc.type === 'cambio')   main = 'CAMBIO · ' + teamName;
+    else if (inc.type === 'var')      main = 'EN REVISIÓN VAR';
+    else main = teamName;
+
+    const sub = [teamName, minText].filter(Boolean).join(' · ');
+
+    document.getElementById('bannerIcon').textContent = icon;
+    document.getElementById('bannerMain').textContent = main;
+    document.getElementById('bannerSub').textContent  = sub;
+
+    banner.className = 'action-banner type-' + (inc.type || 'var');
+    void banner.offsetWidth;
+    banner.classList.add('show');
+    if (_actionHideTimer) clearTimeout(_actionHideTimer);
+    _actionHideTimer = setTimeout(() => banner.classList.remove('show'), 8000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', connect);
+  else connect();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Formaciones Pre-Partido</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700;800;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      colors: {
+        "on-primary":"#3b008a","on-secondary":"#430474","on-tertiary":"#670731",
+        "on-background":"#ffffff","on-surface":"#ffffff","on-surface-variant":"#adaaab",
+        "surface-container-high":"#201f21","surface-container-highest":"#262627",
+        "surface-container":"#1a191b","surface-container-low":"#131314","surface-container-lowest":"#000000",
+        "surface-variant":"#262627","background":"#0e0e0f","surface":"#0e0e0f",
+        "tertiary":"#ff93b1","primary":"#bc9eff","primary-container":"#b08cff",
+        "secondary":"#ca93fe","secondary-container":"#602b90","outline":"#767576",
+        "on-tertiary-container":"#550026","on-primary-container":"#2d006d","on-secondary-container":"#e4c4ff"
+      },
+      borderRadius:{ "DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem" },
+      fontFamily:{ headline:["Lexend"],display:["Lexend"],body:["Manrope"],label:["Manrope"] }
+    } }
+  }
+</script>
+<style>
+  html,body{margin:0;width:1920px;height:1080px;overflow:hidden}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .pitch-pattern{
+    background-image:linear-gradient(to right,rgba(188,158,255,.05) 1px,transparent 1px),
+                    linear-gradient(to bottom,rgba(188,158,255,.05) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+  .previa{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity .6s ease}
+  .previa.show{opacity:1}
+  .pl{display:flex;flex-direction:column;align-items:center;gap:.4rem;opacity:0;transform:translateY(14px);animation:pop .45s forwards}
+  @keyframes pop{to{opacity:1;transform:translateY(0)}}
+  .pl-num{width:3.25rem;height:3.25rem;border-radius:9999px;display:flex;align-items:center;justify-content:center;
+    font-family:Manrope;font-weight:800;font-size:1.15rem;color:#0e0e0f;box-shadow:0 8px 18px rgba(0,0,0,.4)}
+  .pl-name{font-size:.85rem;font-weight:800;letter-spacing:.5px;color:#fff;text-transform:uppercase}
+  .line{display:flex;justify-content:space-around;align-items:center}
+</style>
+</head>
+<body class="bg-background text-on-surface font-body">
+<div class="previa" id="previa">
+  <main class="w-[1920px] h-[1080px] px-12 py-8 flex flex-col gap-6">
+
+    <!-- Hero Header -->
+    <section class="rounded-xl overflow-hidden relative shrink-0">
+      <div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest via-surface-container-low to-surface-container-lowest opacity-90 z-10"></div>
+      <div class="relative z-20 px-10 py-6 flex justify-between items-center gap-8">
+        <!-- Local -->
+        <div class="flex items-center gap-6 flex-1">
+          <div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center p-3 border border-primary/30 shrink-0">
+            <img id="logoL" class="w-full h-full object-contain" src="" alt="" onerror="this.style.display='none'"/>
+          </div>
+          <div>
+            <span class="text-primary font-bold tracking-widest text-xs uppercase mb-1 block">Local</span>
+            <h2 id="nameL" class="text-3xl font-display font-black leading-none uppercase">LOCAL</h2>
+            <p id="dtL" class="text-on-surface-variant text-sm mt-1">DT: —</p>
+          </div>
+        </div>
+        <!-- Center -->
+        <div class="text-center shrink-0">
+          <span class="bg-tertiary text-on-tertiary px-3 py-1 rounded-full text-xs font-bold tracking-tighter mb-3 inline-block">ALINEACIONES</span>
+          <div id="trn" class="text-2xl font-display font-bold text-on-surface-variant">APERTURA 2026</div>
+          <div id="mvs" class="text-on-surface-variant font-label text-sm mt-2 opacity-80">LOCAL vs VISITANTE</div>
+        </div>
+        <!-- Visitante -->
+        <div class="flex items-center flex-row-reverse gap-6 flex-1">
+          <div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center p-3 border border-secondary/30 shrink-0">
+            <img id="logoV" class="w-full h-full object-contain" src="" alt="" onerror="this.style.display='none'"/>
+          </div>
+          <div class="text-right">
+            <span class="text-secondary font-bold tracking-widest text-xs uppercase mb-1 block">Visitante</span>
+            <h2 id="nameV" class="text-3xl font-display font-black leading-none uppercase">VISITANTE</h2>
+            <p id="dtV" class="text-on-surface-variant text-sm mt-1">DT: —</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formations Grid -->
+    <div class="grid grid-cols-2 gap-6 flex-1 min-h-0">
+      <!-- Local Board -->
+      <div class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden flex flex-col border border-white/5">
+        <div class="flex justify-between items-center mb-5 relative z-10">
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-8 bg-primary rounded-full"></span>
+            <h3 id="boardFormL" class="text-2xl font-display font-bold">4-3-3</h3>
+          </div>
+          <span id="boardNameL" class="text-on-surface-variant font-label text-sm">Local</span>
+        </div>
+        <div id="pitchL" class="flex-1 relative rounded-lg bg-surface-container-lowest border border-white/5 pitch-pattern p-8 flex flex-col justify-between overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+        </div>
+      </div>
+      <!-- Visitante Board -->
+      <div class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden flex flex-col border border-white/5">
+        <div class="flex justify-between items-center mb-5 relative z-10">
+          <span id="boardNameV" class="text-on-surface-variant font-label text-sm">Visitante</span>
+          <div class="flex items-center gap-3">
+            <h3 id="boardFormV" class="text-2xl font-display font-bold text-right">4-4-2</h3>
+            <span class="w-2 h-8 bg-secondary rounded-full"></span>
+          </div>
+        </div>
+        <div id="pitchV" class="flex-1 relative rounded-lg bg-surface-container-lowest border border-white/5 pitch-pattern p-8 flex flex-col justify-between overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-secondary/5 to-transparent pointer-events-none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bench -->
+    <div class="grid grid-cols-2 gap-6 shrink-0">
+      <div class="bg-surface-container-low rounded-xl px-6 py-4">
+        <h4 class="text-sm font-bold text-primary mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">groups</span><span id="benchTitleL">SUPLENTES</span>
+        </h4>
+        <div id="benchL" class="grid grid-cols-4 gap-x-6 gap-y-1"></div>
+      </div>
+      <div class="bg-surface-container-low rounded-xl px-6 py-4">
+        <h4 class="text-sm font-bold text-secondary mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">groups</span><span id="benchTitleV">SUPLENTES</span>
+        </h4>
+        <div id="benchV" class="grid grid-cols-4 gap-x-6 gap-y-1"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/pro/assets/js/overlay-client.js"></script>
+<script>
+function parseFormation(f){
+  const parts=String(f||'4-3-3').split('-').map(n=>parseInt(n,10)).filter(n=>n>0);
+  return parts.length?parts:[4,3,3];
+}
+function dot(p,color,gk){
+  const bg=gk?'#ff93b1':color;
+  const fig=p.figura?'⭐':'';
+  const cards=(p.amarilla?'🟨':'')+(p.roja?'🟥':'')+(p.goles>0?'⚽'.repeat(Math.min(p.goles,3)):'');
+  const extra=(fig+cards);
+  return `<div class="pl">
+    <div class="pl-num" style="background:${bg}">${p.numero??'?'}</div>
+    <span class="pl-name">${(p.nombre||'—')}${extra?' '+extra:''}</span>
+  </div>`;
+}
+function renderPitch(elId,data,color){
+  const players=(data.jugadores||[]).slice(0,11);
+  const gk=players[0];
+  const outfield=players.slice(1);
+  const lines=parseFormation(data.formacion); // [def, mid, fwd...]
+  let idx=0; const groups=[];
+  lines.forEach(c=>{ groups.push(outfield.slice(idx,idx+c)); idx+=c; });
+  if(idx<outfield.length && groups.length){ groups[groups.length-1].push(...outfield.slice(idx)); }
+  // groups: defensa→delantera. En cancha: delanteros arriba, arquero abajo.
+  const rows=groups.slice().reverse()
+    .map(g=>`<div class="line">${g.map(p=>dot(p,color,false)).join('')}</div>`).join('');
+  const gkRow=`<div class="line">${gk?dot(gk,color,true):''}</div>`;
+  const pitch=document.getElementById(elId);
+  pitch.innerHTML=`<div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>`+rows+gkRow;
+}
+function renderSide(side,data,dt,color){
+  const l=side==='local', S=l?'L':'V';
+  document.getElementById('logo'+S).src=data.logo||'';
+  document.getElementById('logo'+S).style.display=data.logo?'':'none';
+  document.getElementById('name'+S).textContent=data.nombre||(l?'Local':'Visitante');
+  document.getElementById('dt'+S).textContent='DT: '+(dt||'—');
+  document.getElementById('boardName'+S).textContent=data.nombre||(l?'Local':'Visitante');
+  document.getElementById('boardForm'+S).textContent=data.formacion||'—';
+  document.getElementById('benchTitle'+S).textContent='SUPLENTES';
+  renderPitch('pitch'+S,data,color);
+  const bench=(data.suplentes||[]).slice(0,8).map(p=>`
+    <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+      <span class="text-sm font-medium">${p.numero?p.numero+'. ':''}${p.nombre||'—'}</span>
+      <span class="text-[10px] bg-surface-variant px-2 py-0.5 rounded text-on-surface-variant uppercase">Sub</span>
+    </div>`).join('');
+  document.getElementById('bench'+S).innerHTML=bench;
+}
+let _sigPrevia=null;
+window.onOverlayState=function(s){
+  const show=!s.emergencyMode&&s.widgets?.formacionPrevia;
+  document.getElementById('previa').classList.toggle('show',!!show);
+  if(!show)return;
+  // Solo re-renderiza (y re-anima) si cambia la data de formaciones.
+  const sig=JSON.stringify({t:s.match?.tournament,l:s.local,v:s.visitante,dl:s.dt?.local,dv:s.dt?.visitante});
+  if(sig===_sigPrevia)return;
+  _sigPrevia=sig;
+  document.getElementById('trn').textContent=s.match?.tournament||'APERTURA 2026';
+  document.getElementById('mvs').textContent=(s.local?.nombre||'Local')+' vs '+(s.visitante?.nombre||'Visitante');
+  renderSide('local',    s.local    ||{},s.dt?.local,    s.local?.color    ||'#bc9eff');
+  renderSide('visitante',s.visitante||{},s.dt?.visitante,s.visitante?.color||'#ca93fe');
+};
+</script>
+</body>
+</html>

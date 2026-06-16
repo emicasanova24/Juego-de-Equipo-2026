@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Otros Partidos</title>
+<link rel="stylesheet" href="/pro/assets/css/overlays.css">
+<style>
+  .resultados-wrap {
+    position: absolute;
+    top: 50%;
+    right: 48px;
+    transform: translateY(-50%);
+  }
+
+  .resultados-container {
+    width: 620px;
+    background: rgba(10, 8, 22, 0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border-left: 4px solid #8c52ff;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+    padding: 24px 28px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  .resultados-container.hidden-overlay { opacity: 0; pointer-events: none; }
+
+  .fecha-title {
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #f0f0f0;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  /* PARTIDO */
+  .partido {
+    display: grid;
+    grid-template-columns: 38% 24% 38%;
+    align-items: center;
+    padding: 10px 16px;
+    margin: 8px 0;
+    background: rgba(140, 82, 255, 0.12);
+    border-radius: 8px;
+  }
+
+  .equipo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #f0f0f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .equipo.izq { justify-content: flex-start; }
+  .equipo.der { justify-content: flex-end; }
+  .equipo span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .equipo img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .marcador {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #8c52ff;
+    letter-spacing: 0.05em;
+  }
+
+  /* LIBRE */
+  .libre {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #cdb4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .libre img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+  }
+  .libre strong { color: #f0f0f0; }
+
+  .empty {
+    text-align: center;
+    font-size: 16px;
+    color: #7c7c96;
+    padding: 12px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="resultados-wrap">
+  <div class="resultados-container" id="resultados"></div>
+</div>
+
+<script src="/pro/assets/js/overlay-client.js"></script>
+<script>
+const cont = document.getElementById("resultados");
+const wrap = document.querySelector(".resultados-container");
+
+// Firmas del último render para no rehacer el DOM si nada relevante cambió.
+// Así, cualquier otra acción del panel (goles, faltas, etc.) NO afecta a este overlay.
+let _lastVisible = null;
+let _lastContentSig = null;
+
+function renderResultados(state) {
+  if (!state) return;
+
+  // ── Visibilidad (independiente del contenido) ──
+  const visible = !state.emergencyMode && !(state.widgets && state.widgets.otrosPartidos === false);
+  if (visible !== _lastVisible) {
+    _lastVisible = visible;
+    wrap.classList.toggle("hidden-overlay", !visible);
+  }
+  if (!visible) return;
+
+  // ── Contenido: solo se reconstruye si cambian resultados/libre/título ──
+  const resultados = state.resultados || [];
+  const sig = JSON.stringify({
+    t: state.resultadosTitulo || "",
+    r: resultados,
+    l: state.libre || ""
+  });
+  if (sig === _lastContentSig) return;
+  _lastContentSig = sig;
+
+  const logoUrl = (p) => !p ? '' : (/^(https?:|\/)/.test(p) ? p : '/' + p.replace(/^\.?\//, ''));
+
+  let html = `<div class="fecha-title">${state.resultadosTitulo || "Otros Partidos"}</div>`;
+
+  if (resultados.length === 0 && !state.libre) {
+    cont.innerHTML = html + `<div class="empty">Sin resultados cargados</div>`;
+    return;
+  }
+
+  resultados.forEach(p => {
+    html += `
+      <div class="partido">
+        <div class="equipo izq">
+          ${p.logoLocal ? `<img src="${logoUrl(p.logoLocal)}" onerror="this.style.display='none'">` : ''}
+          <span>${p.local || ''}</span>
+        </div>
+        <div class="marcador">${p.gl ?? 0} - ${p.gv ?? 0}</div>
+        <div class="equipo der">
+          <span>${p.visitante || ''}</span>
+          ${p.logoVisitante ? `<img src="${logoUrl(p.logoVisitante)}" onerror="this.style.display='none'">` : ''}
+        </div>
+      </div>
+    `;
+  });
+
+  if (state.libre) {
+    let logoLibre = '';
+    const match = resultados.find(r => r.local === state.libre || r.visitante === state.libre);
+    if (match) {
+      logoLibre = match.local === state.libre ? match.logoLocal : match.logoVisitante;
+    }
+    html += `
+      <div class="libre">
+        LIBRE:
+        ${logoLibre ? `<img src="${logoUrl(logoLibre)}" onerror="this.style.display='none'">` : ''}
+        <strong>${state.libre}</strong>
+      </div>
+    `;
+  }
+
+  cont.innerHTML = html;
+}
+
+window.onOverlayState = renderResultados;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Alerta Overlay</title>
+<link rel="stylesheet" href="/pro/assets/css/overlays.css">
+<style>
+  .container{position:absolute;top:32px;left:50%;transform:translateX(-50%);pointer-events:none}
+
+  .box{
+    display:flex;align-items:center;gap:16px;
+    padding:16px 28px;border-radius:10px;
+    border:1px solid rgba(255,255,255,0.15);
+    transform:translateY(-110%);opacity:0;
+    transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .3s ease;
+    white-space:nowrap;min-width:440px;
+  }
+  .box.show{transform:translateY(0);opacity:1}
+
+  .icon-wrap{font-size:28px;line-height:1;flex-shrink:0}
+  .texts{display:flex;flex-direction:column;gap:2px}
+  .main-text{font-size:18px;font-weight:900;letter-spacing:0.03em;text-transform:uppercase}
+  .sub-row{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;opacity:0.85}
+  .dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:0.5;flex-shrink:0}
+  /* Cambio: entra ▲ verde / sale ▼ rojo */
+  .swap{display:flex;flex-direction:column;gap:3px;margin-top:3px}
+  .swap-row{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:800;letter-spacing:.02em}
+  .swap-in  .arr{color:#22c55e}
+  .swap-in  .nm {color:#bbf7d0}
+  .swap-out .arr{color:#ef4444}
+  .swap-out .nm {color:#fecaca}
+  .arr{font-size:15px;line-height:1}
+
+  /* Tipos */
+  .gol       {background:#8c52ff;color:#fff;box-shadow:0 0 48px rgba(140,82,255,0.55);}
+  .amarilla  {background:#78350f;border-color:#f59e0b;color:#fef3c7;box-shadow:0 0 32px rgba(245,158,11,0.3);}
+  .roja      {background:#7f1d1d;border-color:#ef4444;color:#fee2e2;box-shadow:0 0 32px rgba(239,68,68,0.3);}
+  .cambio    {background:#1e3a5f;border-color:#60a5fa;color:#dbeafe;box-shadow:0 0 32px rgba(96,165,250,0.25);}
+  .var       {background:#1e1b4b;border-color:#818cf8;color:#e0e7ff;box-shadow:0 0 32px rgba(129,140,248,0.3);}
+  .descanso  {background:rgba(30,40,55,.97);border-color:#94a3b8;color:#fff;}
+  .fin       {background:rgba(23,19,72,.97);border-color:#818cf8;color:#e0e7ff;box-shadow:0 0 48px rgba(129,140,248,0.4);}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="box" id="box">
+    <div class="icon-wrap" id="icon">⚽</div>
+    <div class="texts">
+      <div class="main-text" id="type">¡GOL!</div>
+      <!-- Vista para gol/tarjeta/var: equipo · jugador · minuto -->
+      <div class="sub-row" id="subRow">
+        <span id="detail"></span>
+        <span class="dot" id="dotSep" style="display:none"></span>
+        <span id="minute"></span>
+      </div>
+      <!-- Vista para cambios: equipo+minuto y entra/sale con flechas -->
+      <div class="sub-row" id="swapHead" style="display:none"></div>
+      <div class="swap" id="swap" style="display:none">
+        <div class="swap-row swap-in"><span class="arr">▲</span><span class="nm" id="swapIn"></span></div>
+        <div class="swap-row swap-out"><span class="arr">▼</span><span class="nm" id="swapOut"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/pro/assets/js/overlay-client.js"></script>
+<script>
+const CFG={
+  gol:      {icon:'⚽', label:'¡GOL!',            cls:'gol'},
+  amarilla: {icon:'🟨', label:'TARJETA AMARILLA',  cls:'amarilla'},
+  roja:     {icon:'🟥', label:'TARJETA ROJA',      cls:'roja'},
+  cambio:   {icon:'🔄', label:'CAMBIO',            cls:'cambio'},
+  var:      {icon:'📺', label:'EN REVISIÓN VAR',   cls:'var'},
+  descanso: {icon:'⏸',  label:'DESCANSO',          cls:'descanso'},
+  fin:      {icon:'🏁', label:'FIN DEL PARTIDO',   cls:'fin'}
+};
+let cur=null;
+const box=document.getElementById('box');
+window.onOverlayState=function(s){
+  if(s.emergencyMode||!s.alerts?.active){box.classList.remove('show');cur=null;return}
+  const a=s.alerts,c=CFG[a.type]||{icon:'🔔',label:(a.type||'ALERTA').toUpperCase(),cls:'var'};
+  const sig=JSON.stringify({t:a.type,p:a.player,po:a.playerOut,m:a.minute,tm:a.team});
+  if(sig===cur&&box.classList.contains('show'))return;
+  cur=sig;
+  box.className='box '+c.cls;
+  document.getElementById('icon').textContent=c.icon;
+  document.getElementById('type').textContent=c.label;
+  const team=a.team==='local'?(s.local?.nombre||'Local'):(s.visitante?.nombre||'Visitante');
+  const min=a.minute!=null?a.minute+"'":'';
+
+  if(a.type==='cambio'&&(a.player||a.playerOut)){
+    // Modo cambio: cabecera con equipo+minuto, y entra/sale con flechas
+    document.getElementById('subRow').style.display='none';
+    document.getElementById('swap').style.display='';
+    const head=document.getElementById('swapHead');
+    head.style.display='';
+    head.textContent=[team,min].filter(Boolean).join(' · ');
+    document.getElementById('swapIn').textContent=a.player||'—';
+    document.getElementById('swapOut').textContent=a.playerOut||'—';
+  }else{
+    // Modo estándar: equipo · jugador · minuto
+    document.getElementById('swap').style.display='none';
+    document.getElementById('swapHead').style.display='none';
+    document.getElementById('subRow').style.display='';
+    const detail=[team,a.player].filter(Boolean).join(' · ');
+    document.getElementById('detail').textContent=detail;
+    document.getElementById('minute').textContent=min;
+    document.getElementById('dotSep').style.display=(detail&&min)?'':'none';
+  }
+  requestAnimationFrame(()=>{box.classList.remove('show');requestAnimationFrame(()=>box.classList.add('show'))});
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instructivo — Panel PRO Juego de Equipo</title>
+<style>
+  :root{--brand:#8B5CF6;--brand-dark:#6D28D9;--bg:#0d0d18;--card:#13131f;--border:rgba(139,92,246,.2);--text:#e0e0f0;--muted:#6b7280}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;font-size:15px}
+  a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+  code{background:#1e1e30;color:#a78bfa;padding:2px 7px;border-radius:5px;font-size:.875em;font-family:monospace}
+  pre{background:#1e1e30;border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto;margin:12px 0}
+  pre code{background:none;padding:0;color:#c4b5fd}
+  h1{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#fff,var(--brand));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+  h2{font-size:1.25rem;font-weight:800;color:#fff;margin:32px 0 14px;display:flex;align-items:center;gap:8px}
+  h2::before{content:'';display:block;width:4px;height:22px;background:var(--brand);border-radius:2px}
+  h3{font-size:1rem;font-weight:700;color:#c4b5fd;margin:18px 0 8px}
+  p{margin-bottom:10px;color:#c9cfe8}
+  ul,ol{padding-left:22px;margin-bottom:12px}
+  li{margin-bottom:5px;color:#c9cfe8}
+  strong{color:#fff}
+  .hero{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(109,40,217,.1));border:1px solid var(--border);border-radius:16px;padding:32px 40px;margin-bottom:36px;position:relative;overflow:hidden}
+  .hero::after{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent);pointer-events:none}
+  .hero p{font-size:1.05rem}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px}
+  .card h3{margin-top:0}
+  .badge{display:inline-block;background:var(--brand);color:#fff;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;padding:2px 10px;border-radius:20px;vertical-align:middle;margin-left:8px}
+  .badge.green{background:#16a34a}
+  .badge.orange{background:#d97706}
+  .badge.red{background:#dc2626}
+  .table-wrap{overflow-x:auto;margin:12px 0}
+  table{width:100%;border-collapse:collapse;font-size:.875rem}
+  th{background:rgba(139,92,246,.15);color:var(--brand);font-weight:800;text-transform:uppercase;letter-spacing:.8px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+  td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.05);color:#c9cfe8;vertical-align:top}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .tip{background:rgba(139,92,246,.1);border-left:3px solid var(--brand);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0}
+  .tip strong{color:var(--brand)}
+  .warn{background:rgba(220,38,38,.1);border-left:3px solid #dc2626;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0}
+  .warn strong{color:#f87171}
+  .step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+  .step-num{background:var(--brand);color:#fff;font-weight:900;font-size:.85rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .step-body{flex:1}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:36px}
+  .toc h3{color:var(--brand);margin-top:0}
+  .toc ol{column-count:2;column-gap:30px}
+  .toc li{margin-bottom:8px}
+  nav{position:sticky;top:0;background:rgba(13,13,24,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 40px;display:flex;align-items:center;gap:24px;z-index:100}
+  nav .logo{font-size:1rem;font-weight:900;color:#fff}
+  nav .logo span{color:var(--brand)}
+  nav a{font-size:.8rem;color:var(--muted);font-weight:600}nav a:hover{color:var(--brand)}
+  .container{max-width:960px;margin:0 auto;padding:40px 24px}
+  .kbd{display:inline-block;background:#1e1e30;border:1px solid rgba(139,92,246,.3);border-radius:5px;padding:1px 8px;font-size:.8rem;font-family:monospace;color:#c4b5fd}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+  .flow-box{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:8px;padding:6px 14px;font-size:.8rem;font-weight:700;color:#c4b5fd}
+  .flow-arrow{color:var(--brand);font-size:1.2rem}
+  footer{text-align:center;padding:32px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border);margin-top:40px}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+  <span class="logo">Juego de <span>Equipo</span></span>
+  <a href="#inicio">Inicio</a>
+  <a href="#obs">OBS</a>
+  <a href="#modulos">Módulos</a>
+  <a href="#flujo">Flujo</a>
+  <a href="#tips">Tips</a>
+  <a href="/pro/" target="_blank" style="margin-left:auto;color:var(--brand);font-weight:800">→ Abrir Panel</a>
+</nav>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero" id="inicio">
+    <h1>Panel PRO — Instructivo</h1>
+    <p>Guía completa para operar transmisiones deportivas en vivo con el sistema <strong>Juego de Equipo</strong>. Este panel permite controlar marcador, timer, plantel, publicidad y todos los overlays de OBS en tiempo real.</p>
+    <p style="margin-top:10px;margin-bottom:0"><code>http://localhost:3000/pro/</code> — Panel de control principal</p>
+  </div>
+
+  <!-- TABLA DE CONTENIDOS -->
+  <div class="toc">
+    <h3>📋 Contenidos</h3>
+    <ol>
+      <li><a href="#requisitos">Requisitos del sistema</a></li>
+      <li><a href="#inicio-servidor">Iniciar el servidor</a></li>
+      <li><a href="#obs">Configurar OBS</a></li>
+      <li><a href="#timer">Timer oficial</a></li>
+      <li><a href="#marcador">Marcador</a></li>
+      <li><a href="#plantel">Plantel del partido</a></li>
+      <li><a href="#alertas">Alertas rápidas</a></li>
+      <li><a href="#incidencias">Incidencias</a></li>
+      <li><a href="#widgets">Widgets ON/OFF</a></li>
+      <li><a href="#publicidad">Publicidad</a></li>
+      <li><a href="#ticker">Ticker de noticias</a></li>
+      <li><a href="#stats">Estadísticas</a></li>
+      <li><a href="#formaciones">Formaciones pre-partido</a></li>
+      <li><a href="#emergencia">Modo emergencia</a></li>
+      <li><a href="#flujo">Flujo de trabajo completo</a></li>
+      <li><a href="#tips">Tips y atajos</a></li>
+    </ol>
+  </div>
+
+  <!-- REQUISITOS -->
+  <h2 id="requisitos">🖥 Requisitos del Sistema</h2>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <tr><th>Componente</th><th>Requisito</th><th>Estado</th></tr>
+        <tr><td><strong>Node.js</strong></td><td>v18 o superior</td><td><span class="badge green">Requerido</span></td></tr>
+        <tr><td><strong>PostgreSQL</strong></td><td>v14 o superior</td><td><span class="badge green">Requerido</span></td></tr>
+        <tr><td><strong>OBS Studio</strong></td><td>v29 o superior</td><td><span class="badge green">Requerido</span></td></tr>
+        <tr><td><strong>Navegador</strong></td><td>Chrome o Edge (para el panel de control)</td><td><span class="badge green">Requerido</span></td></tr>
+        <tr><td><strong>Red local</strong></td><td>Panel y OBS en la misma máquina o LAN</td><td><span class="badge orange">Recomendado</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- INICIO SERVIDOR -->
+  <h2 id="inicio-servidor">🚀 Iniciar el Servidor</h2>
+  <div class="card">
+    <h3>Desde la carpeta del proyecto</h3>
+    <pre><code>cd "Overlays Facebook"
+npm start</code></pre>
+    <p>Deberías ver: <code>Servidor corriendo en http://localhost:3000</code></p>
+    <div class="tip"><strong>Tip:</strong> Dejá la terminal abierta durante toda la transmisión. Si la cerrás, el servidor se detiene.</div>
+
+    <h3>Verificar que todo funciona</h3>
+    <ol>
+      <li>Abrí <code>http://localhost:3000/pro/</code> en el navegador</li>
+      <li>El badge en el header debe decir <strong>CONECTADO</strong> en verde</li>
+      <li>Si dice "Desconectado", revisá que el servidor esté corriendo</li>
+    </ol>
+
+    <h3>En caso de error de base de datos</h3>
+    <p>El sistema funciona sin PostgreSQL para controles básicos (marcador, timer, alertas). Solo las funciones de "Cargar desde BD" requieren la base de datos activa.</p>
+  </div>
+
+  <!-- OBS -->
+  <h2 id="obs">📺 Configurar OBS</h2>
+  <div class="card">
+    <h3>Agregar cada overlay como Browser Source</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">En tu escena de OBS → botón <strong>+</strong> → <strong>Navegador</strong> (Browser Source)</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">Configurar el browser source con estas opciones:<br>
+      <ul style="margin-top:8px">
+        <li><strong>Ancho:</strong> <code>1920</code></li>
+        <li><strong>Alto:</strong> <code>1080</code></li>
+        <li><strong>FPS:</strong> <code>30</code></li>
+        <li>☑ <strong>Actualizar navegador cuando la escena se active</strong></li>
+        <li><strong>Color de fondo:</strong> <code>#00000000</code> (transparente)</li>
+      </ul>
+    </div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Repetir para cada overlay deseado. Apilarlos en la misma escena.</div></div>
+
+    <h3>URLs de Browser Sources</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Overlay</th><th>URL en OBS</th><th>Activado con…</th></tr>
+        <tr><td>⚽ Marcador en vivo</td><td><code>http://localhost:3000/pro/overlays/marcador.html</code></td><td>Widget: Marcador</td></tr>
+        <tr><td>🔔 Alertas (GOL, VAR…)</td><td><code>http://localhost:3000/pro/overlays/alerta.html</code></td><td>Widget: Alertas</td></tr>
+        <tr><td>📺 Banner inferior</td><td><code>http://localhost:3000/pro/overlays/banner.html</code></td><td>Publicidad: Banner</td></tr>
+        <tr><td>🎬 Cortina sponsor</td><td><code>http://localhost:3000/pro/overlays/cortina.html</code></td><td>Publicidad: Cortina</td></tr>
+        <tr><td>📰 Ticker noticias</td><td><code>http://localhost:3000/pro/overlays/ticker.html</code></td><td>Widget: Ticker</td></tr>
+        <tr><td>📊 Estadísticas</td><td><code>http://localhost:3000/pro/overlays/stats.html</code></td><td>Widget: Estadísticas</td></tr>
+        <tr><td>🗂 Formaciones previa</td><td><code>http://localhost:3000/pro/overlays/formaciones-previa.html</code></td><td>Widget: Previa</td></tr>
+        <tr><td>👕 Formaciones partido</td><td><code>http://localhost:3000/pro/overlays/formaciones.html</code></td><td>Widget: Formaciones</td></tr>
+        <tr><td>⚽ Otros partidos</td><td><code>http://localhost:3000/pro/overlays/otros-partidos.html</code></td><td>Widget: Otros Partidos</td></tr>
+        <tr><td>📊 Tabla posiciones</td><td><code>http://localhost:3000/pro/overlays/tabla.html</code></td><td>Widget: Tabla</td></tr>
+      </table>
+    </div>
+
+    <div class="tip"><strong>Consejo clave:</strong> Todos los browser sources van en la <strong>misma escena a 1920×1080</strong> apilados uno encima del otro. Cada uno se muestra u oculta automáticamente cuando lo activás desde el panel — no necesitás cambiar escenas en OBS.</div>
+  </div>
+
+  <!-- TIMER -->
+  <h2 id="timer">⏱ Timer Oficial</h2>
+  <div class="card">
+    <p>El timer corre <strong>del lado del servidor</strong>, por lo que todos los overlays muestran exactamente el mismo minuto aunque tengas varias pantallas abiertas.</p>
+    <h3>Controles</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Botón</th><th>Acción</th></tr>
+      <tr><td><kbd class="kbd">▶ INICIAR</kbd></td><td>Arranca el contador desde donde estaba pausado</td></tr>
+      <tr><td><kbd class="kbd">⏸ PAUSAR</kbd></td><td>Congela el minuto (ej: durante entretiempo)</td></tr>
+      <tr><td><kbd class="kbd">↺ RESET</kbd></td><td>Vuelve a 0' y limpia el período</td></tr>
+    </table></div>
+    <h3>Períodos</h3>
+    <p>Hacé clic en el botón del período <strong>antes</strong> de iniciar. Al cambiar de período el timer se pausa automáticamente y se setea el minuto base:</p>
+    <div class="flow">
+      <div class="flow-box">1T (0')</div><div class="flow-arrow">→</div>
+      <div class="flow-box">ET (45')</div><div class="flow-arrow">→</div>
+      <div class="flow-box">2T (45')</div><div class="flow-arrow">→</div>
+      <div class="flow-box">Prórr. (90')</div><div class="flow-arrow">→</div>
+      <div class="flow-box">Pen. (120')</div><div class="flow-arrow">→</div>
+      <div class="flow-box">FIN</div>
+    </div>
+    <h3>Tiempo agregado</h3>
+    <p>Presioná los botones <code>+1'</code> a <code>+7'</code> cuando el árbitro señale tiempo adicional. Aparece como <strong>+X'</strong> en el marcador. Usá el campo manual para valores personalizados.</p>
+    <div class="warn"><strong>Importante:</strong> No olvidés pausar el timer al final de cada tiempo.</div>
+  </div>
+
+  <!-- MARCADOR -->
+  <h2 id="marcador">⚽ Marcador</h2>
+  <div class="card">
+    <h3>Seleccionar equipos</h3>
+    <p>Usá los selectores desplegables para elegir los equipos. Al seleccionar un equipo se carga automáticamente el logo y los colores de camiseta.</p>
+    <h3>Goles</h3>
+    <p>Usá los botones <strong>+</strong> y <strong>−</strong> al costado del número. El cambio se refleja en todos los overlays instantáneamente.</p>
+    <h3>Información del partido</h3>
+    <ul>
+      <li><strong>Torneo:</strong> Nombre del torneo (ej: APERTURA 2026)</li>
+      <li><strong>Árbitro:</strong> Nombre del árbitro principal</li>
+      <li><strong>Estadio:</strong> Nombre del estadio</li>
+      <li><strong>Estado manual:</strong> Fuerza el estado del partido (útil para corregir errores)</li>
+    </ul>
+    <h3>DT</h3>
+    <p>Ingresá el nombre del director técnico de cada equipo. Se muestra en el overlay de formaciones pre-partido.</p>
+    <h3>Colores de camiseta</h3>
+    <p>Los color pickers controlan el color de la camiseta y los números, usados en el overlay de formaciones para distinguir visualmente cada equipo.</p>
+  </div>
+
+  <!-- PLANTEL -->
+  <h2 id="plantel">👕 Plantel del Partido</h2>
+  <div class="card">
+    <p>Esta sección permite cargar y editar los jugadores de cada equipo. Los cambios se envían a los overlays cuando presionás <strong>"Guardar Plantel en Pantalla"</strong>.</p>
+    <h3>Cargar desde la base de datos</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">Primero seleccioná el equipo en el selector del Marcador</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">En la sección Plantel, hacé clic en <kbd class="kbd">📥 Cargar de BD</kbd></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Se cargan los jugadores registrados en la base de datos. Asignales el número de camiseta correcto a cada uno</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body">Mové jugadores entre Titulares y Suplentes con el botón <kbd class="kbd">↕</kbd></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body">Presioná <kbd class="kbd">📡 Guardar Plantel en Pantalla</kbd> para enviar a los overlays</div></div>
+    <h3>Agregar jugador manual</h3>
+    <p>Usá los campos al pie de la lista para agregar jugadores que no estén en la BD. Ingresá número y nombre, luego clic en <strong>+ Agregar</strong>. Se agrega automáticamente a titulares (si hay menos de 11) o a suplentes.</p>
+    <h3>Controles por jugador</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Control</th><th>Función</th></tr>
+      <tr><td>Campo <code>#</code></td><td>Número de camiseta (editable)</td></tr>
+      <tr><td><kbd class="kbd">−</kbd> / <kbd class="kbd">+</kbd></td><td>Agregar o quitar goles al jugador</td></tr>
+      <tr><td>🟨</td><td>Toggle tarjeta amarilla (opaco = sin tarjeta)</td></tr>
+      <tr><td>🟥</td><td>Toggle tarjeta roja (opaco = sin tarjeta)</td></tr>
+      <tr><td>⭐</td><td>Marcar como figura del partido</td></tr>
+      <tr><td><kbd class="kbd">↕</kbd></td><td>Mover entre titulares y suplentes</td></tr>
+      <tr><td><kbd class="kbd">✕</kbd></td><td>Eliminar jugador de la lista</td></tr>
+    </table></div>
+    <div class="tip"><strong>Recordá:</strong> Cada vez que hagas cambios en las tarjetas o goles de un jugador, necesitás volver a hacer clic en "Guardar Plantel en Pantalla" para que se reflejen en los overlays.</div>
+  </div>
+
+  <!-- ALERTAS -->
+  <h2 id="alertas">🔔 Alertas Rápidas</h2>
+  <div class="card">
+    <p>Las alertas muestran un overlay dramático centrado en pantalla que desaparece automáticamente después de <strong>12 segundos</strong>.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Botón</th><th>Alerta mostrada</th><th>Diseño</th></tr>
+      <tr><td>⚽ GOL</td><td>¡GOL!</td><td>Verde brillante</td></tr>
+      <tr><td>🟨 AMARILLA</td><td>AMARILLA</td><td>Amarillo/naranja</td></tr>
+      <tr><td>🟥 ROJA</td><td>TARJETA ROJA</td><td>Rojo intenso</td></tr>
+      <tr><td>📺 VAR</td><td>EN REVISIÓN VAR</td><td>Azul</td></tr>
+      <tr><td>⏸ DESCANSO</td><td>DESCANSO</td><td>Gris</td></tr>
+      <tr><td>🏁 FIN</td><td>FIN DEL PARTIDO</td><td>Violeta</td></tr>
+    </table></div>
+    <p>Para limpiar una alerta antes de los 12 segundos, hacé clic en <strong>"✕ Limpiar alerta activa"</strong>.</p>
+    <div class="tip"><strong>Flujo típico de gol:</strong> 1) Registrar gol en Incidencias → 2) Presionar ⚽ GOL en Alertas → 3) El overlay de alerta aparece 12s → 4) Continuar normalmente.</div>
+  </div>
+
+  <!-- INCIDENCIAS -->
+  <h2 id="incidencias">📋 Incidencias</h2>
+  <div class="card">
+    <p>Registra todas las jugadas importantes del partido. El historial de incidencias se guarda y se usa para los overlays de formaciones (mostrando tarjetas y goles por jugador).</p>
+    <h3>Registrar una incidencia</h3>
+    <ol>
+      <li>Seleccioná el <strong>Tipo</strong>: Gol, Amarilla, Roja, Cambio o VAR</li>
+      <li>Elegí el <strong>Equipo</strong>: Local o Visitante</li>
+      <li>Elegí el <strong>Jugador</strong> del desplegable (se carga desde el plantel actual)</li>
+      <li>El <strong>Minuto</strong> se toma automáticamente del timer. Podés sobreescribirlo</li>
+      <li>Para cambios: elegí también el jugador que <strong>sale</strong></li>
+      <li>Clic en <strong>+ Registrar Incidencia</strong></li>
+    </ol>
+    <h3>Deshacer</h3>
+    <p>Cada incidencia en la lista tiene un botón <kbd class="kbd">✕</kbd> para eliminarla si fue un error.</p>
+    <div class="warn"><strong>Atención:</strong> Eliminar una incidencia no revierte automáticamente el marcador ni las tarjetas del jugador en el plantel. Hacé los ajustes manualmente.</div>
+  </div>
+
+  <!-- WIDGETS -->
+  <h2 id="widgets">📡 Widgets en Pantalla</h2>
+  <div class="card">
+    <p>Cada toggle controla un overlay específico. <span style="color:#8B5CF6;font-weight:700">Violeta = activo</span>, Gris = inactivo.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Widget</th><th>Overlay</th><th>Cuándo usarlo</th></tr>
+      <tr><td>📺 Marcador</td><td>marcador.html</td><td>Durante todo el partido</td></tr>
+      <tr><td>👕 Formaciones titulares</td><td>formaciones-desk.html</td><td>Mostrar plantel en pantalla</td></tr>
+      <tr><td>⚽ Otros Partidos</td><td>partidos-desktop.html</td><td>Cuando hay otros partidos en la jornada</td></tr>
+      <tr><td>📊 Tabla de Posiciones</td><td>tabla-de-posiciones.html</td><td>Durante entretiempo o al final</td></tr>
+      <tr><td>📰 Ticker</td><td>overlay-ticker.html</td><td>Para mostrar info adicional</td></tr>
+      <tr><td>💰 Publicidad</td><td>overlay-banner.html</td><td>Al activar publicidad</td></tr>
+      <tr><td>📈 Estadísticas</td><td>overlay-stats.html</td><td>Mostrar datos del partido</td></tr>
+      <tr><td>🔔 Alertas</td><td>overlay-alerta.html</td><td>Para alertas de GOL, VAR, etc.</td></tr>
+      <tr><td>🗂 Previa Formaciones</td><td>overlay-formaciones-previa.html</td><td>Antes del inicio del partido</td></tr>
+    </table></div>
+    <div class="tip"><strong>Consejo:</strong> Mantené desactivado lo que no usás para evitar overlays vacíos en pantalla.</div>
+  </div>
+
+  <!-- PUBLICIDAD -->
+  <h2 id="publicidad">💰 Publicidad</h2>
+  <div class="card">
+    <h3>Tipos de inserción</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Tipo</th><th>Descripción</th><th>Duración sugerida</th></tr>
+      <tr><td>📺 Banner</td><td>Banda inferior animada con nombre y logo del sponsor</td><td>15-30 segundos</td></tr>
+      <tr><td>🎬 Cortina</td><td>Pantalla completa con logo grande del sponsor y partículas</td><td>5-10 segundos</td></tr>
+      <tr><td>🏷 Overlay Marca</td><td>Banner inferior siempre visible (branding permanente)</td><td>Permanente</td></tr>
+    </table></div>
+    <h3>Configurar sponsor</h3>
+    <ol>
+      <li>Ingresá el <strong>Nombre del sponsor</strong></li>
+      <li>Ingresá la <strong>URL del logo</strong> (puede ser una ruta local como <code>sponsors/logo.png</code>)</li>
+      <li>Presioná el tipo de inserción deseado</li>
+    </ol>
+    <h3>Publicidad automática</h3>
+    <ol>
+      <li>Configurá el intervalo en minutos (ej: cada 10 min)</li>
+      <li>Clic en <kbd class="kbd">Activar Auto</kbd></li>
+      <li>El banner aparecerá automáticamente cada N minutos</li>
+      <li>El countdown muestra cuándo es la próxima inserción</li>
+    </ol>
+    <div class="tip"><strong>Flujo de publicidad en entretiempo:</strong> Activar Cortina → esperar 8s → Desactivar → Activar tabla de posiciones.</div>
+  </div>
+
+  <!-- TICKER -->
+  <h2 id="ticker">📰 Ticker de Noticias</h2>
+  <div class="card">
+    <p>El ticker es una banda horizontal que scrollea en la parte inferior de la pantalla con textos personalizados.</p>
+    <h3>Agregar items</h3>
+    <ol>
+      <li>Escribí el texto en el campo de input</li>
+      <li>Clic en <kbd class="kbd">+</kbd> o Enter</li>
+      <li>Los items se agregan a la cola de scroll</li>
+      <li>Activar el widget <strong>Ticker</strong> para mostrarlo en pantalla</li>
+    </ol>
+    <p>Para eliminar un item, clic en el <kbd class="kbd">✕</kbd> al costado.</p>
+    <div class="tip"><strong>Sugerencias de contenido:</strong> Resultados de otros partidos, próximo fixture, info del partido, datos del torneo.</div>
+  </div>
+
+  <!-- ESTADÍSTICAS -->
+  <h2 id="stats">📊 Estadísticas en Vivo</h2>
+  <div class="card">
+    <h3>Posesión</h3>
+    <p>Deslizá el slider para ajustar el porcentaje de posesión. El porcentaje del otro equipo se ajusta automáticamente para sumar 100%.</p>
+    <h3>Contadores</h3>
+    <p>Usá los botones <kbd class="kbd">+</kbd> y <kbd class="kbd">−</kbd> para cada estadística:</p>
+    <ul>
+      <li><strong>Tiros:</strong> Total de tiros al arco y afuera</li>
+      <li><strong>Al arco:</strong> Tiros que fueron al arco (atajados o goles)</li>
+      <li><strong>Corners:</strong> Tiros de esquina</li>
+      <li><strong>Faltas:</strong> Faltas cometidas</li>
+      <li><strong>Offsides:</strong> Posiciones adelantadas</li>
+    </ul>
+    <h3>Jugador Destacado</h3>
+    <p>Seleccioná un jugador del plantel y una descripción de su rendimiento (ej: "2 goles", "5 remates", "90% pases"). Clic en <strong>Guardar Destacado</strong>.</p>
+    <p>Se muestra en el panel de estadísticas lateral del overlay.</p>
+  </div>
+
+  <!-- FORMACIONES PREVIA -->
+  <h2 id="formaciones">🗂 Formaciones Pre-Partido</h2>
+  <div class="card">
+    <p>Muestra una pantalla comparativa con los planteles de ambos equipos antes de iniciar el partido.</p>
+    <h3>Configuración</h3>
+    <ol>
+      <li>Seleccioná la formación táctica de cada equipo (4-3-3, 4-4-2, etc.)</li>
+      <li>Asegurate de tener el plantel cargado (sección Plantel del Partido)</li>
+      <li>Verificá que estén el DT y los colores de camiseta</li>
+      <li>Clic en <kbd class="kbd">Mostrar / Ocultar Overlay Previa</kbd></li>
+    </ol>
+    <p>El overlay muestra: escudo, nombre, formación, DT, titulares con número/nombre/posición, suplentes y un campo de fútbol central.</p>
+    <div class="tip"><strong>Cuándo mostrar la previa:</strong> Mientras se espera el inicio del partido, durante los primeros 15 minutos antes del arranque, o en los minutos previos a la transmisión.</div>
+  </div>
+
+  <!-- EMERGENCIA -->
+  <h2 id="emergencia">🚨 Modo Emergencia</h2>
+  <div class="card">
+    <p>El botón <strong>EMERGENCIA</strong> en el header oculta instantáneamente todos los overlays de pantalla.</p>
+    <h3>Cuándo usarlo</h3>
+    <ul>
+      <li>Error técnico que requiere cortar los gráficos rápidamente</li>
+      <li>Contenido inapropiado en pantalla</li>
+      <li>Falla general del sistema que requiere intervención manual</li>
+    </ul>
+    <h3>Cómo desactivar</h3>
+    <p>Aparece una pantalla roja con el botón <strong>DESACTIVAR EMERGENCIA</strong>. Presionalo para volver a la transmisión normal.</p>
+    <div class="warn"><strong>Nota:</strong> El modo emergencia oculta los overlays en los browsers conectados, pero no apaga el stream de OBS. Para cortar completamente la transmisión, usá los controles de OBS.</div>
+  </div>
+
+  <!-- FLUJO DE TRABAJO -->
+  <h2 id="flujo">🎬 Flujo de Trabajo Tipo</h2>
+  <div class="card">
+    <h3>2 horas antes del partido</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">Iniciá el servidor con <code>npm start</code></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">Abrí el panel: <code>http://localhost:3000/pro/</code></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Configurá OBS con todos los Browser Sources</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body">Seleccioná equipos y cargá los planteles desde BD</div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body">Ajustá números de camiseta, DT y formaciones</div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body">Configurá datos del partido (torneo, árbitro, estadio)</div></div>
+    <div class="step"><div class="step-num">7</div><div class="step-body">Guardá los planteles en pantalla</div></div>
+
+    <h3>30 minutos antes — Pre-partido</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">Activar widget <strong>Previa Formaciones</strong> → mostrar plantel pre-partido</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">Si hay sponsor: configurar publicidad y activar banner/cortina</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Activar ticker con info del partido</div></div>
+
+    <h3>Al inicio del partido</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">Desactivar Previa Formaciones</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">Activar widget <strong>Marcador</strong></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Seleccionar período <strong>1T</strong> y presionar <kbd class="kbd">▶ INICIAR</kbd></div></div>
+
+    <h3>Durante el partido</h3>
+    <ul>
+      <li>Goles: registrar incidencia → presionar alerta ⚽ GOL → actualizar marcador con +</li>
+      <li>Tarjetas: registrar incidencia → actualizar plantel con toggle de tarjeta → Guardar</li>
+      <li>Cambios: registrar incidencia tipo Cambio → mover jugador en plantel → Guardar</li>
+      <li>Estadísticas: actualizar contadores de tiros, corners, faltas según el juego</li>
+    </ul>
+
+    <h3>Entretiempo</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">Pausar timer → Seleccionar período <strong>ET</strong></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">Activar tabla de posiciones o formaciones</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Lanzar cortina de sponsor si aplica</div></div>
+
+    <h3>Al terminar</h3>
+    <div class="step"><div class="step-num">1</div><div class="step-body">Seleccionar período <strong>FIN</strong> → Alerta 🏁 FIN</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">Desactivar marcador</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">Resetear estado para el próximo partido (botón Sistema → Resetear)</div></div>
+  </div>
+
+  <!-- TIPS -->
+  <h2 id="tips">💡 Tips y Atajos</h2>
+  <div class="card">
+    <h3>Plantillas de transmisión</h3>
+    <p>El selector <strong>Plantilla</strong> en el header carga automáticamente el nombre del torneo correcto:</p>
+    <ul>
+      <li><strong>Liga Regular:</strong> LIGA APERTURA 2026</li>
+      <li><strong>Copa / Eliminatoria:</strong> COPA REGIONAL 2026</li>
+      <li><strong>Amistoso:</strong> PARTIDO AMISTOSO</li>
+      <li><strong>Liguilla Final:</strong> LIGUILLA FINAL 2026</li>
+    </ul>
+
+    <h3>Modo sin internet</h3>
+    <p>El panel guarda el último estado en <code>localStorage</code> del navegador. Si el servidor se cae momentáneamente, podés seguir trabajando y los cambios se sincronizarán al reconectar.</p>
+
+    <h3>Múltiples operadores</h3>
+    <p>Podés abrir el panel en <strong>varias computadoras de la red local</strong> usando la IP del servidor: <code>http://[IP-DEL-SERVIDOR]:3000/pro/</code>. Todos los cambios se sincronizan en tiempo real.</p>
+
+    <h3>Historial de acciones</h3>
+    <p>El panel guarda las últimas 30 acciones con timestamp. Útil para verificar cuándo ocurrió cada incidencia o para detectar errores.</p>
+
+    <h3>El badge de conexión</h3>
+    <ul>
+      <li><span class="badge green">CONECTADO</span> — Todo bien, los overlays reciben actualizaciones</li>
+      <li><span class="badge red">DESCONECTADO</span> — Verificar que el servidor esté corriendo</li>
+    </ul>
+
+    <h3>Atajos de teclado recomendados (OBS)</h3>
+    <p>Configurá hotkeys en OBS para activar/desactivar escenas rápidamente mientras operás el panel.</p>
+
+    <h3>Actualizar la base de datos</h3>
+    <p>Para agregar nuevos jugadores o equipos, usá el <a href="/admin.html" target="_blank">Panel Admin Original</a> que tiene las herramientas de gestión de base de datos.</p>
+  </div>
+
+  <footer>
+    Panel PRO — Juego de Equipo · Sistema de overlays para transmisiones deportivas<br>
+    <a href="/pro/" target="_blank">Abrir Panel de Control</a> · <a href="/admin.html" target="_blank">Panel Admin Original</a>
+  </footer>
+
+</div>
+</body>
+</html>

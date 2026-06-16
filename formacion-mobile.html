@@ -3,188 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <title>Formaciones</title>
+
 <style>
-  body {
-    margin: 0;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background: transparent;
-    color: white;
-    text-transform: uppercase;
-  }
-  .container {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  .equipo {
-    flex: 1;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  .equipo h2 {
-    margin: 0 0 15px 0;
-    font-size: 35px;
-    border-bottom: 2px solid #ffeb3b;
-    padding-bottom: 5px;
-  }
-  ol {
-    padding-left: 0;
-    margin: 0;
-  }
-  li {
-    margin-bottom: 12px;
-    font-size: 27px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .stats img {
-    width: 27px;
-    height: 27px;
-  }
-  .stats {
-    display: flex;
-    align-items: center;
-  }
-  .numero {
-    width: 30px;
-    display: inline-block;
-  }
-</style>
-</head>
-<body>
-<div class="container container-formaciones" id="formaciones"></div>
-
-<script>
-const formaciones = {
-  local: {
-    nombre: "Cecil A. Roberts",
-    jugadores: [
-      { nombre: "Fabricio Cerutti", goles: 0, amarilla: false, roja: false },
-      { nombre: "Julian Cocimano", goles: 0, amarilla: false, roja: false },
-      { nombre: "Emanuel Klundt", goles: 0, amarilla: false, roja: false },
-      { nombre: "Luciano Duarte", goles: 0, amarilla: false, roja: false },
-      { nombre: "Lucas Avellaneda", goles: 0, amarilla: false, roja: false },
-      { nombre: "Julian Ressia", goles: 0, amarilla: true, roja: false },
-      { nombre: "Joel Carrizo", goles: 0, amarilla: false, roja: false },
-      { nombre: "Tomas Altamiranda", goles: 1, amarilla: false, roja: false },
-      { nombre: "Lucas Rivas", goles: 0, amarilla: false, roja: false },
-      { nombre: "Enzo Alonzo", goles: 0, amarilla: false, roja: false },
-      { nombre: "Robert Campaz", goles: 1, amarilla: false, roja: false }
-    ],
-    suplentes: [
-      { nombre: "Enzo Pellegrini", goles: 0, amarilla: false, roja: false },
-      { nombre: "Gaston Molina", goles: 0, amarilla: true, roja: false },
-      { nombre: "Justin Gomez", goles: 0, amarilla: false, roja: false },
-      { nombre: "Benjamin Natali", goles: 0, amarilla: false, roja: false },
-      { nombre: "Luis Duche", goles: 0, amarilla: false, roja: false },
-      { nombre: "Nahuel Mercadin", goles: 0, amarilla: false, roja: false },
-      { nombre: "Maximiliano Seminth", goles: 0, amarilla: false, roja: false }
-    ]
-    /* nombre: "Roberts",
-    jugadores: [
-      { nombre: "Angel Arboleda", goles: 0, amarilla: false, roja: false },
-      { nombre: "Julian Ressia", goles: 0, amarilla: true, roja: false },
-      { nombre: "Jose M. Otamendi", goles: 0, amarilla: false, roja: false },
-      { nombre: "Juan I. Mendez", goles: 0, amarilla: false, roja: false },
-      { nombre: "Fabricio Candia", goles: 0, amarilla: false, roja: false },
-      { nombre: "Alejandro Aquino", goles: 0, amarilla: false, roja: false },
-      { nombre: "Nahuel Suarez", goles: 0, amarilla: false, roja: false },
-      { nombre: "German Arias", goles: 0, amarilla: false, roja: false },
-      { nombre: "Maximiliano Rios", goles: 0, amarilla: false, roja: false },
-      { nombre: "Enzo Alonso", goles: 0, amarilla: false, roja: false },
-      { nombre: "Benjamin Natali", goles: 0, amarilla: false, roja: false }
-    ],
-    suplentes: [
-      { nombre: "Enzo Pellegrini", goles: 0, amarilla: false, roja: false },
-      { nombre: "Daniel Prestifilipo", goles: 0, amarilla: false, roja: false },
-      { nombre: "Juan J. Gimenez", goles: 0, amarilla: false, roja: false },
-      { nombre: "Robert Campaz", goles: 0, amarilla: false, roja: false },
-      { nombre: "Luis Duche", goles: 0, amarilla: false, roja: false },
-      { nombre: "Roman Schap", goles: 0, amarilla: false, roja: false },
-      { nombre: "Gaston Molina", goles: 0, amarilla: false, roja: false }
-    ]  */
-  },
-  visitante: {
-    nombre: "Unión de Bonifacio",
-    jugadores: [
-      { nombre: "Agustin Gomez", goles: 0, amarilla: false, roja: false },
-      { nombre: "Agustin Duarte", goles: 0, amarilla: false, roja: false },
-      { nombre: "Juan Feloy", goles: 0, amarilla: false, roja: false },
-      { nombre: "Mariano Leiva", goles: 0, amarilla: false, roja: false },
-      { nombre: "Francisco Ramirez", goles: 0, amarilla: false, roja: false },
-      { nombre: "Felipe Borniego", goles: 0, amarilla: false, roja: false },
-      { nombre: "Miche Fernandez", goles: 0, amarilla: false, roja: false },
-      { nombre: "Yaco Leiva", goles: 0, amarilla: false, roja: false },
-      { nombre: "Roman Aispuru", goles: 0, amarilla: false, roja: true },
-      { nombre: "Juan Schafer", goles: 0, amarilla: false, roja: false },
-      { nombre: "Denis Ramirez", goles: 0, amarilla: false, roja: true }
-    ],
-    suplentes: [
-      { nombre: "Felipe Cepeda", goles: 0, amarilla: false, roja: false },
-      { nombre: "Julian Torres", goles: 0, amarilla: false, roja: false },
-      { nombre: "Gonzalo Achaval", goles: 0, amarilla: false, roja: false },
-      { nombre: "Santiago Satarain", goles: 0, amarilla: false, roja: false },
-      { nombre: "Diego Achaval", goles: 1, amarilla: false, roja: false }
-    ]
-  }
-};
-
-const container = document.getElementById("formaciones");
-
-function renderJugador(jugador, numero) {
-  const li = document.createElement("li");
-  li.innerHTML = `
-    <span class="numero">${numero}.</span>
-    <span class="nombre">${jugador.nombre}</span>
-    <span class="stats">
-      ${"".padStart(jugador.goles, "⚽")}
-      ${jugador.amarilla ? '<img src="./assets/amarilla.png" alt="amarilla">' : ""}
-      ${jugador.roja ? '<img src="./assets/roja.png" alt="roja">' : ""}
-    </span>
-  `;
-  return li;
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
 }
 
-function renderFormaciones() {
+body {
+  width: 1080px;
+  height: 1920px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px;
+}
+
+/* CONTENEDOR GENERAL */
+.container {
+  width: 1020px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+/* EQUIPO */
+.equipo {
+  background: rgba(0,0,0,0.55);
+  border-radius: 18px;
+  padding: 28px;
+}
+
+/* NOMBRE EQUIPO */
+.equipo h2 {
+  margin: 0 0 20px;
+  font-size: 36px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* JUGADOR */
+.jugador {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 30px;
+}
+
+/* NUMERO */
+.numero {
+  font-weight: 700;
+  opacity: 0.5;
+}
+
+/* NOMBRE */
+.nombre {
+  font-weight: 600;
+  margin-left: 15px;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stats img {
+  width: 22px;
+  height: 22px;
+}
+
+/* SUPLENTES */
+.suplentes-title {
+  margin-top: 28px;
+  font-size: 22px;
+  font-weight: 700;
+  opacity: 0.75;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="formaciones"></div>
+
+<script src="./js/overlay-client.js"></script>
+<script>
+const container = document.getElementById("formaciones");
+
+function renderJugador(jugador, numero, colorNumero) {
+  const div = document.createElement("div");
+  div.className = "jugador";
+  const numeroMostrado = jugador.numero || numero;
+  const subIcon = jugador.entro ? ' <span style="color:#22c55e;font-size:0.75em">▲</span>' : (jugador.sustituido ? ' <span style="color:#ef4444;font-size:0.75em">▼</span>' : '');
+  const numStyle = colorNumero ? ` style="color:${colorNumero};opacity:1"` : '';
+  div.innerHTML = `
+    <span class="numero"${numStyle}>${numeroMostrado}</span>
+    <span class="nombre">${jugador.nombre}${subIcon}</span>
+    <span class="stats">
+      ${"⚽".repeat(jugador.goles || 0)}
+      ${jugador.amarilla ? '<img src="./assets/amarilla.png">' : ""}
+      ${jugador.roja ? '<img src="./assets/roja.png">' : ""}
+    </span>
+  `;
+  return div;
+}
+
+function renderFormaciones(state) {
   container.innerHTML = "";
-  Object.values(formaciones).forEach(eq => {
+  ["local", "visitante"].forEach(side => {
+    const eq = state[side];
+    if (!eq || !eq.nombre) return;
+
     const box = document.createElement("div");
     box.className = "equipo";
+    box.innerHTML = `<h2>${eq.nombre}</h2>`;
 
-    box.innerHTML = `<h2>${eq.nombre}</h2><h3>Titulares</h3>`;
-    const olJugadores = document.createElement("ol");
-    eq.jugadores.forEach((j, i) => olJugadores.appendChild(renderJugador(j, i+1)));
-    box.appendChild(olJugadores);
+    (eq.jugadores || []).forEach((j, i) =>
+      box.appendChild(renderJugador(j, i + 1, eq.colorNumero))
+    );
 
-    box.innerHTML += "<h3>Suplentes</h3>";
-    const olSuplentes = document.createElement("ol");
-    olSuplentes.start = eq.jugadores.length + 1;
-    eq.suplentes.forEach((j, i) => olSuplentes.appendChild(renderJugador(j, i + eq.jugadores.length + 1)));
-    box.appendChild(olSuplentes);
+    box.innerHTML += `<div class="suplentes-title">SUPLENTES</div>`;
+
+    (eq.suplentes || []).forEach((j, i) =>
+      box.appendChild(renderJugador(j, i + (eq.jugadores || []).length + 1, eq.colorNumero))
+    );
 
     container.appendChild(box);
   });
 }
 
-renderFormaciones();
-
-// Ejemplo de actualización de estadísticas
-function agregarGol(jugador) {
-  jugador.goles++;
-  renderFormaciones();
-}
-
-function ponerAmarilla(jugador) {
-  jugador.amarilla = true;
-  renderFormaciones();
-}
-
-function ponerRoja(jugador) {
-  jugador.roja = true;
-  renderFormaciones();
-}
+window.onOverlayState = renderFormaciones;
 </script>
+
 </body>
 </html>
