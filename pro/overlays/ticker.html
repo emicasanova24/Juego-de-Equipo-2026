@@ -5,8 +5,8 @@
 <title>Ticker en Vivo</title>
 <link rel="stylesheet" href="/pro/assets/css/overlays.css">
 <style>
-  .wrap{position:absolute;bottom:0;left:0;right:0;height:48px;transform:translateY(100%);transition:transform .45s cubic-bezier(.22,1,.36,1);overflow:hidden;pointer-events:none}
-  .wrap.show{transform:translateY(0)}
+  .wrap{position:absolute;bottom:0;left:0;right:0;height:48px;transform:translateY(100%);opacity:0;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .45s ease;overflow:hidden;pointer-events:none}
+  .wrap.show{transform:translateY(0);opacity:1}
   .bar{position:absolute;inset:0;display:flex;align-items:center;background:rgba(8,6,20,0.88);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.08)}
 
   /* Label LIVE SCORES */

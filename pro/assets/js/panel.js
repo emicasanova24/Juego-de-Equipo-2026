@@ -164,6 +164,7 @@ function renderAll(s) {
 
   // Otros Partidos (sincroniza lista/título/libre sin pisar edición activa)
   syncResultados(s);
+  syncCortinaBtns(s);
 
   // Incidencias
   renderIncidents(s.incidents || []);
@@ -454,13 +455,10 @@ async function confirmSubstitution(side, suplIdx, titIdx) {
   renderPlantel(side);
   await savePlayers(side);
 
-  // Incidencia automática (queda en el listado de incidencias y en el historial).
+  // Incidencia automática (alimenta el banner del marcador, el listado y el historial).
   const minute = getCurrentMinute();
   await api('POST', '/overlay-state/incidents', { type: 'cambio', team: side, player: entra, playerOut: sale, minute });
-
-  // Alerta en pantalla (overlay OBS) + banner en el panel debajo del header.
-  await api('PATCH', '/overlay-state/alerts', { active: true, type: 'cambio', team: side, player: entra, playerOut: sale, minute, autoClean: true });
-  ensureWidget('alerta');
+  ensureWidget('marcador');
   showLiveAlert('cambio', side, entra, sale, minute);
 }
 
@@ -529,10 +527,7 @@ async function addIncident() {
   const minuteRaw = document.getElementById('incMinute').value;
   const minute    = minuteRaw !== '' ? parseInt(minuteRaw) : getCurrentMinute();
   await api('POST', '/overlay-state/incidents', { type, team, player, playerOut, minute });
-  // Mostrar también en el overlay de OBS (misma data que el panel).
-  await api('PATCH', '/overlay-state/alerts', { active: true, type, team, player, playerOut, minute, autoClean: true });
   document.getElementById('incMinute').value = '';
-  ensureWidget('alerta');
   ensureWidget('marcador');
 }
 
@@ -651,11 +646,30 @@ function renderResultadosList() {
     cont.innerHTML = '<p class="text-gray-600 text-xs text-center">Sin partidos cargados</p>';
     return;
   }
+  const btnCls = 'w-5 h-5 flex items-center justify-center rounded text-xs font-black leading-none flex-shrink-0';
   cont.innerHTML = resultadosData.map((p, i) => `
-    <div class="flex items-center justify-between bg-gray-800 rounded px-2 py-1 text-xs">
-      <span class="truncate">${p.local} <strong>${p.gl}-${p.gv}</strong> ${p.visitante}</span>
-      <button onclick="removeResultado(${i})" class="text-red-400 hover:text-red-300 ml-2 font-black">✕</button>
+    <div class="flex items-center gap-1 bg-gray-800 rounded px-2 py-1.5 text-xs">
+      <span class="flex-1 text-right truncate text-gray-200">${p.local}</span>
+      <div class="flex items-center gap-0.5 flex-shrink-0">
+        <button onclick="changeResultadoScore(${i},'gl',-1)" class="${btnCls} bg-gray-700 hover:bg-gray-600 text-gray-300">−</button>
+        <strong class="w-5 text-center text-purple-300 tabular-nums">${p.gl ?? 0}</strong>
+        <button onclick="changeResultadoScore(${i},'gl',1)"  class="${btnCls} bg-purple-800 hover:bg-purple-700 text-white">+</button>
+        <span class="text-gray-500 px-0.5">-</span>
+        <button onclick="changeResultadoScore(${i},'gv',-1)" class="${btnCls} bg-gray-700 hover:bg-gray-600 text-gray-300">−</button>
+        <strong class="w-5 text-center text-purple-300 tabular-nums">${p.gv ?? 0}</strong>
+        <button onclick="changeResultadoScore(${i},'gv',1)"  class="${btnCls} bg-purple-800 hover:bg-purple-700 text-white">+</button>
+      </div>
+      <span class="flex-1 truncate text-gray-200">${p.visitante}</span>
+      <button onclick="removeResultado(${i})" class="text-red-400 hover:text-red-300 ml-1 font-black flex-shrink-0 text-[10px]">✕</button>
     </div>`).join('');
+}
+
+function changeResultadoScore(i, field, delta) {
+  const p = resultadosData[i];
+  if (!p) return;
+  p[field] = Math.max(0, (p[field] ?? 0) + delta);
+  renderResultadosList();
+  saveResultados();
 }
 
 async function saveResultados() {
@@ -682,9 +696,106 @@ function syncResultados(s) {
   }
 }
 
+// ─── CORTINA ──────────────────────────────────────────
+function syncCortinaBtns(s) {
+  const isOn = !!s.widgets?.cortina;
+  const mode = s.cortina?.mode || 'entretiempo';
+  ['inicio', 'entretiempo', 'final'].forEach(m => {
+    const btn = document.getElementById('cortinaBtn-' + m);
+    if (!btn) return;
+    const active = isOn && mode === m;
+    btn.style.cssText = active
+      ? 'flex:1;padding:8px 4px;font-size:11px;font-weight:900;text-transform:uppercase;background:#7c3aed;color:#fff;border:1px solid #6d28d9;cursor:pointer;border-radius:2px'
+      : 'flex:1;padding:8px 4px;font-size:11px;font-weight:900;text-transform:uppercase;background:#374151;color:#9ca3af;border:1px solid #4b5563;cursor:pointer;border-radius:2px';
+  });
+}
+
+async function setCortinaModo(mode) {
+  const isOn = !!state?.widgets?.cortina;
+  const currentMode = state?.cortina?.mode;
+  if (isOn && currentMode === mode) {
+    await api('PATCH', '/overlay-state/widgets', { cortina: false });
+  } else {
+    await api('PATCH', '/overlay-state/cortina', { mode });
+    await api('PATCH', '/overlay-state/widgets', { cortina: true });
+  }
+}
+
 // ─── PUBLICIDAD ───────────────────────────────────────
 const _adLogos = {};
 function cacheAdLogo(type, url) { _adLogos[type] = url; }
+
+// ── Multi-banner list ──
+function renderBannersList(ads) {
+  const banners  = ads?.banners || [];
+  const activeId = ads?.activeBannerId;
+  const isOn     = ads?.active && ads?.current === 'banner';
+  const container = document.getElementById('bannersList');
+  if (!container) return;
+  if (banners.length === 0) {
+    container.innerHTML = '<p class="text-gray-600 text-xs text-center py-2">Sin banners cargados</p>';
+    return;
+  }
+  container.innerHTML = banners.map(b => {
+    const active = isOn && activeId === b.id;
+    const btnStyle = active
+      ? 'padding:3px 12px;font-size:11px;font-weight:900;text-transform:uppercase;background:#7c3aed;color:#fff;border:1px solid #6d28d9;border-radius:2px;cursor:pointer;flex-shrink:0'
+      : 'padding:3px 12px;font-size:11px;font-weight:900;text-transform:uppercase;background:#374151;color:#9ca3af;border:1px solid #4b5563;border-radius:2px;cursor:pointer;flex-shrink:0';
+    const rowStyle = active ? 'background:#1e1b4b;border:1px solid #4c1d95;border-radius:4px;padding:6px 10px;display:flex;align-items:center;gap:8px' : 'background:#1f2937;border:1px solid #374151;border-radius:4px;padding:6px 10px;display:flex;align-items:center;gap:8px';
+    return `<div style="${rowStyle}">
+      <span style="font-size:11px;color:#d1d5db;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(b.url)}">${escHtml(b.name)}</span>
+      <button onclick="activateBanner('${b.id}')" style="${btnStyle}">${active ? 'ON' : 'OFF'}</button>
+      <button onclick="deleteBanner('${b.id}')" style="font-size:14px;color:#f87171;background:none;border:none;cursor:pointer;flex-shrink:0;line-height:1" title="Eliminar">×</button>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function activateBanner(id) {
+  const banners  = state?.ads?.banners || [];
+  const isActive = state?.ads?.active && state?.ads?.current === 'banner' && state?.ads?.activeBannerId === id;
+  if (isActive) {
+    await api('PATCH', '/overlay-state/ads', { active: false, current: null, activeBannerId: null, logoBanner: '' });
+    await api('PATCH', '/overlay-state/widgets', { publicidad: false });
+  } else {
+    const banner = banners.find(b => b.id === id);
+    if (!banner) return;
+    await api('PATCH', '/overlay-state/ads', { active: true, current: 'banner', activeBannerId: id, logoBanner: banner.url, logoSponsor: banner.url });
+    await api('PATCH', '/overlay-state/widgets', { publicidad: true });
+  }
+}
+
+async function addBanner() {
+  const nameEl = document.getElementById('newBannerName');
+  const urlEl  = document.getElementById('newBannerUrl');
+  const addBtn = document.querySelector('button[onclick="addBanner()"]');
+  const name   = nameEl?.value.trim();
+  const url    = urlEl?.value.trim();
+  if (!name || !url) {
+    if (nameEl && !name) nameEl.style.outline = '2px solid #f87171';
+    if (urlEl  && !url)  urlEl.style.outline  = '2px solid #f87171';
+    return;
+  }
+  if (nameEl) nameEl.style.outline = '';
+  if (urlEl)  urlEl.style.outline  = '';
+  if (addBtn) { addBtn.textContent = '…'; addBtn.disabled = true; }
+  const banners = [...(state?.ads?.banners || []), { id: Date.now().toString(), name, url }];
+  await api('PATCH', '/overlay-state/ads', { banners });
+  if (nameEl) nameEl.value = '';
+  if (urlEl)  urlEl.value  = '';
+  if (addBtn) { addBtn.textContent = '+'; addBtn.disabled = false; }
+}
+
+async function deleteBanner(id) {
+  const banners = (state?.ads?.banners || []).filter(b => b.id !== id);
+  const patch = { banners };
+  if (state?.ads?.activeBannerId === id) {
+    Object.assign(patch, { activeBannerId: null, active: false, current: null, logoBanner: '' });
+    await api('PATCH', '/overlay-state/widgets', { publicidad: false });
+  }
+  await api('PATCH', '/overlay-state/ads', patch);
+}
 
 async function toggleAdType(type) {
   const isActive = state?.ads?.active && state?.ads?.current === type;
@@ -700,7 +811,8 @@ async function toggleAdType(type) {
 }
 
 function updateAdBtnStates(ads) {
-  ['banner','cortina','overlay'].forEach(type => {
+  renderBannersList(ads);
+  ['cortina','overlay'].forEach(type => {
     const btn = document.getElementById('ad' + cap(type) + 'Btn');
     if (!btn) return;
     const active = ads?.active && ads?.current === type;

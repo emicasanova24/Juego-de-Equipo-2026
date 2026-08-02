@@ -11,6 +11,8 @@ body {
     background: transparent;
     color: white;
     text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.4s ease;
 }
 .container {
     display: flex;
@@ -114,6 +116,9 @@ function renderFormaciones(state) {
 // del panel (marcador, stats, etc.) no afectan a este overlay.
 let _sigForm = null;
 window.onOverlayState = function(state) {
+    const visible = !state.emergencyMode && !!state.widgets?.formaciones;
+    document.body.style.opacity = visible ? '1' : '0';
+    if (!visible) return;
     const sig = JSON.stringify({ l: state.local, v: state.visitante, r: state.match?.referee });
     if (sig === _sigForm) return;
     _sigForm = sig;

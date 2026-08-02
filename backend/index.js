@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { Pool } = require('pg');
 const overlayState = require('./overlay-state');
 
 try {
@@ -13,297 +12,26 @@ try {
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Listado de equipos servido desde el catálogo estático (sin base de datos).
+// Se declara ANTES de express.static para que no lo intercepte la carpeta /equipos.
+app.get('/equipos', (_req, res) => {
+  const equipos = Object.keys(overlayState.EQUIPOS).map((nombre, i) => ({
+    id: i + 1,
+    nombre,
+    logo: overlayState.EQUIPOS[nombre]
+  }));
+  res.json(equipos);
+});
+
+// Sin base de datos no hay plantel persistido; se devuelve vacío.
+app.get('/jugadores', (_req, res) => {
+  res.json([]);
+});
+
 app.use(express.static(path.join(__dirname, '..')));
 
-const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'juegode_equipo',
-  password: process.env.DB_PASSWORD || '41211874',
-  port: Number(process.env.DB_PORT || 5432)
-});
-
 const PORT = Number(process.env.PORT || 3000);
-
-app.get('/equipos', async (_req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM equipos ORDER BY nombre');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error en el servidor');
-  }
-});
-
-app.get('/jugadores', async (_req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM jugadores ORDER BY nombre');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error en el servidor');
-  }
-});
-
-app.get('/goleadores', async (_req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT j.nombre AS jugador, e.nombre AS equipo, COUNT(ev.id) AS goles
-      FROM eventos ev
-      JOIN jugadores j ON ev.jugador_id = j.id
-      JOIN equipos e ON j.equipo_id = e.id
-      WHERE ev.tipo_evento = 'gol'
-      GROUP BY j.id, j.nombre, e.nombre
-      ORDER BY goles DESC, j.nombre ASC;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener goleadores');
-  }
-});
-
-app.get('/fixture', async (_req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT p.id,
-             p.fecha,
-             el.nombre AS equipo_local,
-             ev.nombre AS equipo_visitante,
-             p.goles_local,
-             p.goles_visitante,
-             p.jugado,
-             p.estadio
-      FROM partidos p
-      JOIN equipos el ON p.equipo_local_id = el.id
-      JOIN equipos ev ON p.equipo_visitante_id = ev.id
-      ORDER BY p.fecha, p.id;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener el fixture');
-  }
-});
-
-app.post('/equipos', async (req, res) => {
-  const { nombre } = req.body;
-  try {
-    const result = await pool.query(
-      'INSERT INTO equipos (nombre) VALUES ($1) RETURNING *',
-      [nombre]
-    );
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al crear equipo');
-  }
-});
-
-app.post('/jugadores', async (req, res) => {
-  const { nombre, equipo_id } = req.body;
-  try {
-    const result = await pool.query(
-      'INSERT INTO jugadores (nombre, equipo_id) VALUES ($1, $2) RETURNING *',
-      [nombre, equipo_id]
-    );
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al crear jugador');
-  }
-});
-
-app.post('/partidos', async (req, res) => {
-  const {
-    fecha,
-    equipo_local_id,
-    equipo_visitante_id,
-    goles_local,
-    goles_visitante,
-    jugado,
-    estadio
-  } = req.body;
-
-  try {
-    const insertResult = await pool.query(
-      `INSERT INTO partidos (
-        fecha,
-        equipo_local_id,
-        equipo_visitante_id,
-        goles_local,
-        goles_visitante,
-        jugado,
-        estadio
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id`,
-      [
-        fecha,
-        equipo_local_id,
-        equipo_visitante_id,
-        goles_local,
-        goles_visitante,
-        jugado,
-        estadio
-      ]
-    );
-
-    const partidoId = insertResult.rows[0].id;
-    const partido = await pool.query(
-      `SELECT p.id,
-              p.fecha,
-              p.estadio,
-              p.goles_local,
-              p.goles_visitante,
-              p.jugado,
-              el.nombre AS equipo_local,
-              ev.nombre AS equipo_visitante
-       FROM partidos p
-       JOIN equipos el ON p.equipo_local_id = el.id
-       JOIN equipos ev ON p.equipo_visitante_id = ev.id
-       WHERE p.id = $1`,
-      [partidoId]
-    );
-
-    res.json(partido.rows[0]);
-  } catch (err) {
-    console.error('Error al crear partido:', err);
-    res.status(500).send('Error al crear partido');
-  }
-});
-
-app.post('/eventos', async (req, res) => {
-  const { partido_id, jugador_id, tipo_evento, minuto } = req.body;
-  try {
-    const result = await pool.query(
-      'INSERT INTO eventos (partido_id, jugador_id, tipo_evento, minuto) VALUES ($1, $2, $3, $4) RETURNING *',
-      [partido_id, jugador_id, tipo_evento, minuto]
-    );
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al crear evento');
-  }
-});
-
-app.get('/partidos', async (_req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT p.id,
-             p.fecha,
-             el.nombre AS equipo_local,
-             ev.nombre AS equipo_visitante,
-             p.goles_local,
-             p.goles_visitante,
-             p.estadio,
-             p.jugado
-      FROM partidos p
-      JOIN equipos el ON p.equipo_local_id = el.id
-      JOIN equipos ev ON p.equipo_visitante_id = ev.id
-      ORDER BY p.fecha;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener partidos');
-  }
-});
-
-app.get('/eventos', async (_req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT e.id, e.partido_id, j.nombre AS jugador, e.tipo_evento, e.minuto
-      FROM eventos e
-      JOIN jugadores j ON e.jugador_id = j.id
-      ORDER BY e.partido_id, e.minuto;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener eventos');
-  }
-});
-
-app.get('/estadios', async (_req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM estadios ORDER BY nombre');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener estadios');
-  }
-});
-
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const result = await pool.query(
-      'SELECT * FROM usuarios WHERE email = $1 AND password = $2',
-      [email, password]
-    );
-
-    if (result.rows.length > 0) {
-      res.json({ success: true, message: 'Login correcto' });
-      return;
-    }
-
-    res.status(401).json({ success: false, message: 'Credenciales inválidas' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error en el servidor');
-  }
-});
-
-app.get('/estructura/:tabla', async (req, res) => {
-  const { tabla } = req.params;
-  try {
-    const result = await pool.query(
-      `SELECT column_name, data_type, is_nullable
-       FROM information_schema.columns
-       WHERE table_name = $1`,
-      [tabla]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener estructura');
-  }
-});
-
-app.get('/tabla', async (_req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT e.id,
-             e.nombre AS equipo,
-             COUNT(p.id) AS jugados,
-             COALESCE(SUM(CASE WHEN p.goles_local > p.goles_visitante AND p.equipo_local_id = e.id THEN 1
-                               WHEN p.goles_visitante > p.goles_local AND p.equipo_visitante_id = e.id THEN 1
-                               ELSE 0 END), 0) AS ganados,
-             COALESCE(SUM(CASE WHEN p.goles_local = p.goles_visitante AND (p.equipo_local_id = e.id OR p.equipo_visitante_id = e.id) THEN 1 ELSE 0 END), 0) AS empatados,
-             COALESCE(SUM(CASE WHEN p.goles_local < p.goles_visitante AND p.equipo_local_id = e.id THEN 1
-                               WHEN p.goles_visitante < p.goles_local AND p.equipo_visitante_id = e.id THEN 1
-                               ELSE 0 END), 0) AS perdidos,
-             COALESCE(SUM(CASE WHEN p.equipo_local_id = e.id THEN p.goles_local ELSE p.goles_visitante END), 0) AS goles_favor,
-             COALESCE(SUM(CASE WHEN p.equipo_local_id = e.id THEN p.goles_visitante ELSE p.goles_local END), 0) AS goles_contra,
-             COALESCE(SUM(CASE WHEN p.equipo_local_id = e.id THEN p.goles_local ELSE p.goles_visitante END), 0) -
-             COALESCE(SUM(CASE WHEN p.equipo_local_id = e.id THEN p.goles_visitante ELSE p.goles_local END), 0) AS dg,
-             COALESCE(SUM(CASE WHEN p.goles_local > p.goles_visitante AND p.equipo_local_id = e.id THEN 3
-                               WHEN p.goles_visitante > p.goles_local AND p.equipo_visitante_id = e.id THEN 3
-                               WHEN p.goles_local = p.goles_visitante AND (p.equipo_local_id = e.id OR p.equipo_visitante_id = e.id) THEN 1
-                               ELSE 0 END), 0) AS puntos
-      FROM equipos e
-      LEFT JOIN partidos p
-        ON (e.id = p.equipo_local_id OR e.id = p.equipo_visitante_id)
-       AND p.jugado = true
-      GROUP BY e.id, e.nombre
-      ORDER BY puntos DESC, dg DESC, goles_favor DESC, equipo ASC;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al calcular tabla');
-  }
-});
 
 let state = overlayState.load();
 const sseClients = [];
@@ -383,6 +111,14 @@ app.put('/overlay-state/resultados', (req, res) => {
 // Asegurar que el timer exista en el state cargado (migración hacia atrás)
 if (!state.timer) {
   state.timer = { running: false, startTimestamp: null, baseMinute: 0, period: 'PT', addedTime: 0 };
+}
+// Asegurar que cortina exista en el state cargado
+if (!state.cortina) {
+  state.cortina = { mode: 'entretiempo' };
+}
+// Asegurar que widgets.cortina exista
+if (state.widgets && state.widgets.cortina === undefined) {
+  state.widgets.cortina = false;
 }
 
 function getTimerMinute() {
@@ -554,7 +290,9 @@ app.post('/overlay-state/emergency', (req, res) => {
 
 // ─── PUBLICIDAD ───────────────────────────────────────────────────────────────
 
-if (!state.ads) state.ads = { active: false, current: null, sponsor: '', logoSponsor: '', autoEnabled: false, autoIntervalMin: 10, nextAt: null };
+if (!state.ads) state.ads = {};
+// Ensure all ads fields exist (forward-compat with old JSON files)
+state.ads = Object.assign({ active: false, current: null, sponsor: '', logoSponsor: '', logoBanner: '', banners: [], activeBannerId: null, autoEnabled: false, autoIntervalMin: 10, nextAt: null }, state.ads);
 
 app.patch('/overlay-state/ads', (req, res) => {
   Object.assign(state.ads, req.body);
