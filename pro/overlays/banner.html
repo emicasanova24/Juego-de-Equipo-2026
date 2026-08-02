@@ -5,8 +5,8 @@
 <title>Banner</title>
 <link rel="stylesheet" href="/pro/assets/css/overlays.css">
 <style>
-  .wrap{position:absolute;bottom:0px;left:0;right:0;transform:translateY(100%);transition:transform .55s cubic-bezier(.22,1,.36,1);pointer-events:none;display:flex;justify-content:center;align-items:flex-end}
-  .wrap.show{transform:translateY(0)}
+  .wrap{position:absolute;bottom:0px;left:0;right:0;transform:translateY(100%);opacity:0;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .55s ease;pointer-events:none;display:flex;justify-content:center;align-items:flex-end}
+  .wrap.show{transform:translateY(0);opacity:1}
   #img{max-width:1920px;max-height:1080px;object-fit:contain;display:block}
 </style>
 </head>

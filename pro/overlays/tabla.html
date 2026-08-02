@@ -17,6 +17,8 @@
       background: transparent;
       border-radius: 12px;
       padding: 20px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
     .slide {
@@ -177,6 +179,12 @@
       current = (current + 1) % slides.length;
       slides[current].classList.add("active");
     }, 5000);
+
+    const tablaEl = document.getElementById('tabla-slides-container');
+    window.onOverlayState = function(s) {
+      const visible = !s.emergencyMode && !!s.widgets?.tablaPosiciones;
+      tablaEl.style.opacity = visible ? '1' : '0';
+    };
   </script>
 </body>
 </html>

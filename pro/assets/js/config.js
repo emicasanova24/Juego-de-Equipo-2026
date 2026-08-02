@@ -10,13 +10,13 @@
 // file → archivo del overlay (Browser Source en OBS)
 const WIDGETS_CONFIG = [
   { key: 'marcador',        label: '📺 Marcador',              file: 'pro/overlays/marcador.html' },
+  { key: 'cortina',         label: '🎬 Cortina',               file: 'pro/overlays/cortina.html' },
   { key: 'formaciones',     label: '👕 Formaciones titulares', file: 'pro/overlays/formaciones.html' },
   { key: 'otrosPartidos',   label: '⚽ Otros Partidos',        file: 'pro/overlays/otros-partidos.html' },
   { key: 'tablaPosiciones', label: '📊 Tabla de Posiciones',   file: 'pro/overlays/tabla.html' },
   { key: 'ticker',          label: '📰 Ticker',                file: 'pro/overlays/ticker.html' },
   { key: 'publicidad',      label: '💰 Publicidad',            file: 'pro/overlays/banner.html' },
   { key: 'estadisticas',    label: '📈 Estadísticas',          file: 'pro/overlays/stats.html' },
-  { key: 'alerta',          label: '🔔 Alertas',               file: 'pro/overlays/alerta.html' },
   { key: 'formacionPrevia', label: '🗂 Previa Formaciones',    file: 'pro/overlays/formaciones-previa.html' },
 ];
 

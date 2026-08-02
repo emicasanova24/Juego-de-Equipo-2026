@@ -234,10 +234,7 @@
     <div class="card">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📋 Incidencias del Partido</h2>
-        <div class="flex items-center gap-2">
-          <span class="text-[10px] text-gray-500 uppercase tracking-wider">En pantalla</span>
-          <button id="hdr-widget-alerta" onclick="toggleWidget('alerta')" class="toggle-switch"><span class="toggle-knob"></span></button>
-        </div>
+        <span class="text-[10px] text-gray-500 uppercase tracking-wider">Se muestran en el banner del Marcador</span>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
         <div>
@@ -345,24 +342,24 @@
         <label class="block text-[10px] text-gray-400 mb-1 uppercase tracking-wider">Nombre sponsor</label>
         <input id="adSponsor" class="input-base text-xs" placeholder="Nombre del sponsor" onchange="updateAdSponsor()">
       </div>
+      <!-- Banners de sponsors -->
+      <div class="mb-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] text-gray-400 uppercase tracking-wider font-black">📺 Banners</span>
+          <span class="text-[10px] text-gray-500">Prendé uno a la vez</span>
+        </div>
+        <div id="bannersList" class="flex flex-col gap-1.5 mb-2">
+          <p class="text-gray-600 text-xs text-center py-2">Sin banners cargados</p>
+        </div>
+        <div class="flex gap-1.5 mt-2">
+          <input id="newBannerName" class="input-base text-xs" style="flex:0 0 34%" placeholder="Nombre">
+          <input id="newBannerUrl" class="input-base text-xs flex-1" placeholder="URL imagen">
+          <button onclick="addBanner()" class="btn-brand px-3 py-1.5 rounded-sm text-xs font-black shrink-0">+</button>
+        </div>
+      </div>
+
       <!-- Botonera de banners -->
       <div class="flex flex-col gap-2 mb-3">
-        <!-- Banner -->
-        <div class="bg-gray-800 rounded-sm px-3 py-2">
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="text-xs font-black uppercase tracking-wider text-gray-300 w-20 shrink-0">📺 Banner</span>
-            <button id="adBannerBtn" onclick="toggleAdType('banner')" class="px-4 py-1 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600 shrink-0 ml-auto">OFF</button>
-          </div>
-          <input id="adLogoBanner" class="input-base text-xs" placeholder="URL imagen logo sponsor" oninput="cacheAdLogo('banner',this.value)">
-        </div>
-        <!-- Cortina -->
-        <div class="bg-gray-800 rounded-sm px-3 py-2">
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="text-xs font-black uppercase tracking-wider text-gray-300 w-20 shrink-0">🎬 Cortina</span>
-            <button id="adCortinaBtn" onclick="toggleAdType('cortina')" class="px-4 py-1 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600 shrink-0 ml-auto">OFF</button>
-          </div>
-          <input id="adLogoCortina" class="input-base text-xs" placeholder="URL imagen logo sponsor" oninput="cacheAdLogo('cortina',this.value)">
-        </div>
         <!-- Overlay Marca -->
         <div class="bg-gray-800 rounded-sm px-3 py-2">
           <div class="flex items-center gap-2 mb-1.5">
@@ -379,6 +376,18 @@
         <button onclick="toggleAutoAd()" id="btnAutoAd" class="btn-gray px-3 py-1 rounded-sm text-xs ml-auto">Activar Auto</button>
       </div>
       <div id="adNextLabel" class="text-xs text-gray-500 mt-2 h-4"></div>
+    </div>
+
+    <!-- ── CORTINA ── -->
+    <div class="card">
+      <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-3">🎬 Cortina</h2>
+      <p class="text-[10px] text-gray-500 mb-3 uppercase tracking-wider">Elegí el momento para activar la cortina con sponsors</p>
+      <div class="flex gap-2 mb-2">
+        <button id="cortinaBtn-inicio"       onclick="setCortinaModo('inicio')"       class="flex-1 py-2 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600">INICIO</button>
+        <button id="cortinaBtn-entretiempo" onclick="setCortinaModo('entretiempo')" class="flex-1 py-2 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600">ENTRETIEMPO</button>
+        <button id="cortinaBtn-final"       onclick="setCortinaModo('final')"       class="flex-1 py-2 text-xs font-black uppercase rounded-sm bg-gray-700 text-gray-400 border border-gray-600">FIN</button>
+      </div>
+      <p class="text-xs text-gray-600 text-center mt-1">OBS: <code class="bg-gray-800 px-1">pro/overlays/cortina.html</code></p>
     </div>
 
     <!-- ── TICKER ── -->

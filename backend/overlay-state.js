@@ -59,7 +59,8 @@ function defaultState() {
       publicidad: false,
       estadisticas: false,
       alerta: false,
-      formacionPrevia: false
+      formacionPrevia: false,
+      cortina: false
     },
     // Alerta activa
     alerts: {
@@ -77,6 +78,9 @@ function defaultState() {
       current: null,      // "banner" | "cortina" | "overlay"
       sponsor: "",
       logoSponsor: "",
+      logoBanner: "",
+      banners: [],        // [{ id, name, url }] — lista de banners de sponsors
+      activeBannerId: null,
       autoEnabled: false,
       autoIntervalMin: 10,
       nextAt: null        // timestamp para próxima inserción automática
@@ -123,7 +127,9 @@ function defaultState() {
     // Resultados de otros partidos en simultáneo
     resultados: [],    // { local, logoLocal, gl, visitante, logoVisitante, gv }
     // Equipo libre en la fecha
-    libre: ""
+    libre: "",
+    // Cortina de entretiempo / inicio / final
+    cortina: { mode: 'entretiempo' }
   };
 }
 
@@ -132,7 +138,18 @@ function load() {
   try {
     if (fs.existsSync(STATE_FILE)) {
       const raw = fs.readFileSync(STATE_FILE, 'utf-8');
-      return JSON.parse(raw);
+      const saved = JSON.parse(raw);
+      const def = defaultState();
+      // Migración: agrega claves faltantes del estado por defecto
+      for (const key of Object.keys(def)) {
+        if (saved[key] === undefined) saved[key] = def[key];
+      }
+      if (saved.widgets && def.widgets) {
+        for (const key of Object.keys(def.widgets)) {
+          if (saved.widgets[key] === undefined) saved.widgets[key] = def.widgets[key];
+        }
+      }
+      return saved;
     }
   } catch (err) {
     console.error('[overlay-state] Error leyendo estado, usando default:', err.message);

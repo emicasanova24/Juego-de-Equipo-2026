@@ -13,19 +13,20 @@
   }
 
   .resultados-container {
-    width: 620px;
-    background: rgba(10, 8, 22, 0.92);
+    width: 300px;
+    background: rgba(10, 8, 22, 1);
     backdrop-filter: blur(12px);
     border-radius: 12px;
     border-left: 4px solid #8c52ff;
     box-shadow: 0 20px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
-    padding: 24px 28px;
+    padding: 2px 10px;
     opacity: 1;
     transition: opacity 0.3s ease;
   }
   .resultados-container.hidden-overlay { opacity: 0; pointer-events: none; }
 
   .fecha-title {
+    display: none;
     font-size: 24px;
     font-weight: 900;
     text-align: center;
@@ -40,7 +41,7 @@
   /* PARTIDO */
   .partido {
     display: grid;
-    grid-template-columns: 38% 24% 38%;
+    grid-template-columns: 33% 34% 33%;
     align-items: center;
     padding: 10px 16px;
     margin: 8px 0;
@@ -161,11 +162,9 @@ function renderResultados(state) {
       <div class="partido">
         <div class="equipo izq">
           ${p.logoLocal ? `<img src="${logoUrl(p.logoLocal)}" onerror="this.style.display='none'">` : ''}
-          <span>${p.local || ''}</span>
         </div>
         <div class="marcador">${p.gl ?? 0} - ${p.gv ?? 0}</div>
         <div class="equipo der">
-          <span>${p.visitante || ''}</span>
           ${p.logoVisitante ? `<img src="${logoUrl(p.logoVisitante)}" onerror="this.style.display='none'">` : ''}
         </div>
       </div>

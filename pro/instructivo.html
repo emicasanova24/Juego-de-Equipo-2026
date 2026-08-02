@@ -89,7 +89,7 @@
       <li><a href="#timer">Timer oficial</a></li>
       <li><a href="#marcador">Marcador</a></li>
       <li><a href="#plantel">Plantel del partido</a></li>
-      <li><a href="#alertas">Alertas rápidas</a></li>
+      <li><a href="#alertas">Incidencias en pantalla</a></li>
       <li><a href="#incidencias">Incidencias</a></li>
       <li><a href="#widgets">Widgets ON/OFF</a></li>
       <li><a href="#publicidad">Publicidad</a></li>
@@ -157,8 +157,7 @@ npm start</code></pre>
     <div class="table-wrap">
       <table>
         <tr><th>Overlay</th><th>URL en OBS</th><th>Activado con…</th></tr>
-        <tr><td>⚽ Marcador en vivo</td><td><code>http://localhost:3000/pro/overlays/marcador.html</code></td><td>Widget: Marcador</td></tr>
-        <tr><td>🔔 Alertas (GOL, VAR…)</td><td><code>http://localhost:3000/pro/overlays/alerta.html</code></td><td>Widget: Alertas</td></tr>
+        <tr><td>⚽ Marcador en vivo</td><td><code>http://localhost:3000/pro/overlays/marcador.html</code></td><td>Widget: Marcador (incluye banner de incidencias: GOL, tarjetas, cambios, VAR)</td></tr>
         <tr><td>📺 Banner inferior</td><td><code>http://localhost:3000/pro/overlays/banner.html</code></td><td>Publicidad: Banner</td></tr>
         <tr><td>🎬 Cortina sponsor</td><td><code>http://localhost:3000/pro/overlays/cortina.html</code></td><td>Publicidad: Cortina</td></tr>
         <tr><td>📰 Ticker noticias</td><td><code>http://localhost:3000/pro/overlays/ticker.html</code></td><td>Widget: Ticker</td></tr>
@@ -246,20 +245,18 @@ npm start</code></pre>
   </div>
 
   <!-- ALERTAS -->
-  <h2 id="alertas">🔔 Alertas Rápidas</h2>
+  <h2 id="alertas">🔔 Incidencias en Pantalla</h2>
   <div class="card">
-    <p>Las alertas muestran un overlay dramático centrado en pantalla que desaparece automáticamente después de <strong>12 segundos</strong>.</p>
+    <p>Cada incidencia que registres aparece como un banner debajo del marcador (overlay <code>marcador.html</code>) y desaparece automáticamente después de <strong>8 segundos</strong>.</p>
     <div class="table-wrap"><table>
-      <tr><th>Botón</th><th>Alerta mostrada</th><th>Diseño</th></tr>
-      <tr><td>⚽ GOL</td><td>¡GOL!</td><td>Verde brillante</td></tr>
-      <tr><td>🟨 AMARILLA</td><td>AMARILLA</td><td>Amarillo/naranja</td></tr>
-      <tr><td>🟥 ROJA</td><td>TARJETA ROJA</td><td>Rojo intenso</td></tr>
-      <tr><td>📺 VAR</td><td>EN REVISIÓN VAR</td><td>Azul</td></tr>
-      <tr><td>⏸ DESCANSO</td><td>DESCANSO</td><td>Gris</td></tr>
-      <tr><td>🏁 FIN</td><td>FIN DEL PARTIDO</td><td>Violeta</td></tr>
+      <tr><th>Tipo</th><th>Banner mostrado</th><th>Diseño</th></tr>
+      <tr><td>⚽ GOL</td><td>¡GOL DE [jugador]!</td><td>Violeta brillante</td></tr>
+      <tr><td>🟨 AMARILLA</td><td>AMARILLA · [jugador]</td><td>Amarillo/naranja</td></tr>
+      <tr><td>🟥 ROJA</td><td>TARJETA ROJA · [jugador]</td><td>Rojo intenso</td></tr>
+      <tr><td>🔄 CAMBIO</td><td>CAMBIO · ▲ entra / ▼ sale</td><td>Azul</td></tr>
+      <tr><td>📺 VAR</td><td>EN REVISIÓN VAR</td><td>Azul violáceo</td></tr>
     </table></div>
-    <p>Para limpiar una alerta antes de los 12 segundos, hacé clic en <strong>"✕ Limpiar alerta activa"</strong>.</p>
-    <div class="tip"><strong>Flujo típico de gol:</strong> 1) Registrar gol en Incidencias → 2) Presionar ⚽ GOL en Alertas → 3) El overlay de alerta aparece 12s → 4) Continuar normalmente.</div>
+    <div class="tip"><strong>Flujo típico de gol:</strong> 1) Registrar gol en Incidencias → 2) El banner aparece bajo el marcador 8s → 3) Continuar normalmente.</div>
   </div>
 
   <!-- INCIDENCIAS -->
@@ -293,8 +290,7 @@ npm start</code></pre>
       <tr><td>📰 Ticker</td><td>overlay-ticker.html</td><td>Para mostrar info adicional</td></tr>
       <tr><td>💰 Publicidad</td><td>overlay-banner.html</td><td>Al activar publicidad</td></tr>
       <tr><td>📈 Estadísticas</td><td>overlay-stats.html</td><td>Mostrar datos del partido</td></tr>
-      <tr><td>🔔 Alertas</td><td>overlay-alerta.html</td><td>Para alertas de GOL, VAR, etc.</td></tr>
-      <tr><td>🗂 Previa Formaciones</td><td>overlay-formaciones-previa.html</td><td>Antes del inicio del partido</td></tr>
+      <tr><td> Previa Formaciones</td><td>overlay-formaciones-previa.html</td><td>Antes del inicio del partido</td></tr>
     </table></div>
     <div class="tip"><strong>Consejo:</strong> Mantené desactivado lo que no usás para evitar overlays vacíos en pantalla.</div>
   </div>

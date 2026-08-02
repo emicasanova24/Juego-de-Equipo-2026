@@ -3,17 +3,126 @@
     "status": "PRIMER TIEMPO",
     "minute": "",
     "referee": "LAUTARO BESSIA",
-    "stadium": "ESTADIO DE CECIL A. ROBERTS",
+    "stadium": "CECIL A. ROBERTS",
     "tournament": "APERTURA 2026"
   },
   "timer": {
     "running": false,
     "startTimestamp": null,
     "baseMinute": 0,
-    "period": "PT",
+    "period": "FIN",
     "addedTime": 0
   },
-  "incidents": [],
+  "incidents": [
+    {
+      "id": "1782073886605",
+      "type": "gol",
+      "team": "local",
+      "player": "LUCAS RIVAS",
+      "playerOut": "",
+      "minute": 91,
+      "timestamp": 1782073886605
+    },
+    {
+      "id": "1782073654362",
+      "type": "cambio",
+      "team": "local",
+      "player": "BENJAMIN NATALI",
+      "playerOut": "ENZO ALONSO",
+      "minute": 87,
+      "timestamp": 1782073654362
+    },
+    {
+      "id": "1782073645884",
+      "type": "cambio",
+      "team": "local",
+      "player": "BLAS BRETONES",
+      "playerOut": "JULIAN RESSIA",
+      "minute": 87,
+      "timestamp": 1782073645884
+    },
+    {
+      "id": "1782073635683",
+      "type": "cambio",
+      "team": "local",
+      "player": "MAXI SEMINTH",
+      "playerOut": "JUSTIN GOMEZ",
+      "minute": 87,
+      "timestamp": 1782073635685
+    },
+    {
+      "id": "1782073085679",
+      "type": "gol",
+      "team": "local",
+      "player": "JULIAN COCIMANO",
+      "playerOut": "",
+      "minute": 77,
+      "timestamp": 1782073085679
+    },
+    {
+      "id": "1782073004129",
+      "type": "amarilla",
+      "team": "visitante",
+      "player": "ANGEL LOPEZ",
+      "playerOut": "",
+      "minute": 76,
+      "timestamp": 1782073004129
+    },
+    {
+      "id": "1782072696399",
+      "type": "gol",
+      "team": "visitante",
+      "player": "TOMAS RODRIGUEZ",
+      "playerOut": "",
+      "minute": 71,
+      "timestamp": 1782072696399
+    },
+    {
+      "id": "1782072478540",
+      "type": "cambio",
+      "team": "local",
+      "player": "GASTON MOLINA",
+      "playerOut": "EMANUEL KLUNDT",
+      "minute": 67,
+      "timestamp": 1782072478541
+    },
+    {
+      "id": "1782072472854",
+      "type": "cambio",
+      "team": "local",
+      "player": "ROBERT CAMPAZ",
+      "playerOut": "ROMAN SCHAP",
+      "minute": 67,
+      "timestamp": 1782072472854
+    },
+    {
+      "id": "1782072158572",
+      "type": "amarilla",
+      "team": "visitante",
+      "player": "BENICIO MASCIOLI",
+      "playerOut": "",
+      "minute": 62,
+      "timestamp": 1782072158572
+    },
+    {
+      "id": "1782068962598",
+      "type": "roja",
+      "team": "visitante",
+      "player": "ELIAS CACERES",
+      "playerOut": "",
+      "minute": 25,
+      "timestamp": 1782068962598
+    },
+    {
+      "id": "1782068729933",
+      "type": "amarilla",
+      "team": "visitante",
+      "player": "TOBIAS CALVO",
+      "playerOut": "",
+      "minute": 21,
+      "timestamp": 1782068729933
+    }
+  ],
   "widgets": {
     "marcador": true,
     "formaciones": false,
@@ -23,7 +132,8 @@
     "publicidad": true,
     "estadisticas": false,
     "alerta": false,
-    "formacionPrevia": false
+    "formacionPrevia": true,
+    "cortina": true
   },
   "alerts": {
     "active": false,
@@ -34,10 +144,49 @@
   },
   "emergencyMode": false,
   "ads": {
-    "active": true,
-    "current": "banner",
-    "sponsor": "",
-    "logoSponsor": "",
+    "active": false,
+    "current": null,
+    "sponsor": "El punto",
+    "logoSponsor": "https://juegodeequipo.com.ar/obs/banner-sponsor/dona.png",
+    "logoBanner": "",
+    "banners": [
+      {
+        "id": "1781896792469",
+        "name": "El punto",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/elpunto.png"
+      },
+      {
+        "id": "1781896804804",
+        "name": "Anteojos Negros",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/anteojosnegros.png"
+      },
+      {
+        "id": "1781995785827",
+        "name": "Jota",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/jota.png"
+      },
+      {
+        "id": "1781995820793",
+        "name": "Prode",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/prode.gif"
+      },
+      {
+        "id": "1782056136577",
+        "name": "San Francisco",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/sanfrancisco.png"
+      },
+      {
+        "id": "1782056141226",
+        "name": "ETN",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/etn.png"
+      },
+      {
+        "id": "1782056148993",
+        "name": "Doña Juana",
+        "url": "https://juegodeequipo.com.ar/obs/banner-sponsor/dona.png"
+      }
+    ],
+    "activeBannerId": null,
     "autoEnabled": false,
     "autoIntervalMin": 10,
     "nextAt": null
@@ -70,17 +219,302 @@
     "items": []
   },
   "dt": {
-    "local": "",
-    "visitante": ""
+    "local": "PABLO FERNANDEZ",
+    "visitante": "MAURO MORIAME"
   },
-  "history": [],
+  "history": [
+    {
+      "action": "timer-period",
+      "payload": {
+        "period": "FIN"
+      },
+      "timestamp": 1782074771856
+    },
+    {
+      "action": "timer-pause",
+      "payload": {
+        "minute": 105
+      },
+      "timestamp": 1782074770193
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782073886605",
+        "type": "gol",
+        "team": "local",
+        "player": "LUCAS RIVAS",
+        "playerOut": "",
+        "minute": 91,
+        "timestamp": 1782073886605
+      },
+      "timestamp": 1782073886607
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782073654362",
+        "type": "cambio",
+        "team": "local",
+        "player": "BENJAMIN NATALI",
+        "playerOut": "ENZO ALONSO",
+        "minute": 87,
+        "timestamp": 1782073654362
+      },
+      "timestamp": 1782073654364
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782073645884",
+        "type": "cambio",
+        "team": "local",
+        "player": "BLAS BRETONES",
+        "playerOut": "JULIAN RESSIA",
+        "minute": 87,
+        "timestamp": 1782073645884
+      },
+      "timestamp": 1782073645886
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782073635683",
+        "type": "cambio",
+        "team": "local",
+        "player": "MAXI SEMINTH",
+        "playerOut": "JUSTIN GOMEZ",
+        "minute": 87,
+        "timestamp": 1782073635685
+      },
+      "timestamp": 1782073635694
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782073085679",
+        "type": "gol",
+        "team": "local",
+        "player": "JULIAN COCIMANO",
+        "playerOut": "",
+        "minute": 77,
+        "timestamp": 1782073085679
+      },
+      "timestamp": 1782073085682
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782073004129",
+        "type": "amarilla",
+        "team": "visitante",
+        "player": "ANGEL LOPEZ",
+        "playerOut": "",
+        "minute": 76,
+        "timestamp": 1782073004129
+      },
+      "timestamp": 1782073004134
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782072696399",
+        "type": "gol",
+        "team": "visitante",
+        "player": "TOMAS RODRIGUEZ",
+        "playerOut": "",
+        "minute": 71,
+        "timestamp": 1782072696399
+      },
+      "timestamp": 1782072696400
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782072478540",
+        "type": "cambio",
+        "team": "local",
+        "player": "GASTON MOLINA",
+        "playerOut": "EMANUEL KLUNDT",
+        "minute": 67,
+        "timestamp": 1782072478541
+      },
+      "timestamp": 1782072478542
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782072472854",
+        "type": "cambio",
+        "team": "local",
+        "player": "ROBERT CAMPAZ",
+        "playerOut": "ROMAN SCHAP",
+        "minute": 67,
+        "timestamp": 1782072472854
+      },
+      "timestamp": 1782072472861
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782072158572",
+        "type": "amarilla",
+        "team": "visitante",
+        "player": "BENICIO MASCIOLI",
+        "playerOut": "",
+        "minute": 62,
+        "timestamp": 1782072158572
+      },
+      "timestamp": 1782072158574
+    },
+    {
+      "action": "timer-start",
+      "payload": {
+        "period": "ST"
+      },
+      "timestamp": 1782071111874
+    },
+    {
+      "action": "timer-period",
+      "payload": {
+        "period": "ST"
+      },
+      "timestamp": 1782071098692
+    },
+    {
+      "action": "timer-period",
+      "payload": {
+        "period": "ET"
+      },
+      "timestamp": 1782070226277
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782068962598",
+        "type": "roja",
+        "team": "visitante",
+        "player": "ELIAS CACERES",
+        "playerOut": "",
+        "minute": 25,
+        "timestamp": 1782068962598
+      },
+      "timestamp": 1782068962601
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1782068729933",
+        "type": "amarilla",
+        "team": "visitante",
+        "player": "TOBIAS CALVO",
+        "playerOut": "",
+        "minute": 21,
+        "timestamp": 1782068729933
+      },
+      "timestamp": 1782068729936
+    },
+    {
+      "action": "timer-start",
+      "payload": {
+        "period": "PT"
+      },
+      "timestamp": 1782067442598
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1781969905415",
+        "type": "cambio",
+        "team": "visitante",
+        "player": "JORGE GONZALEZ",
+        "playerOut": "JORDAN GARCIA",
+        "minute": 0,
+        "timestamp": 1781969905415
+      },
+      "timestamp": 1781969905417
+    },
+    {
+      "action": "timer-pause",
+      "payload": {
+        "minute": 0
+      },
+      "timestamp": 1781969857505
+    },
+    {
+      "action": "timer-start",
+      "payload": {
+        "period": "PT"
+      },
+      "timestamp": 1781969852072
+    },
+    {
+      "action": "timer-start",
+      "payload": {
+        "period": "PT"
+      },
+      "timestamp": 1781897009567
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1781815258359",
+        "type": "gol",
+        "team": "local",
+        "player": "ENZO ALONSO",
+        "playerOut": "",
+        "minute": 0,
+        "timestamp": 1781815258359
+      },
+      "timestamp": 1781815258363
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1781814731606",
+        "type": "cambio",
+        "team": "local",
+        "player": "LUIS DUCHE",
+        "playerOut": "JUSTINO GOMEZ",
+        "minute": 0,
+        "timestamp": 1781814731606
+      },
+      "timestamp": 1781814731610
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1781813450686",
+        "type": "cambio",
+        "team": "local",
+        "player": "ROBERT CAMPAZ",
+        "playerOut": "LUCAS RIVAS",
+        "minute": 0,
+        "timestamp": 1781813450686
+      },
+      "timestamp": 1781813450689
+    },
+    {
+      "action": "incident",
+      "payload": {
+        "id": "1781812465670",
+        "type": "gol",
+        "team": "local",
+        "player": "LUCAS RIVAS",
+        "playerOut": "",
+        "minute": 0,
+        "timestamp": 1781812465671
+      },
+      "timestamp": 1781812465672
+    }
+  ],
   "local": {
     "nombre": "Cecil A. Roberts",
     "logo": "equipos/logos/roberts.png",
-    "color": "#ff0000",
+    "color": "#fa0000",
     "colorNumero": "#ffffff",
     "formacion": "4-3-3",
-    "goles": 0,
+    "goles": 3,
     "jugadores": [
       {
         "nombre": "FABRICIO CERUTTI",
@@ -90,74 +524,89 @@
         "roja": false
       },
       {
+        "nombre": "GASTON MOLINA",
+        "numero": 14,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false,
+        "entro": true
+      },
+      {
+        "nombre": "BLAS BRETONES",
+        "numero": 18,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false,
+        "entro": true
+      },
+      {
         "nombre": "JULIAN COCIMANO",
         "numero": 2,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "EMANUEL KLUNDT",
-        "numero": 3,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "LUIS DUCHE",
+        "nombre": "LUCIANO DUARTE",
         "numero": 4,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
+      },
+      {
+        "nombre": "BENJAMIN NATALI",
+        "numero": 15,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false,
+        "entro": true
       },
       {
         "nombre": "LUCAS AVELLANEDA",
         "numero": 5,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "JULIAN RESSIA",
-        "numero": 6,
+        "nombre": "MAXI SEMINTH",
+        "numero": 16,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "entro": true
       },
       {
         "nombre": "LUCAS RIVAS",
         "numero": 7,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "JUSTIN GOMEZ",
-        "numero": 8,
+        "nombre": "ROBERT CAMPAZ",
+        "numero": 17,
         "goles": 0,
         "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "JOEL CARRIZO",
-        "numero": 9,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "ENZO ALONSO",
-        "numero": 10,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "entro": true
       },
       {
         "nombre": "TOMAS ALTAMIRANDA",
         "numero": 11,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       }
     ],
     "suplentes": [
@@ -166,133 +615,154 @@
         "numero": 12,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "BENJAMIN VEGA",
+        "nombre": "LUIS DUCHE",
         "numero": 13,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "GASTON MOLINA",
-        "numero": 14,
+        "nombre": "ROMAN SCHAP",
+        "numero": 9,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "sustituido": true
       },
       {
-        "nombre": "FERMIN LEIVA",
-        "numero": 15,
+        "nombre": "EMANUEL KLUNDT",
+        "numero": 3,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "sustituido": true
       },
       {
-        "nombre": "THIAGO TOMASELLO",
-        "numero": 16,
+        "nombre": "JUSTIN GOMEZ",
+        "numero": 8,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "sustituido": true
       },
       {
-        "nombre": "ROBERT CAMPAZ",
-        "numero": 17,
+        "nombre": "JULIAN RESSIA",
+        "numero": 6,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "sustituido": true
       },
       {
-        "nombre": "NAHUEL MERCADIN",
-        "numero": 18,
-        "goles": 0,
+        "nombre": "ENZO ALONSO",
+        "numero": 10,
+        "goles": 1,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false,
+        "sustituido": true
       }
     ]
   },
   "visitante": {
-    "nombre": "Deportivo 17",
-    "logo": "equipos/logos/17.png",
-    "color": "#033b73",
-    "colorNumero": "#ffffff",
+    "nombre": "Deportivo Garré",
+    "logo": "equipos/logos/garre.png",
+    "color": "#84009e",
+    "colorNumero": "#ff3d3d",
     "formacion": "4-4-2",
-    "goles": 0,
+    "goles": 2,
     "jugadores": [
       {
-        "nombre": "ANTONIO COÑA",
+        "nombre": "JORGAN GARCIA",
         "numero": 1,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "JULIAN COÑA",
-        "numero": 2,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "CRISTIAN MIRANDA",
+        "nombre": "LUCAS VELA",
         "numero": 3,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "FACUNDO COÑA",
+        "nombre": "JOAQUIN LARA",
+        "numero": 6,
+        "goles": 1,
+        "amarilla": false,
+        "roja": false,
+        "figura": false
+      },
+      {
+        "nombre": "FABRICIO CANDIA",
+        "numero": 2,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false
+      },
+      {
+        "nombre": "ANGEL LOPEZ",
         "numero": 4,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "EZEQUIEL IBAÑEZ",
-        "numero": 5,
+        "nombre": "TOBIAS CALVO",
+        "numero": 11,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       },
       {
-        "nombre": "JAVIER FARIAS",
-        "numero": 6,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "DIEGO GOMEZ",
-        "numero": 8,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "NAHUEL SANDALICH",
-        "numero": 9,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "MARTIN ROOT",
+        "nombre": "FEDERICO PRIENZA",
         "numero": 10,
         "goles": 0,
         "amarilla": false,
         "roja": false
       },
       {
-        "nombre": "BENJAMIN GUIYELO",
-        "numero": 11,
+        "nombre": "ELIAS CACERES",
+        "numero": 5,
         "goles": 0,
         "amarilla": false,
-        "roja": false
+        "roja": true,
+        "figura": false
       },
       {
-        "nombre": "JOAN BENAVIDEZ",
-        "numero": 14,
+        "nombre": "BENICIO MASCIOLI",
+        "numero": 8,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false
+      },
+      {
+        "nombre": "TOMAS RODRIGUEZ",
+        "numero": 9,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false
+      },
+      {
+        "nombre": "MIGUEL MARTINEZ",
+        "numero": 7,
         "goles": 0,
         "amarilla": false,
         "roja": false
@@ -300,105 +770,57 @@
     ],
     "suplentes": [
       {
-        "nombre": "JOAQUIN BARRIO",
-        "numero": 7,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "TOMAS BRAVO",
+        "nombre": "HERBERTO GONZALE",
         "numero": 12,
         "goles": 0,
         "amarilla": false,
         "roja": false
       },
       {
-        "nombre": "JUAN JOSE ESTEBAN",
-        "numero": 14,
+        "nombre": "JUAN LARA",
+        "numero": 13,
         "goles": 0,
         "amarilla": false,
         "roja": false
       },
       {
-        "nombre": "FACUNDO MACHADO",
+        "nombre": "ALEXIS ACUÑA",
+        "numero": 14,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "figura": false
+      },
+      {
+        "nombre": "JUAN M. SANCHEZ",
         "numero": 15,
         "goles": 0,
         "amarilla": false,
         "roja": false
       },
       {
-        "nombre": "JUAN JOSE VICENTE",
+        "nombre": "NICOLAS SILVA",
         "numero": 16,
         "goles": 0,
         "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "THIAGO RODRIGUEZ",
-        "numero": 17,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
-      },
-      {
-        "nombre": "AGUSTIN COÑA",
-        "numero": 18,
-        "goles": 0,
-        "amarilla": false,
-        "roja": false
+        "roja": false,
+        "figura": false
       }
     ]
   },
   "resultados": [
     {
-      "local": "Unión Deportiva",
-      "logoLocal": "equipos/logos/uniontl.png",
+      "local": "Juventud Unida",
+      "logoLocal": "equipos/logos/juventud.png",
       "gl": 0,
-      "visitante": "Atlético Quenumá",
-      "logoVisitante": "equipos/logos/quenuma.png",
-      "gv": 0
-    },
-    {
-      "local": "Deportivo Garré",
-      "logoLocal": "equipos/logos/garre.png",
-      "gl": 0,
-      "visitante": "El Ceibo",
-      "logoVisitante": "equipos/logos/ceibo.png",
-      "gv": 0
-    },
-    {
-      "local": "Deportivo Maza",
-      "logoLocal": "equipos/logos/maza.png",
-      "gl": 0,
-      "visitante": "Jorge Newbery",
-      "logoVisitante": "equipos/logos/newbery.png",
-      "gv": 0
-    },
-    {
-      "local": "Villa del Parque",
-      "logoLocal": "equipos/logos/villa.png",
-      "gl": 0,
-      "visitante": "Atlético Argentino",
-      "logoVisitante": "equipos/logos/argentinos.png",
-      "gv": 0
-    },
-    {
-      "local": "Deportivo Argentino",
-      "logoLocal": "equipos/logos/deportivoarg.png",
-      "gl": 0,
-      "visitante": "Salazar FC",
-      "logoVisitante": "equipos/logos/salazar.png",
-      "gv": 0
-    },
-    {
-      "local": "Unión de Bonifacio",
-      "logoLocal": "equipos/logos/bonifacio.png",
-      "gl": 0,
-      "visitante": "Juventud Unida",
-      "logoVisitante": "equipos/logos/juventud.png",
-      "gv": 0
+      "visitante": "Unión Deportiva",
+      "logoVisitante": "equipos/logos/uniontl.png",
+      "gv": 4
     }
   ],
-  "libre": "La Gloria"
+  "libre": "",
+  "resultadosTitulo": "Fecha 14",
+  "cortina": {
+    "mode": "final"
+  }
 }

@@ -43,7 +43,7 @@
   .line{display:flex;justify-content:space-around;align-items:center}
 </style>
 </head>
-<body class="bg-background text-on-surface font-body">
+<body class="bg-black text-on-surface font-body">
 <div class="previa" id="previa">
   <main class="w-[1920px] h-[1080px] px-12 py-8 flex flex-col gap-6">
 
@@ -162,10 +162,12 @@ function renderPitch(elId,data,color){
   const pitch=document.getElementById(elId);
   pitch.innerHTML=`<div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>`+rows+gkRow;
 }
+function logoUrl(p){ return !p?'':(/^(https?:|\/)/.test(p)?p:'/'+p.replace(/^\.?\//,'')); }
 function renderSide(side,data,dt,color){
   const l=side==='local', S=l?'L':'V';
-  document.getElementById('logo'+S).src=data.logo||'';
-  document.getElementById('logo'+S).style.display=data.logo?'':'none';
+  const logo=logoUrl(data.logo);
+  document.getElementById('logo'+S).src=logo;
+  document.getElementById('logo'+S).style.display=logo?'':'none';
   document.getElementById('name'+S).textContent=data.nombre||(l?'Local':'Visitante');
   document.getElementById('dt'+S).textContent='DT: '+(dt||'—');
   document.getElementById('boardName'+S).textContent=data.nombre||(l?'Local':'Visitante');
