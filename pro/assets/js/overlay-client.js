@@ -11,7 +11,7 @@
  *   </script>
  */
 (function () {
-  const API = window.OVERLAY_API || 'http://localhost:3000';
+  const API = window.OVERLAY_API || (/^https?:$/.test(window.location.protocol) ? window.location.origin : 'http://localhost:3000');
   let lastJson = '';
 
   function connect() {

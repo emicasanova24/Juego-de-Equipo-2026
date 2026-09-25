@@ -1,9 +1,9 @@
 {
   "match": {
-    "status": "NO INICIADO",
+    "status": "PRIMER TIEMPO",
     "minute": "",
-    "referee": "",
-    "stadium": "",
+    "referee": "NICOLAS RODRIGUEZ",
+    "stadium": "ESTADIO DE CECIL A. ROBERTS",
     "tournament": "APERTURA 2026"
   },
   "timer": {
@@ -79,27 +79,312 @@
   },
   "history": [],
   "local": {
-    "nombre": "",
-    "logo": "",
-    "color": "#019604",
+    "nombre": "Cecil A. Roberts",
+    "logo": "equipos/logos/roberts.png",
+    "color": "#cc0000",
     "colorNumero": "#ffffff",
-    "formacion": "4-3-3",
-    "goles": 0,
-    "jugadores": [],
-    "suplentes": []
+    "formacion": "4-3-1-2",
+    "goles": 1,
+    "jugadores": [
+      {
+        "nombre": "FABRICIO CERUTTI",
+        "numero": 1,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "EMANUEL KLUNDT",
+        "numero": 3,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "JULIAN RESSIA",
+        "numero": 6,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "MAXIMILIANO SEMINTH",
+        "numero": 2,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "FERMIN LEIVA",
+        "numero": 15,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "entro": true
+      },
+      {
+        "nombre": "BENJAMIN NATALI",
+        "numero": 14,
+        "goles": 0,
+        "amarilla": true,
+        "roja": false,
+        "entro": true
+      },
+      {
+        "nombre": "LUCAS AVELLANEDA",
+        "numero": 5,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "LUIS DUCHE",
+        "numero": 13,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "entro": true
+      },
+      {
+        "nombre": "ENZO ALONZO",
+        "numero": 10,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "ROBERT CAMPAZ",
+        "numero": 16,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "entro": true
+      },
+      {
+        "nombre": "LUCAS RIVAS",
+        "numero": 7,
+        "goles": 0,
+        "amarilla": false,
+        "roja": true
+      }
+    ],
+    "suplentes": [
+      {
+        "nombre": "JORGE PUNDANG",
+        "numero": 12,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "THIAGO TOMASELLO",
+        "numero": 17,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "GASTON MOLINA",
+        "numero": 9,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "sustituido": true
+      },
+      {
+        "nombre": "TOMAS ALTAMIRANDA",
+        "numero": 11,
+        "goles": 1,
+        "amarilla": false,
+        "roja": false,
+        "sustituido": true
+      },
+      {
+        "nombre": "JUSTIN GOMEZ",
+        "numero": 8,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "sustituido": true
+      },
+      {
+        "nombre": "LUCIANO DUARTE",
+        "numero": 4,
+        "goles": 0,
+        "amarilla": true,
+        "roja": false,
+        "sustituido": true
+      }
+    ]
   },
   "visitante": {
-    "nombre": "",
-    "logo": "",
-    "color": "#FFFFFF",
-    "colorNumero": "#000000",
-    "formacion": "4-4-2",
-    "goles": 0,
-    "jugadores": [],
-    "suplentes": []
+    "nombre": "Jorge Newbery",
+    "logo": "equipos/logos/newbery.png",
+    "color": "#13a300",
+    "colorNumero": "#ffffff",
+    "formacion": "5-3-2",
+    "goles": 1,
+    "jugadores": [
+      {
+        "nombre": "LUCAS TROYA",
+        "numero": 1,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "ENZO CANDIA",
+        "numero": 8,
+        "goles": 0,
+        "amarilla": true,
+        "roja": false
+      },
+      {
+        "nombre": "IGNACIO SIRI",
+        "numero": 4,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "FRANCISCO TAMARGO",
+        "numero": 2,
+        "goles": 0,
+        "amarilla": false,
+        "roja": true
+      },
+      {
+        "nombre": "LUCIANO RAMOS",
+        "numero": 6,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "IGNACIO PEÑAS",
+        "numero": 3,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "JUAN CUEVAS",
+        "numero": 10,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "KEVIN CAICEDO",
+        "numero": 5,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "TOBIAS BARRIOS",
+        "numero": 11,
+        "goles": 0,
+        "amarilla": true,
+        "roja": false
+      },
+      {
+        "nombre": "NICOLAS IBAÑEZ",
+        "numero": 9,
+        "goles": 1,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "JUAN CORRAL",
+        "numero": 17,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "entro": true
+      }
+    ],
+    "suplentes": [
+      {
+        "nombre": "SEBASTIAN ILLESCA",
+        "numero": 12,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "VLADIMIR HIELPOS",
+        "numero": 13,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "ELIAS ROMERO",
+        "numero": 14,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "SANTIAGO BENITO",
+        "numero": 15,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "HECTOR CARDOZO",
+        "numero": 16,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false
+      },
+      {
+        "nombre": "CESAR MEDINA",
+        "numero": 7,
+        "goles": 0,
+        "amarilla": false,
+        "roja": false,
+        "sustituido": true
+      }
+    ]
   },
-  "resultados": [],
-  "libre": "",
+  "resultados": [
+    {
+      "local": "Deportivo Garré",
+      "logoLocal": "equipos/logos/garre.png",
+      "gl": 0,
+      "visitante": "Unión Deportiva",
+      "logoVisitante": "equipos/logos/uniontl.png",
+      "gv": 2
+    },
+    {
+      "local": "Unión de Bonifacio",
+      "logoLocal": "equipos/logos/bonifacio.png",
+      "gl": 5,
+      "visitante": "La Gloria",
+      "logoVisitante": "equipos/logos/lagloria.png",
+      "gv": 0
+    },
+    {
+      "local": "Deportivo 17",
+      "logoLocal": "equipos/logos/17.png",
+      "gl": 1,
+      "visitante": "Atlético Quenumá",
+      "logoVisitante": "equipos/logos/quenuma.png",
+      "gv": 3
+    },
+    {
+      "local": "Juventud Unida",
+      "logoLocal": "equipos/logos/juventud.png",
+      "gl": 1,
+      "visitante": "Atlético Argentino",
+      "logoVisitante": "equipos/logos/argentinos.png",
+      "gv": 1
+    }
+  ],
+  "libre": "Villa del Parque",
   "cortina": {
     "mode": "entretiempo"
   }

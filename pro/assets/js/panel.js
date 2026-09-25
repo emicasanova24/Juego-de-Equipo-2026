@@ -22,11 +22,14 @@ const statsData = {
 };
 let statsDebounce = null;
 let adCountdownInterval = null;
+let quickAction = null;
 
 // ─── INIT ─────────────────────────────────────────────
 async function init() {
+  setWorkspaceMode(localStorage.getItem('proWorkspaceMode') || 'live');
   buildStatsGrids();
   buildWidgetsPanel();
+  buildSponsorLibrary();
   await loadEquipos();
   await loadEquiposLogos();
   buildResultadosSelects();
@@ -183,6 +186,12 @@ function renderAll(s) {
     btn.className    = s.ads.autoEnabled ? 'btn-brand px-3 py-1 rounded-sm text-xs' : 'btn-gray px-3 py-1 rounded-sm text-xs';
     if (s.ads.nextAt) updateAdCountdown(s.ads.nextAt);
   }
+
+  renderCockpit(s);
+  renderReadiness(s);
+  renderBroadcastStatus(s);
+  renderSetupConsole(s);
+  renderContentDeck(s);
 }
 
 // ─── TIMER ────────────────────────────────────────────
@@ -208,14 +217,26 @@ function renderPanelTimer() {
   const liveSec = _timer.running && _timer.startTs
     ? Math.floor((Date.now() - _timer.startTs) / 1000) : 0;
   const total = _timer.base * 60 + liveSec;
-  document.getElementById('timerDisplay').textContent = pad(Math.floor(total / 60)) + ':' + pad(total % 60);
+  const timerText = pad(Math.floor(total / 60)) + ':' + pad(total % 60);
+  document.getElementById('timerDisplay').textContent = timerText;
   document.getElementById('addedDisplay').textContent = _timer.added > 0 ? '+' + _timer.added + "' de tiempo agregado" : '';
+  setEl('cockpitTimer', timerText + (_timer.added > 0 ? ' +' + _timer.added : ''));
+  setEl('cockpitPeriod', PERIOD_LABELS[_timer.period] || _timer.period);
+  const cockpitBtn = document.getElementById('cockpitTimerButton');
+  if (cockpitBtn) {
+    cockpitBtn.textContent = _timer.running ? '⏸ PAUSAR' : '▶ INICIAR';
+    cockpitBtn.className = _timer.running ? 'cockpit-pause' : 'cockpit-start';
+  }
   ['PT','ET','ST','PROL','PEN','FIN'].forEach(p => {
     const btn = document.getElementById('p' + p);
     if (btn) btn.classList.toggle('active', p === _timer.period);
   });
   document.getElementById('btnStart').classList.toggle('hidden', _timer.running);
   document.getElementById('btnPause').classList.toggle('hidden', !_timer.running);
+}
+
+function toggleTimerFromCockpit() {
+  return _timer.running ? timerPause() : timerStart();
 }
 
 function startPanelTimer() {
@@ -230,8 +251,38 @@ function stopPanelTimer() {
 async function timerStart()  { await api('POST', '/overlay-state/timer/start'); ensureWidget('marcador'); }
 async function timerPause()  { await api('POST', '/overlay-state/timer/pause'); }
 async function timerReset()  { if (!confirm('¿Resetear el timer?')) return; await api('POST', '/overlay-state/timer/reset'); }
-async function setPeriod(p, base) { await api('PATCH', '/overlay-state/timer/period', { period: p, baseMinute: base }); ensureWidget('marcador'); }
+async function setPeriod(p, base) {
+  const effectiveBase = p === 'FIN' ? getCurrentMinute() : base;
+  const statusByPeriod = { PT:'PRIMER TIEMPO', ET:'ENTRETIEMPO', ST:'SEGUNDO TIEMPO', PROL:'PRÓRROGA', PEN:'PENALES', FIN:'FINALIZADO' };
+  await api('PATCH', '/overlay-state/timer/period', { period: p, baseMinute: effectiveBase });
+  await api('PATCH', '/overlay-state/match', { status: statusByPeriod[p] || p });
+  ensureWidget('marcador');
+}
 async function setAdded(v)   { await api('PATCH', '/overlay-state/timer/added', { addedTime: v }); if (v) setVal('addedCustom', v); ensureWidget('marcador'); }
+
+async function setTimerManual() {
+  const input = document.getElementById('timerManualMinute');
+  const minute = Number(input?.value);
+  if (!Number.isFinite(minute) || minute < 0 || minute > 180 || input?.value === '') {
+    showToast('Ingresá un minuto válido entre 0 y 180.', 'error');
+    input?.focus();
+    return;
+  }
+  const running = !!document.getElementById('timerManualRunning')?.checked;
+  const result = await api('PATCH', '/overlay-state/timer/set', { minute: Math.floor(minute), running });
+  if (!result) return;
+  input.value = '';
+  ensureWidget('marcador');
+  showToast(`Reloj corregido a ${Math.floor(minute)}:00${running ? ' y en marcha' : ' en pausa'}.`, 'success');
+}
+
+async function adjustTimerBy(delta) {
+  const minute = Math.max(0, Math.min(180, getCurrentMinute() + delta));
+  const result = await api('PATCH', '/overlay-state/timer/set', { minute, running: _timer.running });
+  if (!result) return;
+  ensureWidget('marcador');
+  showToast(`Reloj ajustado a ${minute}:00.`, 'success');
+}
 
 // ─── MARCADOR ─────────────────────────────────────────
 async function changeTeam(side) {
@@ -329,7 +380,7 @@ function playerRow(side, type, idx, p, label) {
   const rowBorder = (!isSub && p.entro) ? 'border-l-2 border-green-500 pl-1'
                   : (isSub && p.sustituido) ? 'border-l-2 border-red-500 pl-1 opacity-50' : '';
   const nameStrike = (isSub && p.sustituido) ? 'line-through' : '';
-  return `<div class="flex items-center gap-1.5 bg-gray-800 rounded-lg px-2 py-1.5 mb-1 ${rowBorder}">
+  return `<div class="player-row flex items-center gap-1.5 bg-gray-800 rounded-lg px-2 py-1.5 mb-1 ${rowBorder}">
     ${label ? `<span class="text-[10px] font-black uppercase w-7 text-center shrink-0 ${labelColor}">${label}</span>` : ''}
     <input type="number" value="${p.numero || ''}" min="0" max="99" placeholder="#"
       class="w-10 bg-gray-700 border border-gray-600 rounded text-xs text-center text-white shrink-0"
@@ -937,7 +988,7 @@ function renderTicker(items) {
 function renderHistory(history) {
   const el = document.getElementById('historyList');
   if (!history?.length) { el.innerHTML = '<p class="text-gray-600 text-center">Sin acciones</p>'; return; }
-  const labels = { 'timer-start':'▶ Timer', 'timer-pause':'⏸ Pausa', 'timer-reset':'↺ Reset', 'timer-period':'📌 Período', incident:'📋 Incidencia', emergency:'🚨 Emergencia' };
+  const labels = { 'timer-start':'▶ Timer', 'timer-pause':'⏸ Pausa', 'timer-reset':'↺ Reset', 'timer-period':'📌 Período', 'timer-set':'✎ Reloj corregido', incident:'📋 Incidencia', emergency:'🚨 Emergencia' };
   el.innerHTML = history.slice(0, 30).map(h => {
     const time   = new Date(h.timestamp).toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     const label  = labels[h.action] || h.action;
@@ -947,6 +998,350 @@ function renderHistory(history) {
       <span class="text-gray-400">${label}${detail}</span>
     </div>`;
   }).join('');
+}
+
+// ─── CONSOLAS PROFESIONALES ─────────────────────────
+const CONTENT_WIDGET_KEYS = ['publicidad', 'cortina', 'ticker', 'otrosPartidos', 'tablaPosiciones', 'formacionPrevia'];
+const ALL_OUTPUT_WIDGET_KEYS = ['marcador', 'formaciones', 'otrosPartidos', 'tablaPosiciones', 'ticker', 'publicidad', 'estadisticas', 'formacionPrevia', 'cortina'];
+
+function buildSponsorLibrary() {
+  const el = document.getElementById('sponsorLibrary');
+  if (!el) return;
+  el.innerHTML = Array.from({ length: 19 }, (_, i) => i + 1).map(n => `
+    <button id="sponsorAsset-${n}" onclick="activateSponsorAsset(${n})" title="Enviar sponsor ${n} al aire">
+      <img src="/pro/sponsor/${n}.png" alt="Sponsor ${n}">
+      <em>${n}</em>
+    </button>`).join('');
+}
+
+async function activateSponsorAsset(number) {
+  const path = `/pro/sponsor/${number}.png`;
+  const isActive = state?.widgets?.publicidad && state?.ads?.active && state?.ads?.logoBanner === path;
+  if (isActive) {
+    await clearAd();
+    showToast('Banner retirado de pantalla.');
+    return;
+  }
+  await api('PATCH', '/overlay-state/widgets', { cortina: false, publicidad: true });
+  await api('PATCH', '/overlay-state/ads', {
+    active: true,
+    current: 'banner',
+    activeBannerId: 'library-' + number,
+    logoBanner: path,
+    logoSponsor: path,
+    sponsor: document.getElementById('adSponsor')?.value || `Sponsor ${number}`
+  });
+  showToast('Sponsor enviado al aire.', 'success');
+}
+
+async function controlContentModule(key) {
+  if (!state) return;
+  if (key === 'banner') {
+    const active = state.widgets?.publicidad && state.ads?.active && ['banner', 'overlay'].includes(state.ads?.current);
+    if (active) return clearAd();
+    if (state.ads?.logoBanner || state.ads?.logoSponsor) {
+      await api('PATCH', '/overlay-state/widgets', { cortina: false, publicidad: true });
+      await api('PATCH', '/overlay-state/ads', { active: true, current: 'banner' });
+    } else {
+      showToast('Elegí primero un sponsor de la biblioteca.', 'error');
+      document.getElementById('sponsorLibrary')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+    return;
+  }
+  if (key === 'cortina') {
+    if (state.widgets?.cortina) return api('PATCH', '/overlay-state/widgets', { cortina: false });
+    await api('PATCH', '/overlay-state/widgets', {
+      publicidad:false, ticker:false, otrosPartidos:false, tablaPosiciones:false, formacionPrevia:false, cortina:true
+    });
+    await api('PATCH', '/overlay-state/ads', { active:false, current:null });
+    await api('PATCH', '/overlay-state/cortina', { mode:'entretiempo' });
+    return;
+  }
+  const next = !state.widgets?.[key];
+  const patch = { [key]: next };
+  if (next) patch.cortina = false;
+  await api('PATCH', '/overlay-state/widgets', patch);
+}
+
+async function stopAllContent(silent = false) {
+  const patch = Object.fromEntries(CONTENT_WIDGET_KEYS.map(key => [key, false]));
+  await api('PATCH', '/overlay-state/widgets', patch);
+  await api('PATCH', '/overlay-state/ads', { active:false, current:null });
+  if (!silent) showToast('Todo el contenido complementario quedó fuera del aire.');
+}
+
+function renderContentDeck(s) {
+  const active = {
+    banner: !!(s.widgets?.publicidad && s.ads?.active && ['banner','overlay'].includes(s.ads?.current)),
+    cortina: !!s.widgets?.cortina,
+    ticker: !!s.widgets?.ticker,
+    otrosPartidos: !!s.widgets?.otrosPartidos,
+    tablaPosiciones: !!s.widgets?.tablaPosiciones,
+    formacionPrevia: !!s.widgets?.formacionPrevia
+  };
+  Object.entries(active).forEach(([key, on]) => {
+    const btn = document.getElementById('deck-' + key);
+    if (!btn) return;
+    btn.classList.toggle('active', on);
+    const badge = btn.querySelector('.deck-status');
+    if (badge) badge.textContent = on ? 'AL AIRE' : 'OFF';
+  });
+  for (let n = 1; n <= 19; n++) {
+    const btn = document.getElementById('sponsorAsset-' + n);
+    const path = `/pro/sponsor/${n}.png`;
+    if (btn) btn.classList.toggle('active', active.banner && (s.ads?.logoBanner === path || s.ads?.logoSponsor === path));
+  }
+  const collisions = [];
+  if (active.cortina && Object.entries(active).some(([key, on]) => key !== 'cortina' && on)) collisions.push('La cortina completa está activa junto con otro contenido.');
+  const warning = document.getElementById('contentCollisionWarning');
+  if (warning) {
+    warning.textContent = collisions.join(' ');
+    warning.classList.toggle('hidden', collisions.length === 0);
+  }
+}
+
+async function setBroadcastPreset(preset) {
+  const widgets = Object.fromEntries(ALL_OUTPUT_WIDGET_KEYS.map(key => [key, false]));
+  if (preset === 'match') widgets.marcador = true;
+  if (preset === 'stats') { widgets.marcador = true; widgets.estadisticas = true; }
+  if (preset === 'halftime') widgets.cortina = true;
+  if (preset === 'lineups') widgets.formaciones = true;
+  await api('PATCH', '/overlay-state/widgets', widgets);
+  await api('PATCH', '/overlay-state/ads', { active:false, current:null });
+  if (preset === 'halftime') await api('PATCH', '/overlay-state/cortina', { mode:'entretiempo' });
+  const names = { match:'Partido', stats:'Estadísticas', halftime:'Entretiempo', lineups:'Formaciones', clean:'Salida limpia' };
+  showToast(`Modo ${names[preset] || preset} activado.`, 'success');
+}
+
+function renderBroadcastStatus(s) {
+  const el = document.getElementById('onAirSummary');
+  if (!el) return;
+  const labels = { marcador:'Marcador', formaciones:'Formaciones', otrosPartidos:'Resultados', tablaPosiciones:'Tabla', ticker:'Ticker', publicidad:'Sponsor', estadisticas:'Estadísticas', formacionPrevia:'Previa', cortina:'Cortina' };
+  const active = Object.entries(s.widgets || {}).filter(([key, value]) => value && labels[key]).map(([key]) => labels[key]);
+  el.classList.toggle('clean', active.length === 0);
+  el.classList.toggle('emergency', !!s.emergencyMode);
+  const label = s.emergencyMode ? 'EMERGENCIA: salida oculta' : active.length ? `Al aire: ${active.join(' + ')}` : 'Salida limpia: sin gráficos';
+  el.querySelector('strong').textContent = label;
+}
+
+function renderSetupConsole(s) {
+  const teamsOk = !!(s.local?.nombre && s.visitante?.nombre);
+  const localCount = (s.local?.jugadores || []).filter(p => p.nombre?.trim()).length;
+  const visitCount = (s.visitante?.jugadores || []).filter(p => p.nombre?.trim()).length;
+  const lineupsOk = localCount >= 11 && visitCount >= 11;
+  const previewOn = !!s.widgets?.formacionPrevia;
+  const steps = [
+    { id:'setupStepTeams', ok:teamsOk, label:teamsOk ? 'LISTO' : 'REVISAR' },
+    { id:'setupStepLineups', ok:lineupsOk, label:lineupsOk ? 'LISTO' : `${localCount}/${visitCount}` },
+    { id:'setupStepOutput', ok:previewOn, label:previewOn ? 'AL AIRE' : 'OFF' }
+  ];
+  steps.forEach(step => {
+    const el = document.getElementById(step.id);
+    if (!el) return;
+    el.classList.toggle('complete', step.ok);
+    const badge = el.querySelector('b');
+    if (badge) badge.textContent = step.label;
+  });
+  const guidance = document.getElementById('setupGuidance');
+  if (guidance) guidance.textContent = teamsOk && lineupsOk
+    ? 'La base del partido está lista. Podés mostrar la previa o pasar al control en vivo.'
+    : !teamsOk ? 'Primero elegí ambos equipos y completá los datos del partido.' : 'Revisá que ambos equipos tengan al menos 11 titulares con nombre.';
+}
+
+function focusSetupCard(target) {
+  const card = document.querySelector(`[data-setup-target="${target}"]`);
+  if (!card) return;
+  card.scrollIntoView({ behavior:'smooth', block:'start' });
+  card.classList.remove('setup-focus');
+  requestAnimationFrame(() => card.classList.add('setup-focus'));
+}
+
+async function saveAllPlayers() {
+  await Promise.all([savePlayers('local'), savePlayers('visitante')]);
+  showToast('Los dos planteles fueron guardados en pantalla.', 'success');
+}
+
+async function goLiveFromSetup() {
+  if (!state?.local?.nombre || !state?.visitante?.nombre) {
+    showToast('Todavía faltan definir los equipos.', 'error');
+    focusSetupCard('teams');
+    return;
+  }
+  await ensureWidget('marcador');
+  setWorkspaceMode('live');
+}
+
+// ─── EXPERIENCIA DE OPERACIÓN ────────────────────────
+function setWorkspaceMode(mode) {
+  if (!['live', 'setup', 'content'].includes(mode)) mode = 'live';
+  document.body.dataset.workspaceMode = mode;
+  localStorage.setItem('proWorkspaceMode', mode);
+  document.querySelectorAll('.workspace-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+  document.querySelectorAll('[data-workspace]').forEach(card => {
+    const modes = (card.dataset.workspace || '').split(/\s+/);
+    card.classList.toggle('workspace-hidden', !modes.includes(mode));
+  });
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+}
+
+function renderCockpit(s) {
+  setEl('cockpitLocalName', s.local?.nombre || 'Sin definir');
+  setEl('cockpitVisitanteName', s.visitante?.nombre || 'Sin definir');
+  setEl('cockpitLocalScore', s.local?.goles ?? 0);
+  setEl('cockpitVisitanteScore', s.visitante?.goles ?? 0);
+  setImgSrc('cockpitLogoLocal', s.local?.logo);
+  setImgSrc('cockpitLogoVisitante', s.visitante?.logo);
+}
+
+function renderReadiness(s) {
+  const issues = [];
+  if (!s.local?.nombre || !s.visitante?.nombre) issues.push('faltan equipos');
+  const localNamed = (s.local?.jugadores || []).filter(p => p.nombre?.trim()).length;
+  const visitNamed = (s.visitante?.jugadores || []).filter(p => p.nombre?.trim()).length;
+  if (localNamed < 11 || visitNamed < 11) issues.push('planteles incompletos');
+  if (!s.widgets?.marcador) issues.push('marcador oculto');
+  const el = document.getElementById('readinessSummary');
+  const text = document.getElementById('readinessText');
+  if (!el || !text) return;
+  el.classList.toggle('ready', issues.length === 0);
+  el.classList.toggle('warning', issues.length > 0);
+  el.querySelector('strong').textContent = issues.length === 0 ? 'Listo para transmitir' : 'Preparación pendiente';
+  text.textContent = issues.length === 0 ? 'Equipos, planteles y marcador verificados' : issues.join(' · ');
+}
+
+function quickPlayerOptions(side, listMode = 'all') {
+  const titulares = state?.[side]?.jugadores || [];
+  const suplentes = state?.[side]?.suplentes || [];
+  const rows = listMode === 'titulares'
+    ? titulares.map((p, i) => ({ p, value: 'j:' + i }))
+    : listMode === 'suplentes'
+      ? suplentes.map((p, i) => ({ p, value: 's:' + i }))
+      : [...titulares.map((p, i) => ({ p, value: 'j:' + i })), ...suplentes.map((p, i) => ({ p, value: 's:' + i }))];
+  return '<option value="">— Sin jugador —</option>' + rows
+    .filter(row => row.p?.nombre?.trim())
+    .map(row => `<option value="${row.value}">${row.p.numero ? row.p.numero + ' · ' : ''}${esc(row.p.nombre)}</option>`)
+    .join('');
+}
+
+function openQuickAction(type, side) {
+  if (!state) return;
+  quickAction = { type, side };
+  const labels = { gol:'Gol', amarilla:'Tarjeta amarilla', roja:'Tarjeta roja', cambio:'Sustitución', var:'Revisión VAR' };
+  const teamName = state?.[side]?.nombre || (side === 'local' ? 'Local' : 'Visitante');
+  setEl('quickActionTitle', labels[type] || 'Incidencia');
+  setEl('quickActionTeam', teamName);
+  const player = document.getElementById('quickPlayer');
+  const playerOut = document.getElementById('quickPlayerOut');
+  const outWrap = document.getElementById('quickPlayerOutWrap');
+  const playerLabel = document.getElementById('quickPlayerLabel');
+  const autoWrap = document.getElementById('quickAutoUpdateWrap');
+  const autoText = document.getElementById('quickAutoUpdateText');
+  const minute = document.getElementById('quickMinute');
+  minute.value = '';
+  document.getElementById('quickAutoUpdate').checked = true;
+
+  if (type === 'cambio') {
+    playerLabel.textContent = 'Entra';
+    player.innerHTML = quickPlayerOptions(side, 'suplentes');
+    playerOut.innerHTML = quickPlayerOptions(side, 'titulares');
+    outWrap.classList.remove('hidden');
+    autoWrap.classList.remove('hidden');
+    autoText.textContent = 'Actualizar también la formación';
+  } else {
+    playerLabel.textContent = 'Jugador';
+    player.innerHTML = quickPlayerOptions(side, type === 'var' ? 'titulares' : 'all');
+    outWrap.classList.add('hidden');
+    autoWrap.classList.toggle('hidden', type === 'var');
+    autoText.textContent = type === 'gol' ? 'Sumar también el gol al marcador' : 'Marcar también la tarjeta en el plantel';
+  }
+
+  document.getElementById('quickConfirmBtn').textContent = type === 'gol' ? 'Confirmar gol' : 'Registrar jugada';
+  document.getElementById('quickActionModal').classList.remove('hidden');
+  setTimeout(() => player.focus(), 20);
+}
+
+function closeQuickAction() {
+  document.getElementById('quickActionModal')?.classList.add('hidden');
+  quickAction = null;
+}
+
+function quickEntry(side, value, lists) {
+  if (!value) return null;
+  const [listKey, rawIndex] = value.split(':');
+  const index = Number(rawIndex);
+  const list = listKey === 's' ? lists.suplentes : lists.jugadores;
+  return { list, index, player: list[index] };
+}
+
+async function confirmQuickAction() {
+  if (!quickAction || !state) return;
+  const { type, side } = quickAction;
+  const btn = document.getElementById('quickConfirmBtn');
+  const autoUpdate = document.getElementById('quickAutoUpdate').checked;
+  const minuteRaw = document.getElementById('quickMinute').value;
+  const minute = minuteRaw !== '' ? Number(minuteRaw) : getCurrentMinute();
+  const lists = {
+    jugadores: JSON.parse(JSON.stringify(state?.[side]?.jugadores || [])),
+    suplentes: JSON.parse(JSON.stringify(state?.[side]?.suplentes || []))
+  };
+  const selected = quickEntry(side, document.getElementById('quickPlayer').value, lists);
+  const selectedOut = quickEntry(side, document.getElementById('quickPlayerOut').value, lists);
+  const player = selected?.player?.nombre || '';
+  const playerOut = selectedOut?.player?.nombre || '';
+
+  if (type === 'cambio' && (!selected || !selectedOut)) {
+    showToast('Elegí quién entra y quién sale.', 'error');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  try {
+    if (autoUpdate && type === 'cambio') {
+      const entering = selected.player;
+      const leaving = selectedOut.player;
+      entering.entro = true;
+      delete entering.sustituido;
+      leaving.sustituido = true;
+      delete leaving.entro;
+      lists.jugadores[selectedOut.index] = entering;
+      lists.suplentes.splice(selected.index, 1);
+      lists.suplentes.push(leaving);
+      await api('PATCH', '/overlay-state/' + side, lists);
+      plantel[side].titulares = JSON.parse(JSON.stringify(lists.jugadores));
+      plantel[side].suplentes = JSON.parse(JSON.stringify(lists.suplentes));
+      renderPlantel(side);
+    } else if (autoUpdate && type === 'gol') {
+      if (selected?.player) selected.player.goles = (selected.player.goles || 0) + 1;
+      await api('PATCH', '/overlay-state/' + side, { goles: (state?.[side]?.goles || 0) + 1, ...lists });
+    } else if (autoUpdate && (type === 'amarilla' || type === 'roja') && selected?.player) {
+      selected.player[type] = true;
+      await api('PATCH', '/overlay-state/' + side, lists);
+    }
+
+    if (autoUpdate && ['gol', 'amarilla', 'roja'].includes(type)) {
+      plantel[side].titulares = JSON.parse(JSON.stringify(lists.jugadores));
+      plantel[side].suplentes = JSON.parse(JSON.stringify(lists.suplentes));
+      renderPlantel(side);
+    }
+
+    await api('POST', '/overlay-state/incidents', { type, team: side, player, playerOut, minute });
+    await ensureWidget('marcador');
+    showToast(type === 'gol' ? 'Gol registrado y marcador actualizado.' : 'Jugada registrada en pantalla.', 'success');
+    closeQuickAction();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function showToast(message, type = 'success') {
+  const stack = document.getElementById('toastStack');
+  if (!stack) return;
+  const toast = document.createElement('div');
+  toast.className = 'panel-toast ' + type;
+  toast.textContent = message;
+  stack.appendChild(toast);
+  setTimeout(() => toast.remove(), 3600);
 }
 
 // ─── EMERGENCIA ───────────────────────────────────────
@@ -980,7 +1375,10 @@ async function api(method, endpoint, body) {
     const r = await fetch(API + endpoint, opts);
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return await r.json();
-  } catch(e) { console.error(endpoint, e); }
+  } catch(e) {
+    console.error(endpoint, e);
+    showToast('No se pudo guardar el cambio. Revisá la conexión.', 'error');
+  }
 }
 
 // ─── WIDGET TOGGLE ────────────────────────────────────
@@ -1011,3 +1409,6 @@ function setSelectVal(id, val) {
 
 // ─── START ────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('quickActionModal')?.classList.contains('hidden')) closeQuickAction();
+});

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/pro/assets/css/panel.css">
 <script>tailwind.config={ theme:{ extend:{ colors:{ brand:'#8B5CF6' } } } }</script>
 </head>
-<body class="bg-gray-950 text-white min-h-screen">
+<body class="bg-gray-950 text-white min-h-screen" data-workspace-mode="live">
 
 <!-- EMERGENCY OVERLAY -->
 <div id="emergencyOverlay" class="hidden fixed inset-0 bg-red-950 bg-opacity-95 z-50 flex flex-col items-center justify-center gap-6">
@@ -18,14 +18,14 @@
   <button onclick="toggleEmergency()" class="bg-red-600 hover:bg-red-500 px-10 py-4 rounded-xl text-white font-black text-xl">DESACTIVAR</button>
 </div>
 
-<div class="max-w-screen-xl mx-auto p-4 lg:p-6">
+<div class="dashboard-shell mx-auto p-4 lg:p-6">
 
   <!-- HEADER -->
-  <header class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-800 pb-5">
+  <header class="dashboard-header flex flex-wrap items-center justify-between gap-4 mb-4">
     <div class="flex items-center gap-3">
       <div>
-        <h1 class="text-2xl lg:text-3xl font-black uppercase tracking-tight">Panel PRO <span class="text-purple-400">Transmisión</span></h1>
-        <p class="text-gray-500 text-xs mt-0.5">Juego de Equipo · <a href="/pro/instructivo.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">Ver Instructivo</a></p>
+        <h1 class="text-2xl lg:text-3xl font-black uppercase tracking-tight">Juego de Equipo <span class="text-purple-400">Live</span></h1>
+        <p class="text-gray-500 text-xs mt-0.5">Control de transmisión · <a href="/pro/instructivo.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">Instructivo</a></p>
       </div>
     </div>
     <div class="flex items-center gap-3 flex-wrap">
@@ -42,16 +42,117 @@
     </div>
   </header>
 
+  <!-- MODOS DE TRABAJO -->
+  <nav class="workspace-nav" aria-label="Secciones del panel">
+    <button class="workspace-tab active" data-mode="live" onclick="setWorkspaceMode('live')">
+      <span>●</span><strong>En vivo</strong><small>Timer, marcador y jugadas</small>
+    </button>
+    <button class="workspace-tab" data-mode="setup" onclick="setWorkspaceMode('setup')">
+      <span>✓</span><strong>Preparación</strong><small>Equipos, planteles y previa</small>
+    </button>
+    <button class="workspace-tab" data-mode="content" onclick="setWorkspaceMode('content')">
+      <span>◆</span><strong>Contenido</strong><small>Sponsors, ticker y resultados</small>
+    </button>
+    <div id="readinessSummary" class="readiness-summary">
+      <span class="readiness-dot"></span>
+      <div><strong>Chequeando transmisión</strong><small id="readinessText">Revisando configuración…</small></div>
+    </div>
+  </nav>
+
   <!-- ── BARRA DE INCIDENCIAS EN VIVO (debajo del header) ── -->
   <div id="liveAlertBar" class="hidden mb-6"></div>
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+  <!-- CENTRO DE MANDO: los controles que más se usan quedan siempre arriba -->
+  <section id="liveCockpit" class="live-cockpit">
+    <div class="cockpit-score">
+      <div class="cockpit-team cockpit-local">
+        <img id="cockpitLogoLocal" src="" alt="">
+        <div><small>LOCAL</small><strong id="cockpitLocalName">Sin definir</strong></div>
+        <button onclick="changeScore('local',-1)" aria-label="Restar gol local">−</button>
+        <span id="cockpitLocalScore">0</span>
+        <button class="score-plus" onclick="openQuickAction('gol','local')">+ GOL</button>
+      </div>
+      <div class="cockpit-clock">
+        <small id="cockpitPeriod">1ER TIEMPO</small>
+        <strong id="cockpitTimer">00:00</strong>
+        <button id="cockpitTimerButton" class="cockpit-start" onclick="toggleTimerFromCockpit()">▶ INICIAR</button>
+      </div>
+      <div class="cockpit-team cockpit-visitor">
+        <button class="score-plus" onclick="openQuickAction('gol','visitante')">GOL +</button>
+        <span id="cockpitVisitanteScore">0</span>
+        <button onclick="changeScore('visitante',-1)" aria-label="Restar gol visitante">−</button>
+        <div><small>VISITANTE</small><strong id="cockpitVisitanteName">Sin definir</strong></div>
+        <img id="cockpitLogoVisitante" src="" alt="">
+      </div>
+    </div>
+    <div class="quick-actions">
+      <span class="quick-actions-label">Jugada rápida</span>
+      <button class="quick-yellow" onclick="openQuickAction('amarilla','local')">🟨 Local</button>
+      <button class="quick-yellow" onclick="openQuickAction('amarilla','visitante')">🟨 Visitante</button>
+      <button class="quick-red" onclick="openQuickAction('roja','local')">🟥 Local</button>
+      <button class="quick-red" onclick="openQuickAction('roja','visitante')">🟥 Visitante</button>
+      <button onclick="openQuickAction('cambio','local')">↕ Cambio local</button>
+      <button onclick="openQuickAction('cambio','visitante')">↕ Cambio visitante</button>
+      <button class="quick-var" onclick="openQuickAction('var','local')">VAR</button>
+    </div>
+  </section>
+
+  <!-- PRESETS PROFESIONALES DE SALIDA -->
+  <section class="broadcast-presets" data-workspace="live">
+    <div class="section-heading">
+      <div><span class="eyebrow">SALIDA AL AIRE</span><h2>Modos de transmisión</h2></div>
+      <div id="onAirSummary" class="on-air-summary"><span></span><strong>Calculando salida…</strong></div>
+    </div>
+    <div class="preset-grid">
+      <button onclick="setBroadcastPreset('match')"><span class="preset-icon">⚽</span><div><strong>Partido</strong><small>Marcador limpio</small></div></button>
+      <button onclick="setBroadcastPreset('stats')"><span class="preset-icon">▥</span><div><strong>Estadísticas</strong><small>Marcador + datos</small></div></button>
+      <button onclick="setBroadcastPreset('halftime')"><span class="preset-icon">◫</span><div><strong>Entretiempo</strong><small>Cortina completa</small></div></button>
+      <button onclick="setBroadcastPreset('lineups')"><span class="preset-icon">♟</span><div><strong>Formaciones</strong><small>Presentación de equipos</small></div></button>
+      <button class="preset-clean" onclick="setBroadcastPreset('clean')"><span class="preset-icon">○</span><div><strong>Salida limpia</strong><small>Ocultar todos los gráficos</small></div></button>
+    </div>
+  </section>
+
+  <!-- PREPARACIÓN GUIADA -->
+  <section class="setup-console" data-workspace="setup">
+    <div class="section-heading">
+      <div><span class="eyebrow">CONTROL PREVIO</span><h2>Preparar la transmisión</h2></div>
+      <button class="primary-action" onclick="saveAllPlayers()">Guardar ambos planteles</button>
+    </div>
+    <div class="setup-steps">
+      <button id="setupStepTeams" onclick="focusSetupCard('teams')"><span>1</span><div><strong>Equipos y partido</strong><small>Elegir rivales y completar datos</small></div><b>REVISAR</b></button>
+      <button id="setupStepLineups" onclick="focusSetupCard('lineups')"><span>2</span><div><strong>Planteles</strong><small>Confirmar titulares y suplentes</small></div><b>REVISAR</b></button>
+      <button id="setupStepOutput" onclick="toggleWidget('formacionPrevia')"><span>3</span><div><strong>Previa en pantalla</strong><small>Mostrar la presentación antes del inicio</small></div><b>OFF</b></button>
+    </div>
+    <div class="setup-footer">
+      <p id="setupGuidance">Completá los datos pendientes para habilitar la transmisión.</p>
+      <button onclick="goLiveFromSetup()">Ir al control en vivo →</button>
+    </div>
+  </section>
+
+  <!-- CONSOLA MAESTRA DE CONTENIDOS -->
+  <section class="content-console" data-workspace="content">
+    <div class="section-heading">
+      <div><span class="eyebrow">CONTROL DE CONTENIDO</span><h2>¿Qué está viendo la audiencia?</h2></div>
+      <button class="stop-content" onclick="stopAllContent()">○ Apagar contenido</button>
+    </div>
+    <div class="content-deck">
+      <button id="deck-banner" onclick="controlContentModule('banner')"><span class="deck-status">OFF</span><i>▰</i><strong>Banner</strong><small>Sponsor inferior</small></button>
+      <button id="deck-cortina" onclick="controlContentModule('cortina')"><span class="deck-status">OFF</span><i>▣</i><strong>Cortina</strong><small>Pantalla completa</small></button>
+      <button id="deck-ticker" onclick="controlContentModule('ticker')"><span class="deck-status">OFF</span><i>≡</i><strong>Ticker</strong><small>Noticias al pie</small></button>
+      <button id="deck-otrosPartidos" onclick="controlContentModule('otrosPartidos')"><span class="deck-status">OFF</span><i>⚽</i><strong>Resultados</strong><small>Otros partidos</small></button>
+      <button id="deck-tablaPosiciones" onclick="controlContentModule('tablaPosiciones')"><span class="deck-status">OFF</span><i>▥</i><strong>Tabla</strong><small>Posiciones</small></button>
+      <button id="deck-formacionPrevia" onclick="controlContentModule('formacionPrevia')"><span class="deck-status">OFF</span><i>♟</i><strong>Previa</strong><small>Formaciones</small></button>
+    </div>
+    <div id="contentCollisionWarning" class="content-warning hidden"></div>
+  </section>
+
+  <div class="main-grid grid grid-cols-1 xl:grid-cols-3 gap-5">
 
   <!-- ══════════════ COLUMNA IZQUIERDA (2/3) ══════════════ -->
-  <div class="xl:col-span-2 flex flex-col gap-5">
+  <div class="panel-column panel-left xl:col-span-2 flex flex-col gap-5">
 
     <!-- ── TIMER ── -->
-    <div class="card">
+    <div class="card" data-workspace="live">
       <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-4">⏱ Timer Oficial</h2>
       <div class="text-6xl font-black text-purple-400 text-center tabular-nums mb-1 tracking-widest" id="timerDisplay">00:00</div>
       <div class="text-center text-yellow-400 text-sm font-bold mb-4 h-5" id="addedDisplay"></div>
@@ -59,6 +160,23 @@
         <button id="btnStart" onclick="timerStart()" class="btn-green font-black px-6 py-3 rounded-xl text-base">▶ INICIAR</button>
         <button id="btnPause" onclick="timerPause()" class="btn-yellow font-black px-6 py-3 rounded-xl text-base hidden">⏸ PAUSAR</button>
         <button onclick="timerReset()" class="btn-gray px-4 py-3 rounded-xl text-base">↺ RESET</button>
+      </div>
+      <div class="timer-correction">
+        <div class="timer-correction-copy">
+          <span>CORREGIR RELOJ</span>
+          <small>Fijá el minuto real sin cambiar el período</small>
+        </div>
+        <button onclick="adjustTimerBy(-1)" title="Restar un minuto">−1 min</button>
+        <div class="timer-minute-field">
+          <input id="timerManualMinute" type="number" min="0" max="180" step="1" placeholder="10" onkeydown="if(event.key==='Enter')setTimerManual()">
+          <span>min</span>
+        </div>
+        <label class="timer-running-check">
+          <input id="timerManualRunning" type="checkbox" checked>
+          <span>Continuar corriendo</span>
+        </label>
+        <button onclick="adjustTimerBy(1)" title="Sumar un minuto">+1 min</button>
+        <button class="timer-apply" onclick="setTimerManual()">APLICAR</button>
       </div>
       <div class="flex justify-center bg-gray-800 rounded-sm overflow-hidden mb-4">
         <button id="pPT"   onclick="setPeriod('PT',0)"    class="period-btn active">1er T.</button>
@@ -82,7 +200,7 @@
     </div>
 
     <!-- ── MARCADOR ── -->
-    <div class="card">
+    <div class="card" data-workspace="live setup" data-setup-target="teams">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">⚽ Marcador</h2>
         <div class="flex items-center gap-2">
@@ -168,7 +286,7 @@
     </div>
 
     <!-- ── PLANTEL DEL PARTIDO (admin-style) ── -->
-    <div class="card">
+    <div class="card" data-workspace="setup" data-setup-target="lineups">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">👕 Plantel del Partido</h2>
         <div class="flex items-center gap-2">
@@ -231,7 +349,7 @@
     </div>
 
     <!-- ── INCIDENCIAS ── -->
-    <div class="card">
+    <div class="card" data-workspace="live">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📋 Incidencias del Partido</h2>
         <span class="text-[10px] text-gray-500 uppercase tracking-wider">Se muestran en el banner del Marcador</span>
@@ -274,7 +392,7 @@
     </div>
 
     <!-- ── ESTADÍSTICAS ── -->
-    <div class="card">
+    <div class="card" data-workspace="live">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📊 Estadísticas en Vivo</h2>
         <div class="flex items-center gap-2">
@@ -320,16 +438,16 @@
   </div><!-- /col-left -->
 
   <!-- ══════════════ COLUMNA DERECHA (1/3) ══════════════ -->
-  <div class="flex flex-col gap-5">
+  <div class="panel-column panel-right flex flex-col gap-5">
 
     <!-- ── WIDGETS ── -->
-    <div class="card">
+    <div class="card" data-workspace="live">
       <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-4">📡 Widgets en Pantalla</h2>
       <div class="flex flex-col gap-2" id="widgetsPanel"></div>
     </div>
 
     <!-- ── PUBLICIDAD (botonera) ── -->
-    <div class="card">
+    <div class="card" data-workspace="content">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">💰 Publicidad</h2>
         <div class="flex items-center gap-2">
@@ -341,6 +459,13 @@
       <div class="mb-3">
         <label class="block text-[10px] text-gray-400 mb-1 uppercase tracking-wider">Nombre sponsor</label>
         <input id="adSponsor" class="input-base text-xs" placeholder="Nombre del sponsor" onchange="updateAdSponsor()">
+      </div>
+      <div class="sponsor-library-wrap">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] text-gray-400 uppercase tracking-wider font-black">Biblioteca de sponsors</span>
+          <span class="text-[10px] text-gray-500">Clic para enviar al aire</span>
+        </div>
+        <div id="sponsorLibrary" class="sponsor-library"></div>
       </div>
       <!-- Banners de sponsors -->
       <div class="mb-3">
@@ -379,7 +504,7 @@
     </div>
 
     <!-- ── CORTINA ── -->
-    <div class="card">
+    <div class="card" data-workspace="live content">
       <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-3">🎬 Cortina</h2>
       <p class="text-[10px] text-gray-500 mb-3 uppercase tracking-wider">Elegí el momento para activar la cortina con sponsors</p>
       <div class="flex gap-2 mb-2">
@@ -391,7 +516,7 @@
     </div>
 
     <!-- ── TICKER ── -->
-    <div class="card">
+    <div class="card" data-workspace="content">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">📰 Ticker de Noticias</h2>
         <div class="flex items-center gap-2">
@@ -400,7 +525,7 @@
         </div>
       </div>
       <div class="flex gap-2 mb-2">
-        <input id="tickerInput" class="input-base text-xs flex-1" placeholder="Escribir noticia…">
+        <input id="tickerInput" class="input-base text-xs flex-1" placeholder="Escribir noticia…" onkeydown="if(event.key==='Enter')addTickerItem()">
         <button onclick="addTickerItem()" class="btn-brand px-3 py-2 rounded-sm text-xs">+</button>
       </div>
       <div id="tickerList" class="flex flex-col gap-1 max-h-36 overflow-y-auto">
@@ -409,7 +534,7 @@
     </div>
 
     <!-- ── OTROS PARTIDOS ── -->
-    <div class="card">
+    <div class="card" data-workspace="content">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">⚽ Otros Partidos</h2>
         <div class="flex items-center gap-2">
@@ -436,7 +561,7 @@
     </div>
 
     <!-- ── FORMACIONES PRE-PARTIDO ── -->
-    <div class="card">
+    <div class="card" data-workspace="setup content">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider">🗂 Previa Formaciones</h2>
         <div class="flex items-center gap-2">
@@ -448,7 +573,7 @@
     </div>
 
     <!-- ── HISTORIAL ── -->
-    <div class="card">
+    <div class="card" data-workspace="live">
       <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-3">🕐 Historial</h2>
       <div id="historyList" class="flex flex-col gap-0.5 max-h-60 overflow-y-auto text-xs">
         <p class="text-gray-600 text-center">Sin acciones</p>
@@ -456,7 +581,7 @@
     </div>
 
     <!-- ── SISTEMA ── -->
-    <div class="card">
+    <div class="card" data-workspace="setup">
       <h2 class="text-sm font-black text-purple-400 uppercase tracking-wider mb-3">⚙ Sistema</h2>
       <div class="flex flex-col gap-2">
         <button onclick="resetState()" class="btn-red py-2 rounded-sm text-xs">🔄 Resetear Todo el Estado</button>
@@ -468,6 +593,34 @@
   </div><!-- /col-right -->
   </div><!-- /grid -->
 </div><!-- /container -->
+
+<!-- MODAL DE JUGADA RÁPIDA -->
+<div id="quickActionModal" class="quick-modal hidden" role="dialog" aria-modal="true" aria-labelledby="quickActionTitle">
+  <div class="quick-modal-card">
+    <button class="quick-modal-close" onclick="closeQuickAction()" aria-label="Cerrar">×</button>
+    <span id="quickActionEyebrow" class="quick-modal-eyebrow">JUGADA RÁPIDA</span>
+    <h2 id="quickActionTitle">Registrar incidencia</h2>
+    <p id="quickActionTeam" class="quick-modal-team"></p>
+    <label id="quickPlayerLabel" for="quickPlayer">Jugador</label>
+    <select id="quickPlayer" class="quick-modal-input"></select>
+    <div id="quickPlayerOutWrap" class="hidden">
+      <label for="quickPlayerOut">Sale</label>
+      <select id="quickPlayerOut" class="quick-modal-input"></select>
+    </div>
+    <label for="quickMinute">Minuto</label>
+    <input id="quickMinute" class="quick-modal-input" type="number" min="0" max="130" placeholder="Automático">
+    <label id="quickAutoUpdateWrap" class="quick-check-row">
+      <input id="quickAutoUpdate" type="checkbox" checked>
+      <span id="quickAutoUpdateText">Actualizar también el marcador</span>
+    </label>
+    <div class="quick-modal-actions">
+      <button class="btn-gray" onclick="closeQuickAction()">Cancelar</button>
+      <button id="quickConfirmBtn" class="btn-brand" onclick="confirmQuickAction()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastStack" class="toast-stack" aria-live="polite"></div>
 
 <!-- Configuración (widgets, estadísticas) y lógica del panel -->
 <script src="/pro/assets/js/config.js"></script>

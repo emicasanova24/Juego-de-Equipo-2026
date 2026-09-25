@@ -212,6 +212,25 @@ app.patch('/overlay-state/timer/added', (req, res) => {
   res.json(state.timer);
 });
 
+// Corrección manual del reloj durante una transmisión.
+// Conserva período y tiempo agregado; solo modifica el minuto base y decide
+// si el cronómetro debe continuar corriendo desde ese valor.
+app.patch('/overlay-state/timer/set', (req, res) => {
+  const minute = Number(req.body.minute);
+  if (!Number.isFinite(minute) || minute < 0 || minute > 180) {
+    res.status(400).json({ error: 'Minuto inválido. Debe estar entre 0 y 180.' });
+    return;
+  }
+  const running = req.body.running !== undefined ? !!req.body.running : state.timer.running;
+  state.timer.baseMinute = Math.floor(minute);
+  state.timer.running = running;
+  state.timer.startTimestamp = running ? Date.now() : null;
+  overlayState.save(state);
+  broadcast();
+  addHistory('timer-set', { minute: state.timer.baseMinute, running });
+  res.json(state.timer);
+});
+
 // ─── INCIDENCIAS ─────────────────────────────────────────────────────────────
 
 if (!state.incidents) state.incidents = [];

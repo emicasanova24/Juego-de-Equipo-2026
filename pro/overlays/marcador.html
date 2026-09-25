@@ -223,7 +223,7 @@
   }
 
   function connect() {
-    const API = window.OVERLAY_API || 'http://localhost:3000';
+    const API = window.OVERLAY_API || (/^https?:$/.test(window.location.protocol) ? window.location.origin : 'http://localhost:3000');
     const es = new EventSource(API + '/overlay-events');
     let lastJson = '';
     es.onmessage = function(e) {
@@ -258,7 +258,8 @@
     logoL.src = logoUrl(state.local?.logo);    logoL.style.opacity = state.local?.logo    ? '1' : '0';
     logoV.src = logoUrl(state.visitante?.logo); logoV.style.opacity = state.visitante?.logo ? '1' : '0';
 
-    if (state.match?.torneo) document.getElementById('leagueLabel').textContent = state.match.torneo;
+    const tournament = state.match?.tournament || state.match?.torneo;
+    if (tournament) document.getElementById('leagueLabel').textContent = tournament;
 
     if (state.timer) applyTimerState(state.timer);
 
